@@ -19,3 +19,8 @@
 </ul>
 
 <router-outlet></router-outlet>
+<button (click)="goToStage(Stage.Landing)">Landing page</button>
+<button (click)="goToStage(Stage.Lobby)">Lobby page</button>
+
+<app-landing-page *ngIf="stageIsVisible(Stage.Landing)"></app-landing-page>
+<app-lobby-page *ngIf="stageIsVisible(Stage.Lobby)"></app-lobby-page>
