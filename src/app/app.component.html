@@ -19,8 +19,8 @@
 </ul>
 
 <router-outlet></router-outlet>
-<button (click)="goToStage(Stage.Landing)">Landing page</button>
-<button (click)="goToStage(Stage.Lobby)">Lobby page</button>
+<button (click)="goToStage(Stage.NotBegun)">Lobby page</button>
+<button (click)="goToStage(Stage.RoleReveal)">Role Reveal page</button>
 
-<app-landing-page *ngIf="stageIsVisible(Stage.Landing)"></app-landing-page>
-<app-lobby-page *ngIf="stageIsVisible(Stage.Lobby)"></app-lobby-page>
+<app-lobby-page *ngIf="stageIsVisible(Stage.NotBegun)"></app-lobby-page>
+<app-role-reveal-page *ngIf="stageIsVisible(Stage.RoleReveal)"></app-role-reveal-page>

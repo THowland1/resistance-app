@@ -10,7 +10,7 @@ import { NavService } from 'src/services/nav.service';
 export class AppComponent implements OnInit {
   title = 'resistance-app';
   Stage = Stage;
-  stage = Stage.Landing;
+  stage = Stage.NotBegun;
 
   constructor(private _navService: NavService){}
 

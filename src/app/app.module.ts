@@ -5,16 +5,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { LandingPageComponent } from './landing-page/landing-page.component';
 import { LobbyPageComponent } from './lobby-page/lobby-page.component';
+import { RoleRevealPageComponent } from './role-reveal-page/role-reveal-page.component';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LandingPageComponent,
-    LobbyPageComponent
+    LobbyPageComponent,
+    RoleRevealPageComponent
   ],
   imports: [
     BrowserModule,
