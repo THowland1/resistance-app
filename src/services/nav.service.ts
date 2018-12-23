@@ -1,19 +1,16 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore'
+import { AngularFirestore, AngularFirestoreDocument, DocumentSnapshot, DocumentChangeAction } from '@angular/fire/firestore'
 import { Stage } from 'src/enums/stage.enum';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-interface Game {
-  stage: Stage
-}
+import { Game } from 'src/models/game';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NavService {
   game: AngularFirestoreDocument<Game>;
-  constructor(db: AngularFirestore) {
+  constructor(private db: AngularFirestore) {
     this.game = db.collection<Game>('game').doc('xlTlGvOUEsUDGphn9D0i');
   }
 

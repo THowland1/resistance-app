@@ -8,11 +8,13 @@ import { NavService } from 'src/services/nav.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  constructor(private _navService: NavService){}
+
   title = 'resistance-app';
   Stage = Stage;
   stage = Stage.NotBegun;
-
-  constructor(private _navService: NavService){}
+  name: string;
+  roomCode: string;
 
   ngOnInit(): void {
     this._navService.currentStageObservable.subscribe((currentStage) => {
