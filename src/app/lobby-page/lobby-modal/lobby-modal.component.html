@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>{{data.isNew ? 'New Lobby' : 'Join Lobby'}}</h1>
+<form>
+  <div mat-dialog-content>
+    <mat-form-field>
+      <input matInput [formControl]="name" placeholder="Name">
+      <mat-error *ngIf="name.invalid">Please pick a longer name</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput [formControl]="roomCode" placeholder="Room code" style="text-transform: uppercase;" maxlength="4">
+      <mat-error *ngIf="roomCode.invalid">Room codes have 4 characters</mat-error>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onYesClick()" cdkFocusInitial type="submit">Ok</button>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+  </div>
+</form>

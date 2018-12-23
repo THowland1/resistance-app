@@ -9,20 +9,32 @@ import { LobbyPageComponent } from './lobby-page/lobby-page.component';
 import { RoleRevealPageComponent } from './role-reveal-page/role-reveal-page.component';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { MatFormFieldModule, MatDialogModule, MatInputModule } from '@angular/material';
+import { LobbyModalComponent } from './lobby-page/lobby-modal/lobby-modal.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
     AppComponent,
     LobbyPageComponent,
-    RoleRevealPageComponent
+    RoleRevealPageComponent,
+    LobbyModalComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    AngularFireModule.initializeApp(environment.firebase)
+    AngularFireModule.initializeApp(environment.firebase),
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatDialogModule,
+    BrowserAnimationsModule,
+    MatInputModule
   ],
   providers: [AngularFirestore],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [LobbyModalComponent]
 })
 export class AppModule { }
