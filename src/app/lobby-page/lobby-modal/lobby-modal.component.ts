@@ -36,7 +36,7 @@ export class LobbyModalComponent implements OnInit {
       return;
     }
     this.data.name = this.name.value;
-    this.data.roomCode = this.roomCode.value;
+    this.data.roomCode = (this.roomCode.value as string).toUpperCase();
     console.log(this.data);
     this.dialogRef.close(this.data);
   }

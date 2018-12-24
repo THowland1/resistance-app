@@ -18,49 +18,52 @@ export class LoginService {
   private _gameCollection: AngularFirestoreCollection<Game>
 
 
-  joinLobby(result: Session): void {
+  joinLobby(result: Session): Observable<void> {
     const name = result.name;
     const roomCode = result.roomCode;
 
     console.log(`user "${name}" attempting to join room ${roomCode}`);
 
+    return new Observable((observer) => {
     this.doesRoomExist(roomCode)
       .subscribe((exists) => {
         if (exists) {
           // join it
-
+          observer.complete()
         } else {
           // throw error
+          observer.error('This room does not exist');
         }
       });
-
-
+    })
   }
 
-  createLobby(name: string): void {
+  createLobby(name: string): Observable<string> {
     var roomCode: string
     var everythingIsOkay: boolean;
-    var noOfAttempts = 0
+    var noOfAttempts = 0;
+    return new Observable((observer)=>{
+      do {
+        roomCode = this.randomRoomCode();
+        everythingIsOkay = true;
+        noOfAttempts++;
+  
+        this.doesRoomExist(roomCode)
+          .pipe(first())
+          .subscribe((exists) => {
+            if (exists) {
+              everythingIsOkay = false;
+            } else {
+              this._gameCollection.doc(roomCode).set(this.newGame);
+              observer.next(roomCode);
+            }
+          });
+      } while (!everythingIsOkay && noOfAttempts < 200);
 
-    do {
-      roomCode = this.randomRoomCode();
-      everythingIsOkay = true;
-      noOfAttempts++;
-
-      this.doesRoomExist(roomCode)
-        .pipe(first())
-        .subscribe((exists) => {
-          if (exists) {
-            everythingIsOkay = false;
-          } else {
-            this._gameCollection.doc(roomCode).set(this.newGame);
-          }
-        });
-    } while (!everythingIsOkay && noOfAttempts < 200);
-
-    if (everythingIsOkay){
-      this.joinLobby({name, roomCode});
-    }
+      if (!everythingIsOkay){
+        observer.error('Something has gone wrong');
+      }
+    });
   }
 
   leaveLobby(result: Session){

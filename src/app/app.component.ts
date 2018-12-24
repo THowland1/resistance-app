@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Stage } from 'src/enums/stage.enum';
 import { NavService } from 'src/services/nav.service';
 import { PageEvent } from '@angular/material';
+import { Session } from 'src/models/session';
 
 @Component({
   selector: 'app-root',
@@ -14,13 +15,9 @@ export class AppComponent implements OnInit {
   title = 'resistance-app';
   Stage = Stage;
   stage = Stage.NotBegun;
-  name: string;
-  roomCode: string;
+  session: Session;
 
   ngOnInit(): void {
-    this._navService.currentStageObservable.subscribe((currentStage) => {
-      this.stage = currentStage;
-    });
   }
 
   stageIsVisible(stage: Stage): boolean {
@@ -31,7 +28,12 @@ export class AppComponent implements OnInit {
     this._navService.goToStage(stage);
   }
 
-  joinedServer(){
-    console.log('joined server');
+  joinedServer(session: Session){
+    this._navService.connectToRoom(session.roomCode);
+
+    this._navService.currentStageObservable.subscribe((currentStage) => {
+      this.stage = currentStage;
+    });
+    this.session = session;
   }
 }

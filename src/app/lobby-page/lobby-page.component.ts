@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material';
 import { LobbyModalComponent } from './lobby-modal/lobby-modal.component';
 import { LoginService } from 'src/services/login.service';
 import { Session } from 'src/models/session';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-lobby-page',
@@ -15,7 +16,7 @@ export class LobbyPageComponent implements OnInit {
     private dialog: MatDialog,
     private _loginService: LoginService) { }
   session: Session;
-  @Output() joinedServer = new EventEmitter();
+  @Output() joinedServer = new EventEmitter<Session>();
   
   ngOnInit() {
   }
@@ -31,19 +32,32 @@ export class LobbyPageComponent implements OnInit {
         return;
       }
       console.log(result);
-      isNew ? this.createNewLobby(result) : this.joinLobby(result)
+      isNew ? this.createAndJoinNewLobby(result) : this.joinLobby(result)
     });
   }
 
-  createNewLobby(result: Session): void {
+  createAndJoinNewLobby(result: Session): void {
     alert('created new');
-    this._loginService.createLobby(result.name);
-    this.joinedServer.emit();
+    this._loginService.createLobby(result.name)
+      .pipe(first<string>())
+      .subscribe({
+        next: (roomCode) => {
+          result.roomCode = roomCode;
+          this.joinLobby(result);
+        },
+        error: (err) => {alert(err)},
+        complete: () => {alert('I finished')}
+      });
   }
 
   joinLobby(result: Session): void {
     alert('joined one');
-    this._loginService.joinLobby(result);
-    this.joinedServer.emit();
+
+    this._loginService.joinLobby(result).subscribe({
+      error: (err)=>{alert(err)},
+      complete: ()=>{this.joinedServer.emit(result);}
+    });
+
+    
   }
 }

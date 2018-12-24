@@ -10,8 +10,10 @@ import { Game } from 'src/models/game';
 })
 export class NavService {
   game: AngularFirestoreDocument<Game>;
-  constructor(private db: AngularFirestore) {
-    this.game = db.collection<Game>('game').doc('xlTlGvOUEsUDGphn9D0i');
+  constructor(private db: AngularFirestore) {}
+
+  connectToRoom(roomCode: string) {
+    this.game = this.db.collection('game').doc(roomCode);
   }
 
   get currentStageObservable(): Observable<Stage> {
