@@ -8,7 +8,7 @@ import { PageEvent } from '@angular/material';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
   constructor(private _navService: NavService){}
 
   title = 'resistance-app';
