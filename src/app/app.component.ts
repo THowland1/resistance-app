@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Stage } from 'src/enums/stage.enum';
 import { NavService } from 'src/services/nav.service';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   constructor(private _navService: NavService){}
 
   title = 'resistance-app';
@@ -30,4 +31,7 @@ export class AppComponent implements OnInit {
     this._navService.goToStage(stage);
   }
 
+  joinedServer(){
+    console.log('joined server');
+  }
 }

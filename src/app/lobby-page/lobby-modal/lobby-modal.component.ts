@@ -22,7 +22,7 @@ export class LobbyModalComponent implements OnInit {
     this.roomCode = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]);
 
     if (this.data.isNew) {
-      this.roomCode.setValue('RGHH');
+      this.roomCode.setValue('');
       this.roomCode.disable()
     }
   }

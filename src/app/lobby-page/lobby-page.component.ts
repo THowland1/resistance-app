@@ -2,6 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { LobbyModalComponent } from './lobby-modal/lobby-modal.component';
 import { LoginService } from 'src/services/login.service';
+import { Session } from 'src/models/session';
 
 @Component({
   selector: 'app-lobby-page',
@@ -13,8 +14,7 @@ export class LobbyPageComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private _loginService: LoginService) { }
-  name: string;
-  roomCode: string;
+  session: Session;
   @Output() joinedServer = new EventEmitter();
   
   ngOnInit() {
@@ -35,13 +35,13 @@ export class LobbyPageComponent implements OnInit {
     });
   }
 
-  createNewLobby(result: any): void {
+  createNewLobby(result: Session): void {
     alert('created new');
     this._loginService.createLobby(result.name);
     this.joinedServer.emit();
   }
 
-  joinLobby(result: any): void {
+  joinLobby(result: Session): void {
     alert('joined one');
     this._loginService.joinLobby(result);
     this.joinedServer.emit();

@@ -5,10 +5,12 @@
       <input matInput [formControl]="name" placeholder="Name">
       <mat-error *ngIf="name.invalid">Please pick a longer name</mat-error>
     </mat-form-field>
-    <mat-form-field>
-      <input matInput [formControl]="roomCode" placeholder="Room code" style="text-transform: uppercase;" maxlength="4">
-      <mat-error *ngIf="roomCode.invalid">Room codes have 4 characters</mat-error>
-    </mat-form-field>
+    <ng-container *ngIf="!data.isNew">
+      <mat-form-field>
+        <input matInput [formControl]="roomCode" placeholder="Room code" style="text-transform: uppercase;" maxlength="4">
+        <mat-error *ngIf="roomCode.invalid">Room codes have 4 characters</mat-error>
+      </mat-form-field>
+    </ng-container>
   </div>
   <div mat-dialog-actions>
     <button mat-button (click)="onYesClick()" cdkFocusInitial type="submit">Ok</button>

@@ -4,6 +4,7 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/fire
 import { take, first, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Stage } from 'src/enums/stage.enum';
+import { Session } from 'src/models/session';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class LoginService {
   private _gameCollection: AngularFirestoreCollection<Game>
 
 
-  joinLobby(result: { name: string, roomCode: string }): void {
+  joinLobby(result: Session): void {
     const name = result.name;
     const roomCode = result.roomCode;
 
@@ -62,8 +63,30 @@ export class LoginService {
     }
   }
 
+  leaveLobby(result: Session){
+    const name = result.name;
+    const roomCode = result.roomCode;
+
+    console.log(`user "${name}" attempting to leave room ${roomCode}`);
+
+    this.doesRoomExist(roomCode)
+      .subscribe((exists) => {
+        if (exists) {
+          // leave it
+          // delete it
+          this._gameCollection.doc(roomCode).delete()
+          .then(() => {console.log('deleted room')})
+          .catch(() => {console.log('couldnt delete room')});
+        } else {
+          // throw error
+          console.log('The room does not exist')
+        }
+      });
+
+  }
+
   private randomRoomCode(): string {
-    return this.db.createId().slice(0, 4);
+    return this.db.createId().slice(0, 4).toUpperCase();
   }
 
   private doesRoomExist(roomCode: string): Observable<boolean> {
