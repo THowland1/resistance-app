@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Game } from 'src/models/game';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { take, first, map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { first, map } from 'rxjs/operators';
 import { Stage } from 'src/enums/stage.enum';
 import { Session } from 'src/models/session';
+import { Player } from 'src/models/player';
+import { Team } from 'src/enums/team.enum';
+import { Role } from 'src/enums/role.enum';
+import { Observable, zip } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,25 +19,36 @@ export class LoginService {
   }
 
   private _gameCollection: AngularFirestoreCollection<Game>
+  private _maxPlayers = 9;
 
-
-  joinLobby(result: Session): Observable<void> {
-    const name = result.name;
-    const roomCode = result.roomCode;
-
+  joinLobby(session: Session): Observable<void> {
+    const name = session.name;
+    const roomCode = session.roomCode;
     console.log(`user "${name}" attempting to join room ${roomCode}`);
-
+    
     return new Observable((observer) => {
-    this.doesRoomExist(roomCode)
-      .subscribe((exists) => {
-        if (exists) {
-          // join it
-          observer.complete()
-        } else {
-          // throw error
-          observer.error('This room does not exist');
-        }
-      });
+      zip(
+        this.doesRoomExist(roomCode),
+        this.isNameTaken(session),
+        this.isRoomFull(roomCode))
+        .pipe(first())
+        .subscribe(([roomExists,nameIsTaken,isRoomFull]) => {
+          if (!roomExists) {
+            observer.error('This room does not exist');
+          }
+          if (isRoomFull) {
+            observer.error('This room is full')
+          }
+          if (nameIsTaken){
+            observer.error('Name is already taken');
+          }
+
+          if (roomExists && !nameIsTaken && !isRoomFull) {
+            this.player(session).set(this.newPlayer);
+          }
+
+          observer.complete();
+        });
     })
   }
 
@@ -54,7 +68,7 @@ export class LoginService {
             if (exists) {
               everythingIsOkay = false;
             } else {
-              this._gameCollection.doc(roomCode).set(this.newGame);
+              this.room(roomCode).set(this.newGame);
               observer.next(roomCode);
             }
           });
@@ -77,7 +91,7 @@ export class LoginService {
         if (exists) {
           // leave it
           // delete it
-          this._gameCollection.doc(roomCode).delete()
+          this.room(roomCode).delete()
           .then(() => {console.log('deleted room')})
           .catch(() => {console.log('couldnt delete room')});
         } else {
@@ -88,19 +102,40 @@ export class LoginService {
 
   }
 
+  private room(roomCode: string): AngularFirestoreDocument<Game> {
+    return this._gameCollection.doc(roomCode);
+  }
+
+  private player(session: Session): AngularFirestoreDocument<Player> {
+    return this.room(session.roomCode).collection('player').doc(session.name);
+  }
+
   private randomRoomCode(): string {
     return this.db.createId().slice(0, 4).toUpperCase();
   }
 
   private doesRoomExist(roomCode: string): Observable<boolean> {
-    return this._gameCollection.doc(roomCode).get()
-      .pipe(
-        first(),
-        map((doc) => doc.exists));
+    return this.room(roomCode).get()
+      .pipe(map((doc) => doc.exists));
+  }
+
+  private isNameTaken(session: Session): Observable<boolean> {
+    return this.player(session).get()
+      .pipe(map((doc) => doc.exists));
+  }
+
+  private isRoomFull(roomCode: string): Observable<boolean> {
+    return this.room(roomCode).collection('player').valueChanges()
+      .pipe(map((players) => players.length >= this._maxPlayers))
   }
 
   private newGame: Game = {
     stage: Stage.NotBegun
   };
+
+  private newPlayer: Player = {
+    team: Team.unassigned,
+    role: Role.unassigned
+  }
 
 }

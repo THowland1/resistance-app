@@ -45,8 +45,7 @@ export class LobbyPageComponent implements OnInit {
           result.roomCode = roomCode;
           this.joinLobby(result);
         },
-        error: (err) => {alert(err)},
-        complete: () => {alert('I finished')}
+        error: (err) => {alert(err)}
       });
   }
 
