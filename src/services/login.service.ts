@@ -44,7 +44,7 @@ export class LoginService {
           }
 
           if (roomExists && !nameIsTaken && !isRoomFull) {
-            this.player(session).set(this.newPlayer);
+            this.player(session).set(this.newPlayer(session.name));
           }
 
           observer.complete();
@@ -133,9 +133,12 @@ export class LoginService {
     stage: Stage.NotBegun
   };
 
-  private newPlayer: Player = {
-    team: Team.unassigned,
-    role: Role.unassigned
+  private newPlayer(name: string): Player {
+    return {
+        name,
+        team: Team.unassigned,
+        role: Role.unassigned
+      }
   }
 
 }

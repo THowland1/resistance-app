@@ -3,7 +3,9 @@ import { MatDialog } from '@angular/material';
 import { LobbyModalComponent } from './lobby-modal/lobby-modal.component';
 import { LoginService } from 'src/services/login.service';
 import { Session } from 'src/models/session';
-import { first } from 'rxjs/operators';
+import { first, takeUntil, map } from 'rxjs/operators';
+import { NavService } from 'src/services/nav.service';
+import { Subject, BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-lobby-page',
@@ -14,13 +16,33 @@ export class LobbyPageComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private _loginService: LoginService) { }
+    private _loginService: LoginService,
+    private _navService: NavService) { }
+
   session: Session;
+  lobbyPeople = new BehaviorSubject<string[]>([]);
+  isConnectedToARoom: boolean = false;
+  private destroy$ = new Subject();
+
   @Output() joinedServer = new EventEmitter<Session>();
   
   ngOnInit() {
+    this._navService.isConnectedToARoom$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((isConnected) => {
+        this.isConnectedToARoom = isConnected;
+        if (isConnected) {
+          this._navService.currentPlayersObservable
+            .pipe(
+              takeUntil(this.destroy$),
+              map((players) => players.map((player) => player.name)))
+            .subscribe((players) => {
+              this.lobbyPeople.next(players)
+          })
+        }
+      })
   }
-
+  
   openDialog(isNew: boolean): void {
     const dialogRef = this.dialog.open(LobbyModalComponent, {
       width: '250px',
@@ -37,7 +59,6 @@ export class LobbyPageComponent implements OnInit {
   }
 
   createAndJoinNewLobby(result: Session): void {
-    alert('created new');
     this._loginService.createLobby(result.name)
       .pipe(first<string>())
       .subscribe({
@@ -50,13 +71,14 @@ export class LobbyPageComponent implements OnInit {
   }
 
   joinLobby(result: Session): void {
-    alert('joined one');
-
     this._loginService.joinLobby(result).subscribe({
       error: (err)=>{alert(err)},
       complete: ()=>{this.joinedServer.emit(result);}
     });
+  }
 
-    
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
