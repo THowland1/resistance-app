@@ -5,7 +5,7 @@
 <button mat-raised-button (click)="openDialog(true)">Start a new lobby</button>
 <button mat-raised-button (click)="openDialog(false)">Join a lobby</button>
 
-<div class="current-lobby" *ngIf="isConnectedToRoom">
+<div class="current-lobby" *ngIf="isConnectedToARoom">
   <h4>Current lobby</h4>
   <ul *ngFor="let item of lobbyPeople | async">
     <li>{{item}}</li>
