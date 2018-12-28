@@ -1,37 +1,31 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument, DocumentSnapshot, DocumentChangeAction } from '@angular/fire/firestore'
 import { Stage } from 'src/enums/stage.enum';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Game } from 'src/models/game';
 import { Player } from 'src/models/player';
+import { BaseService } from './base.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NavService {
-  game: AngularFirestoreDocument<Game>;
-  constructor(private db: AngularFirestore) {}
+  constructor(private base: BaseService) {}
 
   isConnectedToARoom$ = new BehaviorSubject<boolean>(false);
 
-  connectToRoom(roomCode: string) {
-    this.game = this.db.collection('game').doc(roomCode);
+  connectToRoom(roomCode: string): void {
+    this.base.connectToRoom(roomCode);
     this.isConnectedToARoom$.next(true);
   }
 
-  get currentStageObservable(): Observable<Stage> {
-    return this.game
-      .valueChanges()
-      .pipe(map((o) => !!o ? o.stage : null));
+  get currentStage(): Observable<Stage> {
+    return this.base.getGameProperty('stage');
   }
 
-  get currentPlayersObservable(): Observable<Player[]> {
-    return this.game.collection<Player>('player')
-      .valueChanges();
+  get currentPlayers(): Observable<Player[]> {
+    return this.base.getPlayers();
   }
 
-  goToStage(stage: Stage) {
-    this.game.update({stage: stage})
+  goToStage(stage: Stage): void {
+    this.base.updateGameProperty('stage',stage);
   }
 }  

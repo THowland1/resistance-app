@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
   joinedServer(session: Session){
     this._navService.connectToRoom(session.roomCode);
 
-    this._navService.currentStageObservable.subscribe((currentStage) => {
+    this._navService.currentStage.subscribe((currentStage) => {
       this.stage = currentStage;
     });
     this.session = session;

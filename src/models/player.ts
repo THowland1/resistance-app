@@ -6,3 +6,5 @@ export interface Player {
     team: Team,
     role: Role
 }
+
+export type PlayerProperty = 'name' | 'team' | 'role';
