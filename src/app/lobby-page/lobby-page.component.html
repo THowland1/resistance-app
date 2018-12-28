@@ -2,12 +2,17 @@
   lobby-page works!
 </p>
 
-<button mat-raised-button (click)="openDialog(true)">Start a new lobby</button>
-<button mat-raised-button (click)="openDialog(false)">Join a lobby</button>
+<div class="join-lobby-buttons" *ngIf="!isConnectedToARoom">
+  <button mat-raised-button (click)="openDialog(true)">Start a new lobby</button>
+  <button mat-raised-button (click)="openDialog(false)">Join a lobby</button>
+</div>
+<div class="start-game-buttons" *ngIf="isConnectedToARoom">
+    <button [disabled]="canStartGame" (click)="startGame()">Start game</button>
+</div>
 
 <div class="current-lobby" *ngIf="isConnectedToARoom">
   <h4>Current lobby</h4>
-  <ul *ngFor="let item of lobbyPeople | async">
+  <ul *ngFor="let item of lobbyPeople">
     <li>{{item}}</li>
   </ul>
 </div>

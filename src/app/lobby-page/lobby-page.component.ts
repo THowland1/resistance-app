@@ -19,8 +19,10 @@ export class LobbyPageComponent implements OnInit {
     private _loginService: LoginService,
     private _navService: NavService) { }
 
+  minPlayers = 3;
   session: Session;
-  lobbyPeople = new BehaviorSubject<string[]>([]);
+  canStartGame = false;
+  lobbyPeople: string[] = [];
   isConnectedToARoom: boolean = false;
   private destroy$ = new Subject();
 
@@ -30,17 +32,19 @@ export class LobbyPageComponent implements OnInit {
     this._navService.isConnectedToARoom$
       .pipe(takeUntil(this.destroy$))
       .subscribe((isConnected) => {
+        console.log(isConnected);
         this.isConnectedToARoom = isConnected;
         if (isConnected) {
-          this._navService.currentPlayersObservable
+          this._navService.currentPlayers
             .pipe(
               takeUntil(this.destroy$),
               map((players) => players.map((player) => player.name)))
             .subscribe((players) => {
-              this.lobbyPeople.next(players)
+              this.lobbyPeople = players;
+              this.canStartGame = players.length < this.minPlayers;
           })
         }
-      })
+      });
   }
   
   openDialog(isNew: boolean): void {
@@ -75,6 +79,10 @@ export class LobbyPageComponent implements OnInit {
       error: (err)=>{alert(err)},
       complete: ()=>{this.joinedServer.emit(result);}
     });
+  }
+
+  startGame(): void {
+    //this._navService.startGame();
   }
 
   ngOnDestroy(): void {
