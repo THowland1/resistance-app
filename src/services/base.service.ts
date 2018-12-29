@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Player } from 'src/models/player';
+import { Player, PlayerProperty } from 'src/models/player';
 import { Game, GameProperty } from 'src/models/game';
 
 @Injectable({
@@ -33,10 +33,11 @@ export class BaseService {
   }
 
   // Game
-  getGameProperty(property: GameProperty): Observable<any> {
-    return this.game
-      .valueChanges()
-          .pipe(map((o) => o[property]));
+  getGameProperty(property: GameProperty, roomCode?: string): Observable<any> {
+    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
+
+    return game.valueChanges()
+      .pipe(map((o) => o[property]));
   }
 
   updateGameProperty(property: GameProperty, value: any): void {
@@ -57,6 +58,13 @@ export class BaseService {
     } else {
       return of([]); // no players if room doesn't exist
     }
+  }
+
+  getPlayerProperty(property: PlayerProperty, roomCode?: string): Observable<any> {
+    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
+    
+    return game.valueChanges()
+      .pipe(map((o) => o[property]));
   }
 
   addPlayer(roomCode: string, player: Player){

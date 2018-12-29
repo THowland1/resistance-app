@@ -3,9 +3,10 @@ import { MatDialog } from '@angular/material';
 import { LobbyModalComponent } from './lobby-modal/lobby-modal.component';
 import { LoginService } from 'src/services/login.service';
 import { Session } from 'src/models/session';
-import { first, takeUntil, map } from 'rxjs/operators';
+import { first, takeUntil, map, take } from 'rxjs/operators';
 import { NavService } from 'src/services/nav.service';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject, interval, Observable, Subscription } from 'rxjs';
+import { Stage } from 'src/enums/stage.enum';
 
 @Component({
   selector: 'app-lobby-page',
@@ -19,15 +20,18 @@ export class LobbyPageComponent implements OnInit {
     private _loginService: LoginService,
     private _navService: NavService) { }
 
-  minPlayers = 3;
+  minPlayers = 1;
   session: Session;
   canStartGame = false;
   lobbyPeople: string[] = [];
   isConnectedToARoom: boolean = false;
+  countDownTimer: number = null;
+  private ticker = interval(1000);
   private destroy$ = new Subject();
+  private countdownActive$ = new Subject();
 
   @Output() joinedServer = new EventEmitter<Session>();
-  
+  // make it so canstart game is responsive to hasenoughplayers and isalive
   ngOnInit() {
     this._navService.isConnectedToARoom$
       .pipe(takeUntil(this.destroy$))
@@ -43,10 +47,36 @@ export class LobbyPageComponent implements OnInit {
               this.lobbyPeople = players;
               this.canStartGame = players.length < this.minPlayers;
           })
+
+          this._navService.startTime
+            .pipe(
+              takeUntil(this.destroy$)
+            )
+            .subscribe((startTime) => {
+              if(!!startTime){
+                //do the countdown
+                this.ticker
+                  .pipe(takeUntil(this.countdownActive$))
+                  .subscribe(() => {
+                    const currentTime = new Date().getTime();
+                    const secondsRemaining =  Math.ceil((startTime - currentTime)/1000)
+                    if(secondsRemaining > 0) {
+                      this.countDownTimer = secondsRemaining;
+                    } else {
+                      this.countDownTimer = 0;
+                      this._navService.goToStage(Stage.RoleReveal);
+                    }
+                  });
+              } else {
+                // cancel the countdown
+                this.countdownActive$.next();
+                this.countDownTimer = null;
+              }
+            })
         }
       });
   }
-  
+
   openDialog(isNew: boolean): void {
     const dialogRef = this.dialog.open(LobbyModalComponent, {
       width: '250px',
@@ -82,11 +112,17 @@ export class LobbyPageComponent implements OnInit {
   }
 
   startGame(): void {
-    //this._navService.startGame();
+    this._navService.startGame();
+  }
+
+  cancelGame(): void {
+    this._navService.cancel();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.countdownActive$.next();
+    this.countdownActive$.complete();
   }
 }

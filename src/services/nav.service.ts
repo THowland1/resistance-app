@@ -25,7 +25,21 @@ export class NavService {
     return this.base.getPlayers();
   }
 
+  get startTime(): Observable<number> {
+    return this.base.getGameProperty('startTime');
+  }
+
   goToStage(stage: Stage): void {
     this.base.updateGameProperty('stage',stage);
+  }
+
+  startGame(): void {
+    const countdownMilliseconds = 4000;
+    const currentTime = new Date().getTime()
+    this.base.updateGameProperty('startTime', currentTime + countdownMilliseconds)
+  }
+
+  cancel(): void {
+    this.base.updateGameProperty('startTime', null)
   }
 }  

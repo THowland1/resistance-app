@@ -27,20 +27,24 @@ export class LoginService {
       zip(
         this.doesRoomExist(roomCode),
         this.isNameTaken(session),
-        this.isRoomFull(roomCode))
+        this.isRoomFull(roomCode),
+        this.hasGameStarted(roomCode))
         .pipe(first())
-        .subscribe(([roomExists,nameIsTaken,isRoomFull]) => {
+        .subscribe(([roomExists,nameIsTaken,isRoomFull,hasGameStarted]) => {
           if (!roomExists) {
             observer.error('This room does not exist');
           }
           if (isRoomFull) {
             observer.error('This room is full')
           }
-          if (nameIsTaken){
+          if (nameIsTaken) {
             observer.error('Name is already taken');
           }
+          if (hasGameStarted) {
+            observer.error('Game has already started');
+          }
 
-          if (roomExists && !nameIsTaken && !isRoomFull) {
+          if (roomExists && !nameIsTaken && !isRoomFull && !hasGameStarted) {
             this.base.addPlayer(roomCode,this.newPlayer(session.name));
           }
 
@@ -91,11 +95,17 @@ export class LoginService {
 
   private isRoomFull(roomCode: string): Observable<boolean> {
     return this.base.getPlayers()
-      .pipe(map((players) => players.length >= this._maxPlayers))
+      .pipe(map((players) => players.length >= this._maxPlayers));
+  }
+
+  private hasGameStarted(roomCode: string): Observable<boolean> {
+    return this.base.getGameProperty('stage',roomCode)
+      .pipe(map((stage: Stage) => stage !== Stage.NotBegun));
   }
 
   private newGame: Game = {
-    stage: Stage.NotBegun
+    stage: Stage.NotBegun,
+    startTime: null
   };
 
   private newPlayer(name: string): Player {
