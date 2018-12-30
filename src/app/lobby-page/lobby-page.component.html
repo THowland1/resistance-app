@@ -2,14 +2,27 @@
   lobby-page works!
 </p>
 
-<div class="join-lobby-buttons" *ngIf="!isConnectedToARoom">
-  <button mat-raised-button (click)="openDialog(true)">Start a new lobby</button>
-  <button mat-raised-button (click)="openDialog(false)">Join a lobby</button>
+<div class="lobby-form" *ngIf="!isConnectedToARoom">
+  <form class="d-block">
+    <mat-form-field class="d-block">
+      <input matInput [formControl]="name" placeholder="Name">
+      <mat-error *ngIf="name.invalid">Please pick a longer name</mat-error>
+    </mat-form-field>
+    <mat-form-field *ngIf="!isNew" class="d-block">
+      <input matInput [formControl]="roomCode" placeholder="Room code" style="text-transform: uppercase;" maxlength="4">
+      <mat-error *ngIf="roomCode.invalid">Room codes have 4 characters</mat-error>
+    </mat-form-field>
+    <mat-checkbox class="d-block" [(ngModel)]="isNew" name="isNew">New Lobby?</mat-checkbox>
+    <button class="d-block" *ngIf="!isConnectedToARoom" [disabled]="canCreateOrJoinLobby" (click)="createOrJoinLobby()">
+      {{isNew ? 'Create' : 'Join'}} lobby
+    </button>
+  </form>
 </div>
+    
 <div class="start-game-buttons" *ngIf="isConnectedToARoom">
-    <button *ngIf="countDownTimer == null" [disabled]="canStartGame" (click)="startGame()">Start game</button>
-    <button *ngIf="countDownTimer != null" (click)="cancelGame()">Cancel</button>
-    <p>{{countDownTimer}}</p>
+  <button *ngIf="countDownTimer == null" [disabled]="canStartGame" (click)="startGame()">Start game</button>
+  <button *ngIf="countDownTimer != null" (click)="cancelGame()">Cancel</button>
+  <p>{{countDownTimer}}</p>
 </div>
 
 <div class="current-lobby" *ngIf="isConnectedToARoom">

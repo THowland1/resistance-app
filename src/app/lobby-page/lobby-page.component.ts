@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { LobbyModalComponent } from './lobby-modal/lobby-modal.component';
 import { LoginService } from 'src/services/login.service';
 import { Session } from 'src/models/session';
 import { first, takeUntil, map, take } from 'rxjs/operators';
 import { NavService } from 'src/services/nav.service';
 import { Subject, BehaviorSubject, interval, Observable, Subscription } from 'rxjs';
 import { Stage } from 'src/enums/stage.enum';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-lobby-page',
@@ -21,11 +21,13 @@ export class LobbyPageComponent implements OnInit {
     private _navService: NavService) { }
 
   minPlayers = 1;
-  session: Session;
   canStartGame = false;
   lobbyPeople: string[] = [];
   isConnectedToARoom: boolean = false;
   countDownTimer: number = null;
+  isNew = false;
+  name = new FormControl('', [Validators.required, Validators.minLength(3)]);
+  roomCode = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]);
   private ticker = interval(1000);
   private destroy$ = new Subject();
   private countdownActive$ = new Subject();
@@ -77,28 +79,31 @@ export class LobbyPageComponent implements OnInit {
       });
   }
 
-  openDialog(isNew: boolean): void {
-    const dialogRef = this.dialog.open(LobbyModalComponent, {
-      width: '250px',
-      data: {isNew:isNew}
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (!result) {
-        return;
-      }
-      console.log(result);
-      isNew ? this.createAndJoinNewLobby(result) : this.joinLobby(result)
-    });
+  get canCreateOrJoinLobby(): boolean {
+    return this.name.invalid || (this.roomCode.invalid && !this.isNew);
   }
 
-  createAndJoinNewLobby(result: Session): void {
-    this._loginService.createLobby(result.name)
+  createOrJoinLobby(): void {
+    if (this.canCreateOrJoinLobby){
+      this.name.markAsTouched();
+      this.roomCode.markAsTouched();
+      return;
+    }
+
+    const name = this.name.value;
+    const roomCode = (this.roomCode.value as string).toUpperCase();
+
+    this.isNew
+      ? this.createAndJoinNewLobby(name)
+      : this.joinLobby({name,roomCode});
+  }
+
+  createAndJoinNewLobby(name: string): void {
+    this._loginService.createLobby(name)
       .pipe(first<string>())
       .subscribe({
         next: (roomCode) => {
-          result.roomCode = roomCode;
-          this.joinLobby(result);
+          this.joinLobby({name, roomCode});
         },
         error: (err) => {alert(err)}
       });

@@ -10,16 +10,14 @@ import { RoleRevealPageComponent } from './role-reveal-page/role-reveal-page.com
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { MatFormFieldModule, MatDialogModule, MatInputModule } from '@angular/material';
-import { LobbyModalComponent } from './lobby-page/lobby-modal/lobby-modal.component';
+import { MatFormFieldModule, MatDialogModule, MatInputModule, MatCheckboxModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
     AppComponent,
     LobbyPageComponent,
-    RoleRevealPageComponent,
-    LobbyModalComponent
+    RoleRevealPageComponent
   ],
   imports: [
     BrowserModule,
@@ -30,11 +28,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatDialogModule,
+    MatCheckboxModule,
     BrowserAnimationsModule,
     MatInputModule
   ],
   providers: [AngularFirestore],
-  bootstrap: [AppComponent],
-  entryComponents: [LobbyModalComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -37,7 +37,7 @@ export class BaseService {
     const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
 
     return game.valueChanges()
-      .pipe(map((o) => o[property]));
+      .pipe(map((o) => !!o ? o[property] : null));
   }
 
   updateGameProperty(property: GameProperty, value: any): void {
