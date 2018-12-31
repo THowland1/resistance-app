@@ -1,0 +1,20 @@
+<div class="dev-area row">
+  <h4 class="text-danger">Dev functions</h4>
+  <form class="col-12 my-1">
+    <span>Join room</span>
+    <input type="text" placeholder="Name" [(ngModel)]="hijackName" name="name">
+    <input type="text" placeholder="RoomCode" [(ngModel)]="hijackRoomCode" name="roomCode">
+    <button (click)="hijackClick()">Go!</button>
+  </form>
+  <form class="col-12 my-1">
+    <span>Create new room</span>
+    <input type="text" placeholder="RoomCode" [(ngModel)]="createRoomCode" name="roomCode">
+    <input type="number" placeholder="Number of Players" [(ngModel)]="createNoOfPlayers" name="noOfPlayers">
+    <button (click)="createClick()">Go!</button>
+  </form>
+  <form class="col-12 my-1">
+    <span>Reset room</span>
+    <input type="text" placeholder="RoomCode" [(ngModel)]="resetRoomCode" name="roomCode">
+    <button (click)="resetClick()">Go!</button>
+  </form>
+</div>

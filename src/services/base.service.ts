@@ -40,10 +40,11 @@ export class BaseService {
       .pipe(map((o) => !!o ? o[property] : null));
   }
 
-  updateGameProperty(property: GameProperty, value: any): void {
+  updateGameProperty(property: GameProperty, value: any, roomCode?:string): void {
+    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
     const data = {};
     data[property] = value;
-    this.game.update(data);
+    game.update(data);
   }
 
   addGame(roomCode: string, game: Game) {
@@ -51,13 +52,11 @@ export class BaseService {
   }
 
   // Player
-  getPlayers(): Observable<Player[]> {
-    if (!!this.game) {
-      return this.game.collection<Player>(this.playerString)
-        .valueChanges();
-    } else {
-      return of([]); // no players if room doesn't exist
-    }
+  getPlayers(roomCode?: string): Observable<Player[]> {
+    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
+
+    return game.collection<Player>(this.playerString)
+      .valueChanges();
   }
 
   getPlayerProperty(property: PlayerProperty, roomCode?: string): Observable<any> {

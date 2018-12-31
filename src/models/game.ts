@@ -6,3 +6,11 @@ export interface Game {
   }
 
 export type GameProperty = 'stage' | 'startTime';
+
+export function newGame() {
+  const newGame: Game = {
+    stage: Stage.NotBegun,
+    startTime: null
+  }
+  return newGame;
+}

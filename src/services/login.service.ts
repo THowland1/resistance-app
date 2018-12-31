@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Game } from 'src/models/game';
+import { Game, newGame } from 'src/models/game';
 import { first, map } from 'rxjs/operators';
 import { Stage } from 'src/enums/stage.enum';
 import { Session } from 'src/models/session';
-import { Player } from 'src/models/player';
-import { Team } from 'src/enums/team.enum';
-import { Role } from 'src/enums/role.enum';
+import { newPlayer } from 'src/models/player';
 import { Observable, zip } from 'rxjs';
 import { BaseService } from './base.service';
 
@@ -16,7 +14,7 @@ export class LoginService {
 
   constructor(private base: BaseService) {}
 
-  private _maxPlayers = 9;
+  private _maxPlayers = 10;
 
   joinLobby(session: Session): Observable<void> {
     const name = session.name;
@@ -45,7 +43,7 @@ export class LoginService {
           }
 
           if (roomExists && !nameIsTaken && !isRoomFull && !hasGameStarted) {
-            this.base.addPlayer(roomCode,this.newPlayer(session.name));
+            this.base.addPlayer(roomCode, newPlayer(session.name));
           }
 
           observer.complete();
@@ -69,7 +67,7 @@ export class LoginService {
             if (exists) {
               everythingIsOkay = false;
             } else {
-              this.base.addGame(roomCode, this.newGame);
+              this.base.addGame(roomCode, newGame());
               observer.next(roomCode);
             }
           });
@@ -94,26 +92,13 @@ export class LoginService {
   }
 
   private isRoomFull(roomCode: string): Observable<boolean> {
-    return this.base.getPlayers()
-      .pipe(map((players) => players.length >= this._maxPlayers));
+    return this.base.getPlayers(roomCode)
+      .pipe(map((players) => players.length >= this._maxPlayers ));
   }
 
   private hasGameStarted(roomCode: string): Observable<boolean> {
     return this.base.getGameProperty('stage',roomCode)
       .pipe(map((stage: Stage) => stage !== Stage.NotBegun));
-  }
-
-  private newGame: Game = {
-    stage: Stage.NotBegun,
-    startTime: null
-  };
-
-  private newPlayer(name: string): Player {
-    return {
-        name,
-        team: Team.unassigned,
-        role: Role.unassigned
-      }
   }
 
 }

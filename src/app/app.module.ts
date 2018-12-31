@@ -12,12 +12,14 @@ import { AngularFireModule } from '@angular/fire';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { MatFormFieldModule, MatDialogModule, MatInputModule, MatCheckboxModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DevComponent } from './dev/dev.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LobbyPageComponent,
-    RoleRevealPageComponent
+    RoleRevealPageComponent,
+    DevComponent
   ],
   imports: [
     BrowserModule,

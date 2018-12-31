@@ -8,3 +8,12 @@ export interface Player {
 }
 
 export type PlayerProperty = 'name' | 'team' | 'role';
+
+export function newPlayer(name: string): Player {
+    const newPlayer: Player = {
+        name,
+        team: Team.unassigned,
+        role: Role.unassigned
+    };
+    return newPlayer;
+  }
