@@ -7,6 +7,7 @@ import { NavService } from 'src/services/nav.service';
 import { Subject, BehaviorSubject, interval, Observable, Subscription } from 'rxjs';
 import { Stage } from 'src/enums/stage.enum';
 import { FormControl, Validators } from '@angular/forms';
+import { gameVariables } from 'src/game.variables'
 
 @Component({
   selector: 'app-lobby-page',
@@ -20,7 +21,6 @@ export class LobbyPageComponent implements OnInit {
     private _loginService: LoginService,
     private _navService: NavService) { }
 
-  minPlayers = 1;
   canStartGame = false;
   lobbyPeople: string[] = [];
   isConnectedToARoom: boolean = false;
@@ -47,7 +47,7 @@ export class LobbyPageComponent implements OnInit {
               map((players) => players.map((player) => player.name)))
             .subscribe((players) => {
               this.lobbyPeople = players;
-              this.canStartGame = players.length < this.minPlayers;
+              this.canStartGame = players.length >= gameVariables.minPlayers;
           })
 
           this._navService.startTime

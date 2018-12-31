@@ -20,7 +20,7 @@
 </div>
     
 <div class="start-game-buttons" *ngIf="isConnectedToARoom">
-  <button *ngIf="countDownTimer == null" [disabled]="canStartGame" (click)="startGame()">Start game</button>
+  <button *ngIf="countDownTimer == null" [disabled]="!canStartGame" (click)="startGame()">Start game</button>
   <button *ngIf="countDownTimer != null" (click)="cancelGame()">Cancel</button>
   <p>{{countDownTimer}}</p>
 </div>

@@ -6,6 +6,7 @@ import { Session } from 'src/models/session';
 import { newPlayer } from 'src/models/player';
 import { Observable, zip } from 'rxjs';
 import { BaseService } from './base.service';
+import { gameVariables } from 'src/game.variables';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,6 @@ import { BaseService } from './base.service';
 export class LoginService {
 
   constructor(private base: BaseService) {}
-
-  private _maxPlayers = 10;
 
   joinLobby(session: Session): Observable<void> {
     const name = session.name;
@@ -93,7 +92,7 @@ export class LoginService {
 
   private isRoomFull(roomCode: string): Observable<boolean> {
     return this.base.getPlayers(roomCode)
-      .pipe(map((players) => players.length >= this._maxPlayers ));
+      .pipe(map((players) => players.length >= gameVariables.maxPlayers ));
   }
 
   private hasGameStarted(roomCode: string): Observable<boolean> {
