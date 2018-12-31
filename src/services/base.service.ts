@@ -59,11 +59,18 @@ export class BaseService {
       .valueChanges();
   }
 
-  getPlayerProperty(property: PlayerProperty, roomCode?: string): Observable<any> {
+  getPlayerProperty(property: PlayerProperty, name: string, roomCode?: string): Observable<any> {
     const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
-    
-    return game.valueChanges()
+
+    return game.collection(this.playerString).doc(name).valueChanges()
       .pipe(map((o) => o[property]));
+  }
+
+  updatePlayerProperty(property: PlayerProperty, value: any, name: string, roomCode?:string): void {
+    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
+    const data = {};
+    data[property] = value;
+    game.collection(this.playerString).doc(name).update(data);
   }
 
   addPlayer(roomCode: string, player: Player){

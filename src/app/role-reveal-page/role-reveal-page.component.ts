@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RoleService } from 'src/services/role.service';
 
 @Component({
   selector: 'app-role-reveal-page',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RoleRevealPageComponent implements OnInit {
 
-  constructor() { }
+  constructor(private _roleService: RoleService) { }
 
   ngOnInit() {
   }
 
+  assignRoles() {
+    this._roleService.assignRoles();
+  }
 }
