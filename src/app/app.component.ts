@@ -3,6 +3,9 @@ import { Stage } from 'src/enums/stage.enum';
 import { NavService } from 'src/services/nav.service';
 import { PageEvent } from '@angular/material';
 import { Session } from 'src/models/session';
+import { Player } from 'src/models/player';
+import { teamPipe } from 'src/enums/team.enum';
+import { rolePipe } from 'src/enums/role.enum';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +19,9 @@ export class AppComponent implements OnInit {
   Stage = Stage;
   stage = Stage.NotBegun;
   session: Session;
+  player: Player;
+  teamPipe = teamPipe;
+  rolePipe = rolePipe;
 
   ngOnInit(): void {
   }
@@ -35,5 +41,9 @@ export class AppComponent implements OnInit {
       this.stage = currentStage;
     });
     this.session = session;
+  }
+
+  roleAssigned(player: Player){
+    this.player = player;
   }
 }

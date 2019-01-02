@@ -5,7 +5,8 @@ import { RoleService } from 'src/services/role.service';
 import { NavService } from 'src/services/nav.service';
 import { Session } from 'src/models/session';
 import { newGame } from 'src/models/game';
-import { newPlayer } from 'src/models/player';
+import { newPlayer, Player } from 'src/models/player';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dev',
@@ -20,6 +21,7 @@ export class DevComponent implements OnInit {
     private _roleService: RoleService) { }
 
   @Output() joinedServer = new EventEmitter<Session>();
+  @Output() roleAssigned = new EventEmitter<Player>();
 
   ngOnInit() {
   }
@@ -32,6 +34,11 @@ export class DevComponent implements OnInit {
     const name = this.hijackName;
     const roomCode = this.hijackRoomCode;
     this.joinedServer.emit({name,roomCode});
+    this.base.getPlayers().pipe(first()).subscribe((players) => {
+      const player = players.filter((player) => player.name === name)[0];
+      this.roleAssigned.emit(player);
+    })
+    
   }
 
   // Create Room

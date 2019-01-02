@@ -4,6 +4,7 @@ import { Player } from 'src/models/player';
 import { Role } from 'src/enums/role.enum';
 import { Team } from 'src/enums/team.enum';
 import { first } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,19 +14,25 @@ export class RoleService {
   constructor(private base: BaseService) { }
 
   assignRoles(): void {
-    this.base.getPlayers().pipe(first()).subscribe((players) => {
-      let unassignedPlayers = players;
-      let allRoles = this.allRoles(players.length);
+    this.base.getPlayers()
+      .pipe(first())
+      .subscribe((players) => {
+        let unassignedPlayers = players;
+        let allRoles = this.allRoles(players.length);
 
-      while (unassignedPlayers.length > 0) {
-        const whichPlayerIndexToAssign = this.randomInt(unassignedPlayers.length-1);
-        const roleToAssign = allRoles.pop();
-        const whichPlayerToAssign = unassignedPlayers.splice(whichPlayerIndexToAssign,1)[0];
+        while (unassignedPlayers.length > 0) {
+          const whichPlayerIndexToAssign = this.randomInt(unassignedPlayers.length-1);
+          const roleToAssign = allRoles.pop();
+          const whichPlayerToAssign = unassignedPlayers.splice(whichPlayerIndexToAssign,1)[0];
 
-        this.base.updatePlayerProperty('role',roleToAssign.role,whichPlayerToAssign.name);
-        this.base.updatePlayerProperty('team',roleToAssign.team,whichPlayerToAssign.name);
-      }
+          this.base.updatePlayerProperty('role',roleToAssign.role,whichPlayerToAssign.name);
+          this.base.updatePlayerProperty('team',roleToAssign.team,whichPlayerToAssign.name);
+        }
     })
+  }
+
+  currentPlayers(): Observable<Player[]> {
+    return this.base.getPlayers();
   }
 
   private randomInt(max: number){
@@ -37,7 +44,7 @@ export class RoleService {
     return randomInt;
   }
 
-  allRoles(noOfPlayers: number): Player[] {
+  private allRoles(noOfPlayers: number): Player[] {
     let roleArray = Array<Player>(noOfPlayers);
     let noOfEachTypeArray = [
       {noOfPlainResistance: 3, noOfPlainSpies: 2},
