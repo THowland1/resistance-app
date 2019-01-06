@@ -7,6 +7,7 @@ import { Role, rolePipe } from 'src/enums/role.enum';
 import { Team, teamPipe } from 'src/enums/team.enum';
 import { NavService } from 'src/services/nav.service';
 import { Stage } from 'src/enums/stage.enum';
+import { MissionService } from 'src/services/mission.service';
 
 @Component({
   selector: 'app-role-reveal-page',
@@ -17,7 +18,8 @@ export class RoleRevealPageComponent implements OnInit {
 
   constructor(
     private _roleService: RoleService,
-    private _navService: NavService) { }
+    private _navService: NavService,
+    private _missionService: MissionService) { }
 
   @Input() playerName: string;
   @Output() roleAssigned = new EventEmitter<Player>();
@@ -57,6 +59,7 @@ export class RoleRevealPageComponent implements OnInit {
 
   startGame(): void {
     if (!this.roleAssigned) {return;}
+    this._missionService.newMission(0,0);
     this._navService.goToStage(Stage.TeamPick);
   }
   

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, first } from 'rxjs/operators';
 import { Player, PlayerProperty } from 'src/models/player';
 import { Game, GameProperty } from 'src/models/game';
+import { Mission, MissionProperty } from 'src/models/mission';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class BaseService {
 
   gameString: string = 'game';
   playerString: string = 'player';
+  missionString: string = 'mission';
   
 
   // Meta
@@ -95,6 +97,44 @@ export class BaseService {
           (players) => players[refNo]
         )
       );
+  }
+
+  // Mission
+  getMissions(roomCode?: string): Observable<Mission[]> {
+    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
+
+    return game.collection<Mission>(this.missionString)
+      .valueChanges();
+  }
+
+  getMissionProperty(property: MissionProperty, missionNo: number, roomCode?: string): Observable<any> {
+    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
+
+    return game.collection(this.missionString).doc(missionNo.toString()).valueChanges()
+      .pipe(map((o) => o[property]));
+  }
+
+  updateMissionProperty(property: PlayerProperty, value: any, missionNo: number, roomCode?:string): void {
+    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
+    const data = {};
+    data[property] = value;
+    game.collection(this.missionString).doc(missionNo.toString()).update(data);
+  }
+
+  missionCount(roomCode?: string): Observable<number> {
+    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
+
+    return game.collection(this.missionString).get()
+      .pipe(
+        first(),
+        map((snapshot) => snapshot.size)
+      );
+  }
+
+  addMission(mission: Mission, missionNo: number, roomCode?: string): void{
+    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
+  
+    game.collection(this.missionString).doc(missionNo.toString()).set(mission);
   }
   
 }
