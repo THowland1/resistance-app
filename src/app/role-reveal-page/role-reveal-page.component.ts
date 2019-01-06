@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { RoleService } from 'src/services/role.service';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { Player } from 'src/models/player';
-import { takeUntil, filter } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { Role, rolePipe } from 'src/enums/role.enum';
 import { Team, teamPipe } from 'src/enums/team.enum';
 import { NavService } from 'src/services/nav.service';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Game, newGame } from 'src/models/game';
+import { newGame } from 'src/models/game';
 import { first, map } from 'rxjs/operators';
 import { Stage } from 'src/enums/stage.enum';
 import { Session } from 'src/models/session';

@@ -1,10 +1,9 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { LoginService } from 'src/services/login.service';
 import { Session } from 'src/models/session';
-import { first, takeUntil, map, take } from 'rxjs/operators';
+import { first, takeUntil, map } from 'rxjs/operators';
 import { NavService } from 'src/services/nav.service';
-import { Subject, BehaviorSubject, interval, Observable, Subscription } from 'rxjs';
+import { Subject, interval } from 'rxjs';
 import { Stage } from 'src/enums/stage.enum';
 import { FormControl, Validators } from '@angular/forms';
 import { gameVariables } from 'src/game.variables'
@@ -17,7 +16,6 @@ import { gameVariables } from 'src/game.variables'
 export class LobbyPageComponent implements OnInit {
 
   constructor(
-    private dialog: MatDialog,
     private _loginService: LoginService,
     private _navService: NavService) { }
 
