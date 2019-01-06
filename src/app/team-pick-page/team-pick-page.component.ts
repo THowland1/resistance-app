@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TeamPickService } from 'src/services/team-pick.service';
+import { MissionService } from 'src/services/mission.service';
 
 @Component({
   selector: 'app-team-pick-page',
@@ -8,7 +8,7 @@ import { TeamPickService } from 'src/services/team-pick.service';
 })
 export class TeamPickPageComponent implements OnInit {
 
-  constructor(private _teamPickService: TeamPickService) { }
+  constructor(private _missionService: MissionService) { }
 
   ngOnInit() {
   }
