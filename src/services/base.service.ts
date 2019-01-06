@@ -76,5 +76,25 @@ export class BaseService {
   addPlayer(roomCode: string, player: Player){
     this.db.collection(`${this.gameString}/${roomCode}/${this.playerString}`).doc(player.name).set(player);
   }
+
+  getPlayerRefNo(name: string, roomCode?: string): Observable<number> {
+    const observable = !!roomCode ? this.getPlayers(roomCode) : this.getPlayers();
+    return observable
+      .pipe(
+        map(
+          (players) => players.findIndex((player) => player.name === name)
+        )
+      );
+  }
+
+  getPlayerFromRefNo(refNo: number, roomCode?: string): Observable<Player> {
+    const observable = !!roomCode ? this.getPlayers(roomCode) : this.getPlayers();
+    return observable
+      .pipe(
+        map(
+          (players) => players[refNo]
+        )
+      );
+  }
   
 }
