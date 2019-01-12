@@ -6,20 +6,34 @@ import { Player, PlayerProperty } from 'src/models/player';
 import { Game, GameProperty } from 'src/models/game';
 import { Mission, MissionProperty } from 'src/models/mission';
 
+export enum CollectionEnum {
+  player = 0,
+  mission = 1
+}
+
+export type DocProperty = MissionProperty | PlayerProperty;
+export type CollectionType = 'player' | 'mission';
+export type CollectionInterface = Player | Mission;
+
 @Injectable({
   providedIn: 'root'
 })
 export class BaseService {
 
   constructor(private db: AngularFirestore) {}
-  game: AngularFirestoreDocument<Game>;
+  storedGame: AngularFirestoreDocument<Game>;
 
   gameString: string = 'game';
   playerString: string = 'player';
   missionString: string = 'mission';
-  
 
   // Meta
+  game(roomCode?: string): AngularFirestoreDocument<Game> {
+    return !!roomCode
+      ? this.db.doc<Game>(`${this.gameString}/${roomCode}`)
+      : this.storedGame;
+  }
+
   doesDocExist(...queryParts: string[]): Observable<boolean> {
     const queryString = queryParts.join('/')
     return this.db.doc(queryString).get()
@@ -27,7 +41,7 @@ export class BaseService {
   }
 
   connectToRoom(roomCode: string): void {
-    this.game = this.db.collection(this.gameString).doc(roomCode);
+    this.storedGame = this.db.collection(this.gameString).doc(roomCode);
   }
 
   idGenerator(): string {
@@ -36,55 +50,39 @@ export class BaseService {
 
   // Game
   getGameProperty(property: GameProperty, roomCode?: string): Observable<any> {
-    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
-
-    return game.valueChanges()
+    return this.game(roomCode).valueChanges()
       .pipe(map((o) => !!o ? o[property] : null));
   }
 
   updateGameProperty(property: GameProperty, value: any, roomCode?:string): void {
-    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
     const data = {};
     data[property] = value;
-    game.update(data);
+    this.game(roomCode).update(data);
   }
 
   addGame(roomCode: string, game: Game) {
     this.db.collection<Game>(this.gameString).doc(roomCode).set(game);
   }
-
+  
   // Player
   getPlayers(roomCode?: string): Observable<Player[]> {
-    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
-
-    return game.collection<Player>(this.playerString)
-      .valueChanges();
+    return this.getCollection<Player>('player', roomCode);
   }
 
-  getPlayerProperty(property: PlayerProperty, name: string, roomCode?: string): Observable<any> {
-    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
-
-    return game.collection(this.playerString).doc(name).valueChanges()
-      .pipe(map((o) => o[property]));
+  getPlayerProperty<T>(property: PlayerProperty, name: string, roomCode?: string): Observable<T> {
+    return this.getDocProperty<T>('player', property, name, roomCode);
   }
 
   updatePlayerProperty(property: PlayerProperty, value: any, name: string, roomCode?:string): void {
-    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
-    const data = {};
-    data[property] = value;
-    game.collection(this.playerString).doc(name).update(data);
+    this.updateDocProperty('player', property, value, name, roomCode);
   }
 
   playerCount(roomCode?: string): Observable<number> {
-    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
-
-    return game.collection(this.playerString).get()
-      .pipe(map((snapshot) => snapshot.size)
-      );
+    return this.getCollectionCount('player', roomCode);
   }
 
   addPlayer(roomCode: string, player: Player){
-    this.db.collection(`${this.gameString}/${roomCode}/${this.playerString}`).doc(player.name).set(player);
+    this.addDoc('player',player, player.name, roomCode);
   }
 
   getPlayerRefNo(name: string, roomCode?: string): Observable<number> {
@@ -109,39 +107,50 @@ export class BaseService {
 
   // Mission
   getMissions(roomCode?: string): Observable<Mission[]> {
-    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
-
-    return game.collection<Mission>(this.missionString)
-      .valueChanges();
+    return this.getCollection<Mission>('mission', roomCode);
   }
 
   getMissionProperty<T>(property: MissionProperty, missionNo: number, roomCode?: string): Observable<T> {
-    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
-    const propertyAsString = property as string;
-    
-    return game.collection(this.missionString).doc<Mission>(missionNo.toString()).valueChanges()
-      .pipe(map((o) => o[propertyAsString]));
-  }
-
-  updateMissionProperty(property: PlayerProperty, value: any, missionNo: number, roomCode?:string): void {
-    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
-    const data = {};
-    data[property] = value;
-    game.collection(this.missionString).doc(missionNo.toString()).update(data);
+    return this.getDocProperty<T>('mission', property,missionNo.toString(),roomCode);
   }
 
   missionCount(roomCode?: string): Observable<number> {
-    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
-
-    return game.collection(this.missionString).get()
-      .pipe(map((snapshot) => snapshot.size)
-      );
+    return this.getCollectionCount('mission');
   }
 
   addMission(mission: Mission, missionNo: number, roomCode?: string): void{
-    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
+    this.addDoc('mission', mission, missionNo.toString(), roomCode);
+  }
+
+  // General
+  private getCollection<T>(collection: CollectionType, roomCode?: string): Observable<T[]> {
+    return this.game(roomCode).collection<T>(collection)
+      .valueChanges();
+  }
   
-    game.collection(this.missionString).doc(missionNo.toString()).set(mission);
+  private getCollectionCount(collection: CollectionType, roomCode?: string): Observable<number> {
+    return this.game(roomCode).collection(collection)
+      .get()
+      .pipe(map((snapshot) => snapshot.size));
+  }
+
+  private getDocProperty<T>(collection: CollectionType, property: DocProperty, reference: string, roomCode?: string): Observable<T>{
+    return this.game(roomCode).collection(collection).doc(reference)
+      .valueChanges()
+      .pipe(map((o) => o[property]));
+  }
+
+  private updateDocProperty(collection: CollectionType, property: DocProperty, value: any, reference: string, roomCode?:string): void {
+    const data = {};
+    data[property] = value;
+
+    this.game(roomCode).collection(collection).doc(reference)
+      .update(data);
+  }
+
+  private addDoc(collection: CollectionType, doc: CollectionInterface, reference: string, roomCode?: string): void{
+    this.game(roomCode).collection(collection).doc(reference)
+      .set(doc);
   }
   
 }
