@@ -1,3 +1,25 @@
-<p>
-  team-pick-page works!
-</p>
+<ng-container *ngIf="isLoading">
+  <p> Loading...</p>
+</ng-container>
+
+<ng-container *ngIf="!isLoading">
+  <p>
+      team-pick-page works!
+  </p>
+
+  <p class="whos-turn" *ngIf="!!currentLeader">It is <i>{{whoseTurn}}</i> turn to pick a team</p>
+
+  <div *ngIf="youAreTheLeader">
+    <h6> You are the leader.</h6>
+    <h6>Pick a team.</h6>
+    <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>
+    <ul *ngFor="let player of currentPlayers; let i = index">
+      <li>
+        {{i}}{{player}}{{selectedPlayers[i]}}
+        <input type="checkbox" [(ngModel)]="selectedPlayers[i]">
+      </li>
+    </ul>
+    
+    <button [disabled]="!canSubmitTeam" (click)="submitTeam()">Thats my team</button>
+  </div>
+</ng-container>

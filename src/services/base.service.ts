@@ -75,6 +75,14 @@ export class BaseService {
     game.collection(this.playerString).doc(name).update(data);
   }
 
+  playerCount(roomCode?: string): Observable<number> {
+    const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
+
+    return game.collection(this.playerString).get()
+      .pipe(map((snapshot) => snapshot.size)
+      );
+  }
+
   addPlayer(roomCode: string, player: Player){
     this.db.collection(`${this.gameString}/${roomCode}/${this.playerString}`).doc(player.name).set(player);
   }
@@ -107,11 +115,12 @@ export class BaseService {
       .valueChanges();
   }
 
-  getMissionProperty(property: MissionProperty, missionNo: number, roomCode?: string): Observable<any> {
+  getMissionProperty<T>(property: MissionProperty, missionNo: number, roomCode?: string): Observable<T> {
     const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
-
-    return game.collection(this.missionString).doc(missionNo.toString()).valueChanges()
-      .pipe(map((o) => o[property]));
+    const propertyAsString = property as string;
+    
+    return game.collection(this.missionString).doc<Mission>(missionNo.toString()).valueChanges()
+      .pipe(map((o) => o[propertyAsString]));
   }
 
   updateMissionProperty(property: PlayerProperty, value: any, missionNo: number, roomCode?:string): void {
@@ -125,9 +134,7 @@ export class BaseService {
     const game = !!roomCode ? this.db.doc(`${this.gameString}/${roomCode}`) : this.game;
 
     return game.collection(this.missionString).get()
-      .pipe(
-        first(),
-        map((snapshot) => snapshot.size)
+      .pipe(map((snapshot) => snapshot.size)
       );
   }
 

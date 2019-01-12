@@ -23,7 +23,9 @@
       [playerName]="session.name"
       (roleAssigned)="roleAssigned($event)"></app-role-reveal-page>
     <app-team-pick-page
-      *ngIf="stageIsVisible(Stage.TeamPick)"></app-team-pick-page>
+      *ngIf="stageIsVisible(Stage.TeamPick)"
+      [playerName]="session.name"
+      ></app-team-pick-page>
   </div>
 
   <app-dev 
