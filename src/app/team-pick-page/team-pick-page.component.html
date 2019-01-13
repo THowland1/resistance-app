@@ -15,8 +15,8 @@
     <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>
     <ul *ngFor="let player of currentPlayers; let i = index">
       <li>
-        {{i}}{{player}}{{selectedPlayers[i]}}
-        <input type="checkbox" [(ngModel)]="selectedPlayers[i]">
+        <label for="select-{{i}}">{{player}}</label>
+        <input id="select-{{i}}" type="checkbox" [(ngModel)]="selectedPlayers[i]" (ngModelChange)="teamChange();">
       </li>
     </ul>
     

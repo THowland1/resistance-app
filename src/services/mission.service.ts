@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { newMission } from 'src/models/mission';
 import { Observable, zip } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, first } from 'rxjs/operators';
 import { MissionSize } from 'src/models/mission-size';
 import { Player } from 'src/models/player';
 
@@ -20,6 +20,24 @@ export class MissionService {
   currentMissionNo(): Observable<number> {
     return this._base.getCollectionCount('mission').pipe(
       map((count) => count - 1));
+  }
+
+  boolArray2Number(boolArray: boolean[]): number{
+    // Starts are array of booleans (e.g. [true,false,false,true])
+    const binaryArray = boolArray.map((bool) => (+bool)); // Array of 0s and 1s (e.g. [1,0,0,1])
+    const charArray = binaryArray.map((bit) => bit.toString()); // Array of '0's and '1's (e.g. ['1','0','0','1'])
+    const binaryString = charArray.join(''); // String with '0' and '1' chars (e.g. '1001')
+    const decimalNumber = parseInt(binaryString,2); // Decimal value of the binary number (e.g. 9)
+    return decimalNumber;
+  }
+
+  number2BoolArray(decimalNumber: number): boolean[]{
+    // Starts as decimal value of the number (e.g. 9)
+    const binaryString = decimalNumber.toString(2);  // String with '0' and '1' chars (e.g. '1001')
+    const charArray = binaryString.split(''); // Array of '0's and '1's (e.g. ['1','0','0','1'])
+    const binaryArray = charArray.map((char) => parseInt(char)); // Array of 0s and 1s (e.g. [1,0,0,1])
+    const boolArray = binaryArray.map((number) => number ? true : false); // Array of booleans (e.g. [true,false,false,true])
+    return boolArray;
   }
 
   currentLeader(): Observable<string> {
@@ -48,6 +66,14 @@ export class MissionService {
       ).pipe(
         map(([playerCount,missionNo]) => this.teamSize(playerCount,missionNo))
       )
+  }
+
+  newTeamPick(teamPick: number): void {
+    this.currentMissionNo()
+      .pipe(first())
+      .subscribe((missionNo) => {
+        this._base.updateDocProperty('mission',missionNo.toString(),'team',teamPick)
+      })
   }
 
   private teamSize(noOfPlayers: number, missionNo: number): MissionSize {
