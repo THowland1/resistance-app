@@ -14,6 +14,7 @@ import { MatFormFieldModule, MatDialogModule, MatInputModule, MatCheckboxModule 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DevComponent } from './dev/dev.component';
 import { TeamPickPageComponent } from './team-pick-page/team-pick-page.component';
+import { VotePageComponent } from './vote-page/vote-page.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { TeamPickPageComponent } from './team-pick-page/team-pick-page.component
     LobbyPageComponent,
     RoleRevealPageComponent,
     DevComponent,
-    TeamPickPageComponent
+    TeamPickPageComponent,
+    VotePageComponent
   ],
   imports: [
     BrowserModule,

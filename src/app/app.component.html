@@ -26,6 +26,10 @@
       *ngIf="stageIsVisible(Stage.TeamPick)"
       [playerName]="session.name"
       ></app-team-pick-page>
+    <app-vote-page
+      *ngIf="stageIsVisible(Stage.Vote)"
+      [playerName]="session.name"
+      ></app-vote-page>
   </div>
 
   <app-dev 

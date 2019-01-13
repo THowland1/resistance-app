@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MissionService } from 'src/services/mission.service';
 import { Subject } from 'rxjs';
 import { takeUntil, first } from 'rxjs/operators';
+import { NavService } from 'src/services/nav.service';
+import { Stage } from 'src/enums/stage.enum';
 
 
 
@@ -13,7 +15,8 @@ import { takeUntil, first } from 'rxjs/operators';
 
 export class TeamPickPageComponent implements OnInit {
 
-  constructor(private _missionService: MissionService) { }
+  constructor(private _missionService: MissionService,
+    private _navService: NavService) { }
   currentLeader: string;
   currentPlayers: string[];
   selectedPlayers: boolean[];
@@ -53,7 +56,7 @@ export class TeamPickPageComponent implements OnInit {
         .subscribe((teamPick) => {
           const selectedPlayers = Array(this.selectedPlayers.length).fill(false);
           selectedPlayers.splice(0,teamPick.length,...teamPick);
-          
+
           this.selectedPlayers = selectedPlayers;
         }
           );
@@ -67,7 +70,7 @@ export class TeamPickPageComponent implements OnInit {
     if (!this.canSubmitTeam){
       return;
     }
-    alert('Submitting team');
+    this._navService.goToStage(Stage.Vote);
   }
 
   get isLoading(): boolean {
