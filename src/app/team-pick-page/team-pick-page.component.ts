@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MissionService } from 'src/services/mission.service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, first } from 'rxjs/operators';
 
 
 
@@ -20,7 +20,7 @@ export class TeamPickPageComponent implements OnInit {
   teamSize: number;
   
   private destroy$ = new Subject();
-  private teamChange$ = new Subject<number>();
+  private teamChange$ = new Subject<boolean[]>();
 
   
   @Input() playerName: string;
@@ -47,11 +47,20 @@ export class TeamPickPageComponent implements OnInit {
       this.teamChange$
         .pipe(takeUntil(this.destroy$))
         .subscribe((value) => this._missionService.newTeamPick(value));
+
+      this._missionService.getTeamPick()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((teamPick) => {
+          const selectedPlayers = Array(this.selectedPlayers.length).fill(false);
+          selectedPlayers.splice(0,teamPick.length,...teamPick);
+          
+          this.selectedPlayers = selectedPlayers;
+        }
+          );
   }
 
   teamChange() {
-    const teamPick = this._missionService.boolArray2Number(this.selectedPlayers);
-    this.teamChange$.next(teamPick);
+    this.teamChange$.next(this.selectedPlayers);
   }
 
   submitTeam(): void {
@@ -71,7 +80,7 @@ export class TeamPickPageComponent implements OnInit {
   }
 
   get canSubmitTeam(): boolean {
-    return this.numberOfSelectedPlayers === this.teamSize;
+    return this.numberOfSelectedPlayers === this.teamSize && this.youAreTheLeader;
   }
 
   get numberOfSelectedPlayers(): number{

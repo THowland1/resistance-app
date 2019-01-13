@@ -22,4 +22,14 @@
     
     <button [disabled]="!canSubmitTeam" (click)="submitTeam()">Thats my team</button>
   </div>
+
+  <div *ngIf="!youAreTheLeader">
+      <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>
+      <ul *ngFor="let player of currentPlayers; let i = index">
+        <li>
+          <label>{{player}}</label>
+          <input disabled type="checkbox" [ngModel]="selectedPlayers[i]">
+        </li>
+      </ul>
+  </div>
 </ng-container>

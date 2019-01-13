@@ -8,7 +8,7 @@ export type MissionProperty = 'leader' | 'team';
 export function newMission(leader: number) {
     const newMission: Mission = {
         leader,
-        team: null
+        team: 0
     }
     return newMission;
 }
