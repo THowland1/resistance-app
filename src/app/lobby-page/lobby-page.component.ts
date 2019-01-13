@@ -36,7 +36,6 @@ export class LobbyPageComponent implements OnInit {
     this._navService.isConnectedToARoom$
       .pipe(takeUntil(this.destroy$))
       .subscribe((isConnected) => {
-        console.log(isConnected);
         this.isConnectedToARoom = isConnected;
         if (isConnected) {
           this._navService.currentPlayers
@@ -97,7 +96,7 @@ export class LobbyPageComponent implements OnInit {
   }
 
   createAndJoinNewLobby(name: string): void {
-    this._loginService.createLobby(name)
+    this._loginService.createLobby()
       .pipe(first<string>())
       .subscribe({
         next: (roomCode) => {

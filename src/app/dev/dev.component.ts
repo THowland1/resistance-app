@@ -34,7 +34,7 @@ export class DevComponent implements OnInit {
     const name = this.hijackName;
     const roomCode = this.hijackRoomCode;
     this.joinedServer.emit({name,roomCode});
-    this.base.getPlayers().pipe(first()).subscribe((players) => {
+    this.base.getCollection<Player>('player').pipe(first()).subscribe((players) => {
       const player = players.filter((player) => player.name === name)[0];
       this.roleAssigned.emit(player);
     })
@@ -55,7 +55,7 @@ export class DevComponent implements OnInit {
 
     for (let index = 0; index < noOfPlayers; index++) {
       const name = playerNames[index];
-      this.base.addPlayer(roomCode,newPlayer(name))
+      this.base.addDoc('player',newPlayer(name), name, roomCode)
     }
   }
 

@@ -22,7 +22,7 @@ export class NavService {
   }
 
   get currentPlayers(): Observable<Player[]> {
-    return this.base.getPlayers();
+    return this.base.getCollection<Player>('player');
   }
 
   get startTime(): Observable<number> {

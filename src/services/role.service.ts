@@ -14,7 +14,7 @@ export class RoleService {
   constructor(private base: BaseService) { }
 
   assignRoles(): void {
-    this.base.getPlayers()
+    this.currentPlayers()
       .pipe(first())
       .subscribe((players) => {
         let unassignedPlayers = players;
@@ -25,14 +25,14 @@ export class RoleService {
           const roleToAssign = allRoles.pop();
           const whichPlayerToAssign = unassignedPlayers.splice(whichPlayerIndexToAssign,1)[0];
 
-          this.base.updatePlayerProperty('role',roleToAssign.role,whichPlayerToAssign.name);
-          this.base.updatePlayerProperty('team',roleToAssign.team,whichPlayerToAssign.name);
+          this.base.updateDocProperty('player', whichPlayerToAssign.name, 'role', roleToAssign.role);
+          this.base.updateDocProperty('player', whichPlayerToAssign.name, 'team', roleToAssign.team);
         }
     })
   }
 
   currentPlayers(): Observable<Player[]> {
-    return this.base.getPlayers();
+    return this.base.getCollection<Player>('player');
   }
 
   private randomInt(max: number){
