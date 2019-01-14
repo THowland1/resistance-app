@@ -54,6 +54,19 @@ export class MissionService {
     // turn the leader number into a player
   }
 
+  currentVotes(): Observable<boolean[]> {
+    return this._base.getGameProperty<boolean[]>('votes');
+  }
+
+  submitVote(vote: boolean): void {
+    //TODO update so it updates part of an array instead of just adding onto the end
+    this.currentVotes()
+      .pipe(
+        first(),
+        map((votes) => {votes.push(vote); return votes;}))
+      .subscribe((votes) => this._base.updateGameProperty('votes',votes))
+  }
+
   getPlayers(): Observable<string[]> {
     return this._base.getCollection<Player>('player')
       .pipe(map((player)=>player.map((player)=>player.name)))
