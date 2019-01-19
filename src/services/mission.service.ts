@@ -81,24 +81,12 @@ export class MissionService {
       )
   }
 
-  getTeamPick(): Observable<boolean[]>{
-    return this.currentMissionNo()
-      .pipe(
-        switchMap((missionNo) => {
-          return this._base.getDocProperty<number>('mission', missionNo.toString(), 'team')
-        }),
-        map((teamPickAsNumber) => this.number2BoolArray(teamPickAsNumber))
-      );
+  getTeamPick(): Observable<boolean[]> {
+    return this._base.getGameProperty('team')
   }
 
-  newTeamPick(teamPick: boolean[]): void {
-    const teamPickAsNumber = this.boolArray2Number(teamPick);
-
-    this.currentMissionNo()
-      .pipe(first())
-      .subscribe((missionNo) => {
-        this._base.updateDocProperty('mission',missionNo.toString(),'team',teamPickAsNumber)
-      })
+  updateTeamPick(teamPick: boolean[]): void {
+    this._base.updateGameProperty('team',teamPick);
   }
 
   private teamSize(noOfPlayers: number, missionNo: number): MissionSize {

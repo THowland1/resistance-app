@@ -1,14 +1,12 @@
 export interface Mission {
-    leader: number,
-    team: number
+    leader: number
 }
 
-export type MissionProperty = 'leader' | 'team';
+export type MissionProperty = 'leader';
 
 export function newMission(leader: number) {
     const newMission: Mission = {
-        leader,
-        team: 0
+        leader
     }
     return newMission;
 }

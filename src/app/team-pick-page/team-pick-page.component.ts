@@ -23,13 +23,10 @@ export class TeamPickPageComponent implements OnInit {
   teamSize: number;
   
   private destroy$ = new Subject();
-  private teamChange$ = new Subject<boolean[]>();
-
   
   @Input() playerName: string;
 
-  ngOnInit() {
-    
+  ngOnInit() { 
     this._missionService.currentLeader()
       .pipe(takeUntil(this.destroy$))
       .subscribe((leader) => {
@@ -47,23 +44,13 @@ export class TeamPickPageComponent implements OnInit {
         .pipe(takeUntil(this.destroy$))
         .subscribe((teamSize) => this.teamSize = teamSize.size);
 
-      this.teamChange$
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((value) => this._missionService.newTeamPick(value));
-
       this._missionService.getTeamPick()
         .pipe(takeUntil(this.destroy$))
-        .subscribe((teamPick) => {
-          const selectedPlayers = Array(this.selectedPlayers.length).fill(false);
-          selectedPlayers.splice(0,teamPick.length,...teamPick);
-
-          this.selectedPlayers = selectedPlayers;
-        }
-          );
+        .subscribe((team)=> this.selectedPlayers = team);
   }
 
   teamChange() {
-    this.teamChange$.next(this.selectedPlayers);
+    this._missionService.updateTeamPick(this.selectedPlayers);
   }
 
   submitTeam(): void {
@@ -105,7 +92,6 @@ export class TeamPickPageComponent implements OnInit {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.teamChange$.complete();
   }
 
 }
