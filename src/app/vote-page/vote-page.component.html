@@ -2,7 +2,32 @@
   vote-page works!
 </p>
 
-<p>The team is ...</p>
-<p>x / y votes are in</p>
-<button (click)="submitVote(true)">Yes</button>
-<button (click)="submitVote(false)">No</button>
+<div *ngIf="!isLoading">
+  <p>The team is ...</p>
+  <ul *ngFor="let teamPlayer of teamPick">
+    <li>{{teamPlayer.name}}</li>
+  </ul>
+
+  <div *ngIf="!wait">
+    <p>{{noOfVotesIn}} / {{players.length}} votes are in</p>
+    <p *ngIf="yourVote !== null">You have voted this team {{yourVote ? 'up' : 'down'}}</p>
+    <button (click)="submitVote(true)">Yes</button>
+    <button (click)="submitVote(false)">No</button>
+    <div>
+      <button *ngIf="allVotesIn" (click)="seeVotes()">See votes</button>
+    </div>
+  </div>
+
+  <div *ngIf="wait">
+    <p>The team has {{hasItGoneAhead ? 'gone ahead' : 'not gone ahead'}}!</p>
+    <p>The votes are ...</p>
+    <ul *ngFor="let voter of players; let i = index;">
+      <li>{{voter.name}}: voted it {{currentVotes[i] ? 'up' : 'down'}}</li>
+    </ul>
+    <button (click)="moveOn()">Move on</button>
+  </div>
+</div>
+
+<div *ngIf="isLoading">
+  <p>Loading...</p>
+</div>

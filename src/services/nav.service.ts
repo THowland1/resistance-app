@@ -42,7 +42,7 @@ export class NavService {
     this.base.getCollectionCount('player')
       .pipe(first())
       .subscribe((playerCount) => {
-        this.base.updateGameProperty('votes', new Array(playerCount).fill(false));
+        this.base.updateGameProperty('votes', new Array(playerCount).fill(null));
         this.base.updateGameProperty('team', new Array(playerCount).fill(false));
       })
   }

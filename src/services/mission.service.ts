@@ -5,16 +5,19 @@ import { Observable, zip } from 'rxjs';
 import { map, switchMap, first } from 'rxjs/operators';
 import { MissionSize } from 'src/models/mission-size';
 import { Player } from 'src/models/player';
+import { NavService } from './nav.service';
+import { Stage } from 'src/enums/stage.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MissionService {
 
-  constructor(private _base: BaseService) { }
+  constructor(private _base: BaseService,private _nav: NavService) { }
 
   newMission(leader: number, missionNo: number): void {
-    this._base.addDoc('mission', newMission(leader), missionNo.toString());
+    this._base.updateGameProperty('leader',leader);
+    this._base.addDoc('mission', newMission(), missionNo.toString());
   }
 
   currentMissionNo(): Observable<number> {
@@ -40,30 +43,22 @@ export class MissionService {
     return boolArray;
   }
 
-  currentLeader(): Observable<string> {
-    return this.currentMissionNo()
-      .pipe(
-        switchMap((missionNo) => this._base.getDocProperty<number>('mission', missionNo.toString(), 'leader')),
-        switchMap((leader) => this._base.getDocFromArrayIndex<Player>('player', leader)),
-        map((leader) => !!leader ? leader.name : '')
-      )
-
-    //this._base.getMissionProperty('leader',)
-    //Get current mission number
-    // Find the leader of that mission
-    // turn the leader number into a player
+  currentLeader(): Observable<number> {
+    // TODO: maybe refactor this to output the leader number next and do the name logic in the component
+    return this._base.getGameProperty<number>('leader');
   }
 
   currentVotes(): Observable<boolean[]> {
     return this._base.getGameProperty<boolean[]>('votes');
   }
 
-  submitVote(vote: boolean): void {
+  submitVote(vote: boolean, index: number): void {
     //TODO update so it updates part of an array instead of just adding onto the end
+
     this.currentVotes()
       .pipe(
         first(),
-        map((votes) => {votes.push(vote); return votes;}))
+        map((votes) => {votes[index] = vote; return votes;}))
       .subscribe((votes) => this._base.updateGameProperty('votes',votes))
   }
 
@@ -87,6 +82,44 @@ export class MissionService {
 
   updateTeamPick(teamPick: boolean[]): void {
     this._base.updateGameProperty('team',teamPick);
+  }
+
+  updateWait(wait: boolean): void {
+    this._base.updateGameProperty('wait',wait);
+  }
+
+  moveOn(hasItGoneAhead: boolean): void {
+    this.updateWait(false);
+
+    if(hasItGoneAhead === true){
+      this._nav.goToStage(Stage.Mission);
+    } else if (hasItGoneAhead === false) {
+      // TODO: add to list of failed missions
+      // TODO: add to list of failed votes
+
+      zip(
+        this._base.getCollectionCount('player'),
+        this.currentLeader())
+        .pipe(first())
+        .subscribe(([playerCount,currentLeader]) => {
+          if (currentLeader < playerCount -1){
+            currentLeader++;
+          } else {
+            currentLeader = 0;
+          }
+          this._base.updateGameProperty('leader',currentLeader);
+          this._nav.goToStage(Stage.TeamPick);
+        })
+    } else {
+      console.error('Something has gone wrong');
+    }
+    // move to new page
+
+    //const nextLeader = this._base.getGameProperty('')
+  }
+
+  get wait(): Observable<boolean> {
+    return this._base.getGameProperty('wait');
   }
 
   private teamSize(noOfPlayers: number, missionNo: number): MissionSize {

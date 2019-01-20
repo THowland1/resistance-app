@@ -32,7 +32,7 @@ export class TeamPickPageComponent implements OnInit {
 
   ngOnInit() { 
     this._missionService.currentLeader()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$),map((leader) => this.players[leader].name))
       .subscribe(bind(this,'currentLeader'));
 
     this._missionService.getTeamSize()

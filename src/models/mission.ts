@@ -1,12 +1,16 @@
 export interface Mission {
+    downvotedTeams: number[],
+    downvotedVotes: number[]
     leader: number
 }
 
-export type MissionProperty = 'leader';
+export type MissionProperty = 'downvotedTeams' | 'downvotedVotes' | 'leader';
 
-export function newMission(leader: number) {
+export function newMission() {
     const newMission: Mission = {
-        leader
+        downvotedTeams: [],
+        downvotedVotes: [],
+        leader: null
     }
     return newMission;
 }
