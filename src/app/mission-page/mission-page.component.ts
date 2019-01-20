@@ -4,7 +4,8 @@ import { Subject } from 'rxjs';
 import { takeUntil, first, map } from 'rxjs/operators';
 import { bind, log } from 'src/functions';
 import { Player } from 'src/models/player';
-import { IMissionCard, MissionCard } from 'src/enums/mission-card';
+import { IMissionCard, MissionCard, missionCards } from 'src/enums/mission-card';
+import { MissionSize } from 'src/models/mission-size';
 
 @Component({
   selector: 'app-mission-page',
@@ -21,6 +22,9 @@ export class MissionPageComponent implements OnInit {
   currentTeam: Player[];
   playableCards: IMissionCard[];
   playedCards: MissionCard[];
+  missionSize: MissionSize;
+
+  revealMode: boolean = false;
 
   private destroy$ = new Subject();
 
@@ -38,6 +42,10 @@ export class MissionPageComponent implements OnInit {
     this._missionService.getPlayedCards
         .pipe(takeUntil(this.destroy$))
         .subscribe(bind(this,'playedCards'));
+
+    this._missionService.getTeamSize()
+        .pipe(first())
+        .subscribe(bind(this,'missionSize'))
   }
 
   selectCard(missionCard: MissionCard): void{
@@ -45,12 +53,43 @@ export class MissionPageComponent implements OnInit {
     this._missionService.updatePlayedCards(this.playedCards);
   }
 
+  revealCards(): void{
+    this.revealMode = true;
+  }
+
+  get revealedCardsAsString(): string {
+    return this.cardstoReveal.map((card) => missionCards[card].name).join(', ');
+  }
+
+  get cardstoReveal(): MissionCard[] {
+    return this.playedCards.filter((card) => card !== MissionCard.none).sort();
+  }
+
+  get missionPassed(): boolean {
+    const requiredFails = this.missionSize.twoFail ? 2 : 1;
+
+    return this.cardstoReveal.filter((card) => card === MissionCard.fail).length < requiredFails;
+  }
+
+  get allCardsPlayed(): boolean {
+    return this.playedCards.filter((card) => card !== MissionCard.none).length === this.missionSize.size;
+  }
+
   get playerIndex(): number {
     return this.players.map((player) => player.name).indexOf(this.playerName);
   }
 
+  get alreadyPlayedCard(): boolean {
+    return this.playedCards[this.playerIndex] != MissionCard.none;
+  }
+
   get isLoading(): boolean {
-    return [this.currentTeam, this.playableCards].some((prop)=>prop === undefined);
+    return [
+      this.currentTeam,
+      this.playableCards,
+      this.playedCards,
+      this.missionSize
+    ].some((prop)=>prop === undefined);
   }
 
   get youAreOnTheTeam(): boolean {

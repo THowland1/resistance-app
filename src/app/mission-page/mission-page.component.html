@@ -4,22 +4,38 @@
   <ul *ngFor="let teamMember of currentTeam">
     <li>{{teamMember.name}}</li>
   </ul>
-
-  <div *ngIf="youAreOnTheTeam">
-    <p>You are on the team</p>
-    <p>Pick a card...</p>
-    <div *ngFor="let card of playableCards">
-      <div>
-        <button (click)="selectCard(card.enumValue)">{{card.name}}</button>
+  <div *ngIf="!revealMode">
+    <div *ngIf="!allCardsPlayed">
+      <div *ngIf="youAreOnTheTeam">
+        <p>You are on the team</p>
+        <div *ngIf="!alreadyPlayedCard">
+          <p>Pick a card...</p>
+          <div *ngFor="let card of playableCards">
+            <div>
+              <button (click)="selectCard(card.enumValue)">{{card.name}}</button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="alreadyPlayedCard">
+          <p>You have played your card.</p>
+          <p>Now to wait for the other person...</p>
+        </div>
       </div>
+
+    <div *ngIf="!youAreOnTheTeam">
+      <p>You are not on the team</p>
+      <p>So you'll have to wait...</p>
     </div>
   </div>
-
-  <div *ngIf="!youAreOnTheTeam">
-    <p>You are not on the team</p>
-    <p>So you'll have to wait...</p>
+  <div *ngIf="allCardsPlayed">
+    <p>All cards have been played</p>
+    <button (click)="revealCards()">Reveal cards?</button>
   </div>
-
+  </div>
+  <div *ngIf="revealMode">
+    <p>Cards: {{revealedCardsAsString}}</p>
+    <p>The mission {{missionPassed ? 'passed' : 'failed'}}</p>
+  </div>
 </div>
 <div *ngIf="isLoading">
   <p>Loading...</p>
