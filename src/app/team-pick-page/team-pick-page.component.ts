@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MissionService } from 'src/services/mission.service';
 import { Subject } from 'rxjs';
-import { takeUntil, first } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 import { NavService } from 'src/services/nav.service';
 import { Stage } from 'src/enums/stage.enum';
+import { bind } from 'src/functions';
 
 
 
@@ -29,24 +30,19 @@ export class TeamPickPageComponent implements OnInit {
   ngOnInit() { 
     this._missionService.currentLeader()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((leader) => {
-        this.currentLeader = leader;
-      })
+      .subscribe(bind(this,'currentLeader'));
 
-      this._missionService.getPlayers()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((players)=> {
-          this.currentPlayers = players;
-          this.selectedPlayers = Array(players.length).fill(false);
-        });
+    this._missionService.getPlayers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(bind(this,'currentPlayers'));
 
-      this._missionService.getTeamSize()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((teamSize) => this.teamSize = teamSize.size);
+    this._missionService.getTeamSize()
+      .pipe(takeUntil(this.destroy$),map((teamSize) => teamSize.size))
+      .subscribe(bind(this,'teamSize'));
 
-      this._missionService.getTeamPick()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((team)=> this.selectedPlayers = team);
+    this._missionService.getTeamPick()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(bind(this,'selectedPlayers'));
   }
 
   teamChange() {

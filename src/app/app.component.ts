@@ -5,6 +5,7 @@ import { Session } from 'src/models/session';
 import { Player } from 'src/models/player';
 import { teamPipe } from 'src/enums/team.enum';
 import { rolePipe } from 'src/enums/role.enum';
+import { bind } from 'src/functions';
 
 @Component({
   selector: 'app-root',
@@ -36,9 +37,7 @@ export class AppComponent implements OnInit {
   joinedServer(session: Session){
     this._navService.connectToRoom(session.roomCode);
 
-    this._navService.currentStage.subscribe((currentStage) => {
-      this.stage = currentStage;
-    });
+    this._navService.currentStage.subscribe(bind(this,'stage'));
     this.session = session;
   }
 
