@@ -20,6 +20,7 @@ export class MissionPageComponent implements OnInit {
 
   currentTeam: Player[];
   playableCards: IMissionCard[];
+  playedCards: MissionCard[];
 
   private destroy$ = new Subject();
 
@@ -32,12 +33,20 @@ export class MissionPageComponent implements OnInit {
 
     this._missionService.getPlayableCards
         .pipe(first())
-        .pipe(log())
-        .subscribe(bind(this,'playableCards'))
+        .subscribe(bind(this,'playableCards'));
+
+    this._missionService.getPlayedCards
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(bind(this,'playedCards'));
   }
 
   selectCard(missionCard: MissionCard): void{
-    console.log(this.playableCards.filter((card) => card.enumValue === missionCard)[0]);
+    this.playedCards[this.playerIndex] = missionCard;
+    this._missionService.updatePlayedCards(this.playedCards);
+  }
+
+  get playerIndex(): number {
+    return this.players.map((player) => player.name).indexOf(this.playerName);
   }
 
   get isLoading(): boolean {

@@ -7,7 +7,7 @@ import { MissionSize } from 'src/models/mission-size';
 import { Player } from 'src/models/player';
 import { NavService } from './nav.service';
 import { Stage } from 'src/enums/stage.enum';
-import { IMissionCard, cardsInPlay, missionCards } from 'src/enums/mission-card';
+import { IMissionCard, cardsInPlay, missionCards, MissionCard } from 'src/enums/mission-card';
 import { GameType } from 'src/enums/game-type';
 
 @Injectable({
@@ -94,7 +94,12 @@ export class MissionService {
     this.updateWait(false);
 
     if(hasItGoneAhead === true){
-      this._nav.goToStage(Stage.Mission);
+      this._base.getCollectionCount('player')
+        .pipe(first())
+        .subscribe((count) => {
+          this._base.updateGameProperty('playedCards', new Array(count).fill(MissionCard.none));
+          this._nav.goToStage(Stage.Mission);
+        })
     } else if (hasItGoneAhead === false) {
       // TODO: add to list of failed missions
       // TODO: add to list of failed votes
@@ -119,6 +124,14 @@ export class MissionService {
     // move to new page
 
     //const nextLeader = this._base.getGameProperty('')
+  }
+
+  updatePlayedCards(missionCards: MissionCard[]) {
+    this._base.updateGameProperty('playedCards', missionCards);
+  }
+
+  get getPlayedCards(): Observable<MissionCard[]> {
+    return this._base.getGameProperty('playedCards');
   }
 
   get getPlayableCards(): Observable<IMissionCard[]> {

@@ -1,5 +1,6 @@
 import { Stage } from "src/enums/stage.enum";
 import { GameType } from "src/enums/game-type";
+import { MissionCard } from "src/enums/mission-card";
 
 export interface Game {
     stage: Stage,
@@ -8,10 +9,11 @@ export interface Game {
     votes: boolean[],
     leader: number,
     gameType: GameType,
+    playedCards: MissionCard[],
     wait: boolean
   }
 
-export type GameProperty = 'stage' | 'startTime' | 'team' | 'votes' | 'leader' | 'gameType' | 'wait';
+export type GameProperty = 'stage' | 'startTime' | 'team' | 'votes' | 'leader' | 'gameType' | 'playedCards' | 'wait';
 
 export function newGame() {
   const newGame: Game = {
@@ -21,6 +23,7 @@ export function newGame() {
     votes: [],
     leader: null,
     gameType: GameType.regular, // TODO: make this customisable
+    playedCards: [],
     wait: false
   }
   return newGame;
