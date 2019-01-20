@@ -3,6 +3,7 @@ import { Stage } from 'src/enums/stage.enum';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Player } from 'src/models/player';
 import { BaseService } from './base.service';
+import { first } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -35,8 +36,15 @@ export class NavService {
 
   startGame(): void {
     const countdownMilliseconds = 4000;
-    const currentTime = new Date().getTime()
-    this.base.updateGameProperty('startTime', currentTime + countdownMilliseconds)
+    const currentTime = new Date().getTime();
+    this.base.updateGameProperty('startTime', currentTime + countdownMilliseconds);
+
+    this.base.getCollectionCount('player')
+      .pipe(first())
+      .subscribe((playerCount) => {
+        this.base.updateGameProperty('votes', new Array(playerCount).fill(false));
+        this.base.updateGameProperty('team', new Array(playerCount).fill(false));
+      })
   }
 
   cancel(): void {
