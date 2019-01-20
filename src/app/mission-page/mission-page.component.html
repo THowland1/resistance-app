@@ -1,3 +1,26 @@
-<p>
-  mission-page works!
-</p>
+
+<div *ngIf="!isLoading">
+  <p>The current team is...</p>
+  <ul *ngFor="let teamMember of currentTeam">
+    <li>{{teamMember.name}}</li>
+  </ul>
+
+  <div *ngIf="youAreOnTheTeam">
+    <p>You are on the team</p>
+    <p>Pick a card...</p>
+    <div *ngFor="let card of playableCards">
+      <div>
+        <button (click)="selectCard(card.enumValue)">{{card.name}}</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!youAreOnTheTeam">
+    <p>You are not on the team</p>
+    <p>So you'll have to wait...</p>
+  </div>
+
+</div>
+<div *ngIf="isLoading">
+  <p>Loading...</p>
+</div>

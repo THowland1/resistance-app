@@ -7,6 +7,8 @@ import { MissionSize } from 'src/models/mission-size';
 import { Player } from 'src/models/player';
 import { NavService } from './nav.service';
 import { Stage } from 'src/enums/stage.enum';
+import { IMissionCard, cardsInPlay, missionCards } from 'src/enums/mission-card';
+import { GameType } from 'src/enums/game-type';
 
 @Injectable({
   providedIn: 'root'
@@ -117,6 +119,11 @@ export class MissionService {
     // move to new page
 
     //const nextLeader = this._base.getGameProperty('')
+  }
+
+  get getPlayableCards(): Observable<IMissionCard[]> {
+    return this._base.getGameProperty<GameType>('gameType')
+      .pipe(map((gameType) => cardsInPlay(gameType).map((card)=>missionCards[card])))
   }
 
   get wait(): Observable<boolean> {
