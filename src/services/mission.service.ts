@@ -108,6 +108,7 @@ export class MissionService {
             currentLeader = 0;
           }
           this._base.updateGameProperty('leader',currentLeader);
+          this._base.updateGameProperty('votes',new Array(playerCount).fill(null));
           this._nav.goToStage(Stage.TeamPick);
         })
     } else {

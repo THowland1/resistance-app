@@ -32,6 +32,11 @@
       [playerName]="session.name"
       [players]="players"
       ></app-vote-page>
+    <app-mission-page
+      *ngIf="stageIsVisible(Stage.Mission)"
+      [playerName]="session.name"
+      [players]="players"
+      ></app-mission-page>
   </div>
 
   <app-dev 
