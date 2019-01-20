@@ -6,6 +6,7 @@ import { Player } from 'src/models/player';
 import { teamPipe } from 'src/enums/team.enum';
 import { rolePipe } from 'src/enums/role.enum';
 import { bind } from 'src/functions';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ export class AppComponent implements OnInit {
   stage = Stage.NotBegun;
   session: Session;
   player: Player;
+  players: Player[];
   teamPipe = teamPipe;
   rolePipe = rolePipe;
 
@@ -40,8 +42,11 @@ export class AppComponent implements OnInit {
     this._navService.currentStage.subscribe(bind(this,'stage'));
     this.session = session;
   }
-
-  roleAssigned(player: Player){
-    this.player = player;
+  
+  playersAssigned(players: Player[]): void{
+    this.players = players;
+    this.player = !!players
+      ? players.filter((player) => player.name === this.session.name)[0]
+      : null;
   }
 }

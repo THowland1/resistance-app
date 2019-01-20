@@ -13,9 +13,9 @@
     <h6> You are the leader.</h6>
     <h6>Pick a team.</h6>
     <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>
-    <ul *ngFor="let player of currentPlayers; let i = index">
+    <ul *ngFor="let player of players; let i = index">
       <li>
-        <label for="select-{{i}}">{{player}}</label>
+        <label for="select-{{i}}">{{player.name}}</label>
         <input id="select-{{i}}" type="checkbox" [(ngModel)]="selectedPlayers[i]" (ngModelChange)="teamChange();">
       </li>
     </ul>
@@ -25,9 +25,9 @@
 
   <div *ngIf="!youAreTheLeader">
       <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>
-      <ul *ngFor="let player of currentPlayers; let i = index">
+      <ul *ngFor="let player of players; let i = index">
         <li>
-          <label>{{player}}</label>
+          <label>{{player.name}}</label>
           <input disabled type="checkbox" [ngModel]="selectedPlayers[i]">
         </li>
       </ul>

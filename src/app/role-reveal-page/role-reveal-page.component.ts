@@ -22,7 +22,7 @@ export class RoleRevealPageComponent implements OnInit {
     private _missionService: MissionService) { }
 
   @Input() playerName: string;
-  @Output() roleAssigned = new EventEmitter<Player>();
+  @Output() playersAssigned = new EventEmitter<Player[]>();
 
   teamEnum = Team;
 
@@ -43,7 +43,7 @@ export class RoleRevealPageComponent implements OnInit {
           this.rolesAssigned = true;
           this.canAssignRoles = false;
           this.player = players.filter((player) => player.name === this.playerName)[0];
-          this.roleAssigned.emit(this.player);
+          this.playersAssigned.emit(players);
         } else {
           this.currentPlayers = [];
           this.rolesAssigned = false;
@@ -58,7 +58,7 @@ export class RoleRevealPageComponent implements OnInit {
   }
 
   startGame(): void {
-    if (!this.roleAssigned) {return;}
+    if (!this.playerIsAssigned(this.player)) {return;}
     this._missionService.newMission(0,0);
     this._navService.goToStage(Stage.TeamPick);
   }

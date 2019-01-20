@@ -5,6 +5,7 @@ import { takeUntil, map } from 'rxjs/operators';
 import { NavService } from 'src/services/nav.service';
 import { Stage } from 'src/enums/stage.enum';
 import { bind } from 'src/functions';
+import { Player } from 'src/models/player';
 
 
 
@@ -18,8 +19,10 @@ export class TeamPickPageComponent implements OnInit {
 
   constructor(private _missionService: MissionService,
     private _navService: NavService) { }
+  
+  @Input() players: Player[];
+
   currentLeader: string;
-  currentPlayers: string[];
   selectedPlayers: boolean[];
   teamSize: number;
   
@@ -31,10 +34,6 @@ export class TeamPickPageComponent implements OnInit {
     this._missionService.currentLeader()
       .pipe(takeUntil(this.destroy$))
       .subscribe(bind(this,'currentLeader'));
-
-    this._missionService.getPlayers()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(bind(this,'currentPlayers'));
 
     this._missionService.getTeamSize()
       .pipe(takeUntil(this.destroy$),map((teamSize) => teamSize.size))
@@ -59,7 +58,6 @@ export class TeamPickPageComponent implements OnInit {
   get isLoading(): boolean {
     return [
       this.currentLeader,
-      this.currentPlayers,
       this.selectedPlayers,
       this.teamSize
     ].some((prop) => prop === undefined);

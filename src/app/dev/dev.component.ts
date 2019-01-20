@@ -21,7 +21,7 @@ export class DevComponent implements OnInit {
     private _roleService: RoleService) { }
 
   @Output() joinedServer = new EventEmitter<Session>();
-  @Output() roleAssigned = new EventEmitter<Player>();
+  @Output() playersAssigned = new EventEmitter<Player[]>();
 
   ngOnInit() {
   }
@@ -35,8 +35,7 @@ export class DevComponent implements OnInit {
     const roomCode = this.hijackRoomCode;
     this.joinedServer.emit({name,roomCode});
     this.base.getCollection<Player>('player').pipe(first()).subscribe((players) => {
-      const player = players.filter((player) => player.name === name)[0];
-      this.roleAssigned.emit(player);
+      this.playersAssigned.emit(players);
     })
     
   }

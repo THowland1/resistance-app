@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MissionService } from 'src/services/mission.service';
+import { Player } from 'src/models/player';
 
 @Component({
   selector: 'app-vote-page',
@@ -11,9 +12,11 @@ export class VotePageComponent implements OnInit {
   constructor(private _missionService: MissionService) { }
   
   @Input() playerName: string;
+  @Input() players: Player[];
   
   ngOnInit() {
     // TODO Remove this eventually
+    console.log(this.players);
     this._missionService.currentVotes()
       .subscribe((votes) => console.log(votes));
   }

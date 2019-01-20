@@ -21,18 +21,20 @@
     <app-role-reveal-page
       *ngIf="stageIsVisible(Stage.RoleReveal)"
       [playerName]="session.name"
-      (roleAssigned)="roleAssigned($event)"></app-role-reveal-page>
+      (playersAssigned)="playersAssigned($event)"></app-role-reveal-page>
     <app-team-pick-page
       *ngIf="stageIsVisible(Stage.TeamPick)"
       [playerName]="session.name"
+      [players]="players"
       ></app-team-pick-page>
     <app-vote-page
       *ngIf="stageIsVisible(Stage.Vote)"
       [playerName]="session.name"
+      [players]="players"
       ></app-vote-page>
   </div>
 
   <app-dev 
     (joinedServer)="joinedServer($event)"
-    (roleAssigned)="roleAssigned($event)"></app-dev>
+    (playersAssigned)="playersAssigned($event)"></app-dev>
 </div>
