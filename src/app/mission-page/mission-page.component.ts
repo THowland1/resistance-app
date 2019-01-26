@@ -27,6 +27,7 @@ export class MissionPageComponent implements OnInit {
   revealMode: boolean = false;
 
   private destroy$ = new Subject();
+  private forceLoadScreen = false;
 
   ngOnInit() {
     this._missionService.getTeamPick()
@@ -55,6 +56,11 @@ export class MissionPageComponent implements OnInit {
 
   revealCards(): void{
     this.revealMode = true;
+  }
+
+  nextMission(): void {
+    this.forceLoadScreen = true;
+    this._missionService.nextMission(this.missionPassed);
   }
 
   get revealedCardsAsString(): string {
@@ -89,7 +95,7 @@ export class MissionPageComponent implements OnInit {
       this.playableCards,
       this.playedCards,
       this.missionSize
-    ].some((prop)=>prop === undefined);
+    ].some((prop)=>prop === undefined) || this.forceLoadScreen;
   }
 
   get youAreOnTheTeam(): boolean {

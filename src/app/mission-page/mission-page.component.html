@@ -35,6 +35,7 @@
   <div *ngIf="revealMode">
     <p>Cards: {{revealedCardsAsString}}</p>
     <p>The mission {{missionPassed ? 'passed' : 'failed'}}</p>
+    <button (click)="nextMission()">Next Mission</button>
   </div>
 </div>
 <div *ngIf="isLoading">

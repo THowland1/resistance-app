@@ -9,6 +9,7 @@ import { NavService } from './nav.service';
 import { Stage } from 'src/enums/stage.enum';
 import { IMissionCard, cardsInPlay, missionCards, MissionCard } from 'src/enums/mission-card';
 import { GameType } from 'src/enums/game-type';
+import { MissionOutcome } from 'src/enums/mission-outcome';
 
 @Injectable({
   providedIn: 'root'
@@ -106,15 +107,12 @@ export class MissionService {
 
       zip(
         this._base.getCollectionCount('player'),
-        this.currentLeader())
+        this._base.getGame())
         .pipe(first())
-        .subscribe(([playerCount,currentLeader]) => {
-          if (currentLeader < playerCount -1){
-            currentLeader++;
-          } else {
-            currentLeader = 0;
-          }
-          this._base.updateGameProperty('leader',currentLeader);
+        .subscribe(([playerCount,game]) => {
+          const newLeader = (game.leader + 1) % playerCount;
+
+          this._base.updateGameProperty('leader',newLeader);
           this._base.updateGameProperty('votes',new Array(playerCount).fill(null));
           this._nav.goToStage(Stage.TeamPick);
         })
@@ -124,6 +122,38 @@ export class MissionService {
     // move to new page
 
     //const nextLeader = this._base.getGameProperty('')
+  }
+
+  nextMission(didItPass: boolean):void {
+    var isTheGameOver = false;
+    if (isTheGameOver) {
+      // End the game
+    } else {
+      zip(
+        this._base.getCollectionCount('player'),
+        this._base.getGame())
+        .pipe(first())
+        .subscribe(([playerCount,game]) => {
+          // set new leader
+          const newLeader = (game.leader + 1) % playerCount;
+          this._base.updateGameProperty('leader', newLeader);
+
+          // add mission outcome to the Game object
+          game.missionOutcomes[game.currentMission] = didItPass
+            ? MissionOutcome.pass
+            : MissionOutcome.fail;
+          this._base.updateGameProperty('missionOutcomes', game.missionOutcomes);
+
+          // move the mission count on
+          this._base.updateGameProperty('currentMission', game.currentMission + 1)
+
+          // wipe current Mission info (keep the team the same)
+          this._base.updateGameProperty('votes',new Array(playerCount).fill(null));
+          this._base.updateGameProperty('playedCards',new Array(playerCount).fill(MissionCard.none));
+          this._nav.goToStage(Stage.TeamPick);
+        })
+
+    }
   }
 
   updatePlayedCards(missionCards: MissionCard[]) {
