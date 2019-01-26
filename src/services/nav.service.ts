@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Player } from 'src/models/player';
 import { BaseService } from './base.service';
 import { first } from 'rxjs/operators';
+import { Vote } from 'src/enums/vote.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +43,7 @@ export class NavService {
     this.base.getCollectionCount('player')
       .pipe(first())
       .subscribe((playerCount) => {
-        this.base.updateGameProperty('votes', new Array(playerCount).fill(null));
+        this.base.updateGameProperty('votes', new Array(playerCount).fill(Vote.notVoted));
         this.base.updateGameProperty('team', new Array(playerCount).fill(false));
       })
   }

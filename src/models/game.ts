@@ -3,12 +3,13 @@ import { GameType } from "src/enums/game-type";
 import { MissionCard } from "src/enums/mission-card";
 import { MissionOutcome } from "src/enums/mission-outcome";
 import { gameVariables } from "src/game.variables";
+import { Vote } from "src/enums/vote.enum";
 
 export interface Game {
     stage: Stage,
     startTime: number,
     team: boolean[],
-    votes: boolean[],
+    votes: Vote[],
     missionOutcomes: MissionOutcome[],
     currentMission: number,
     leader: number,

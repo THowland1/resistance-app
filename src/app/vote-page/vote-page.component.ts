@@ -4,6 +4,7 @@ import { Player } from 'src/models/player';
 import { bind } from 'src/functions';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { Vote } from 'src/enums/vote.enum';
 
 @Component({
   selector: 'app-vote-page',
@@ -18,7 +19,7 @@ export class VotePageComponent implements OnInit {
   @Input() players: Player[];
 
   teamPick: Player[];
-  currentVotes: boolean[];
+  currentVotes: Vote[];
   wait: boolean;
 
   private destroy$ = new Subject();
@@ -77,7 +78,7 @@ export class VotePageComponent implements OnInit {
   }
 
   get noOfVotesIn(): number {
-    return this.currentVotes.filter((vote) => vote !== null).length;
+    return this.currentVotes.filter((vote) => vote !== Vote.notVoted).length;
   }
 
   get allVotesIn(): boolean {
@@ -89,7 +90,17 @@ export class VotePageComponent implements OnInit {
   }
 
   get yourVote(): boolean {
-    return this.currentVotes[this.playerIndex];
+    switch (this.currentVotes[this.playerIndex]) {
+      case Vote.notVoted:
+        return null;
+      case Vote.upvoted:
+        return true;
+      case Vote.downvoted:
+        return false;
+      default:
+        console.error('An error with the votes has occurred')
+        return null;
+    }
   }
 
   ngOnDestroy(): void {

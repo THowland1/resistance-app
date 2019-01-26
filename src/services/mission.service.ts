@@ -10,6 +10,7 @@ import { Stage } from 'src/enums/stage.enum';
 import { IMissionCard, cardsInPlay, missionCards, MissionCard } from 'src/enums/mission-card';
 import { GameType } from 'src/enums/game-type';
 import { MissionOutcome } from 'src/enums/mission-outcome';
+import { Vote } from 'src/enums/vote.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -51,17 +52,19 @@ export class MissionService {
     return this._base.getGameProperty<number>('leader');
   }
 
-  currentVotes(): Observable<boolean[]> {
-    return this._base.getGameProperty<boolean[]>('votes');
+  currentVotes(): Observable<Vote[]> {
+    return this._base.getGameProperty<Vote[]>('votes');
   }
 
   submitVote(vote: boolean, index: number): void {
     //TODO update so it updates part of an array instead of just adding onto the end
 
+    const newVote = vote ? Vote.upvoted : Vote.downvoted;
+
     this.currentVotes()
       .pipe(
         first(),
-        map((votes) => {votes[index] = vote; return votes;}))
+        map((votes) => {votes[index] = newVote; return votes;}))
       .subscribe((votes) => this._base.updateGameProperty('votes',votes))
   }
 

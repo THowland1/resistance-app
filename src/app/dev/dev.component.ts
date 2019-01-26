@@ -7,6 +7,7 @@ import { Session } from 'src/models/session';
 import { newGame } from 'src/models/game';
 import { newPlayer, Player } from 'src/models/player';
 import { first } from 'rxjs/operators';
+import { Vote } from 'src/enums/vote.enum';
 
 @Component({
   selector: 'app-dev',
@@ -74,7 +75,7 @@ export class DevComponent implements OnInit {
     const roomCode = this.upvoteRoomCode;
     this.base.getCollectionCount('player')
       .subscribe((count) => {
-        this.base.updateGameProperty('votes', new Array(count).fill(true));
+        this.base.updateGameProperty('votes', new Array(count).fill(Vote.upvoted));
       })
   }
 }
