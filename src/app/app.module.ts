@@ -16,6 +16,7 @@ import { DevComponent } from './dev/dev.component';
 import { TeamPickPageComponent } from './team-pick-page/team-pick-page.component';
 import { VotePageComponent } from './vote-page/vote-page.component';
 import { MissionPageComponent } from './mission-page/mission-page.component';
+import { GameBoardComponent } from './game-board/game-board.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { MissionPageComponent } from './mission-page/mission-page.component';
     DevComponent,
     TeamPickPageComponent,
     VotePageComponent,
-    MissionPageComponent
+    MissionPageComponent,
+    GameBoardComponent
   ],
   imports: [
     BrowserModule,

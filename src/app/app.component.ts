@@ -49,4 +49,10 @@ export class AppComponent implements OnInit {
       ? players.filter((player) => player.name === this.session.name)[0]
       : null;
   }
+
+  get canSeeGameBoard(): boolean {
+    const unallowedStages = [Stage.NotBegun,Stage.RoleReveal];
+
+    return !unallowedStages.some((unallowedStage) => unallowedStage === this.stage);
+  }
 }

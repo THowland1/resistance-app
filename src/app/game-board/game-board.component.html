@@ -1,0 +1,10 @@
+<div *ngIf="!isLoading">
+  <p>
+    game-board works!
+  </p>
+  <div class="flex">
+    <span class="circle" [ngClass]="outcomeCss(outcome)" *ngFor="let outcome of missionOutcomes"></span>
+  </div>
+</div>
+
+<div *ngIf="isLoading">Game board loading...</div>

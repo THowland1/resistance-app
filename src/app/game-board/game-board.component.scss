@@ -1,0 +1,23 @@
+$notstarted: #aaa;
+$passed: #aaf;
+$failed: #faa;
+
+.circle {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    position: relative;
+
+    &.notstarted{
+        background-color: $notstarted
+    }
+
+    &.passed{
+        background-color: $passed
+    }
+
+    &.failed{
+        background-color: $failed
+    }
+}
