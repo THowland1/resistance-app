@@ -66,4 +66,15 @@ export class DevComponent implements OnInit {
 
     this.base.addGame(roomCode,newGame());
   }
+
+  // Vote entire team up
+  upvoteRoomCode: string;
+
+  upvoteClick(): void {
+    const roomCode = this.upvoteRoomCode;
+    this.base.getCollectionCount('player')
+      .subscribe((count) => {
+        this.base.updateGameProperty('votes', new Array(count).fill(true));
+      })
+  }
 }
