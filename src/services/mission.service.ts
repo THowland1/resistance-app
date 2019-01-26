@@ -24,11 +24,6 @@ export class MissionService {
     this._base.addDoc('mission', newMission(), missionNo.toString());
   }
 
-  currentMissionNo(): Observable<number> {
-    return this._base.getCollectionCount('mission').pipe(
-      map((count) => count - 1));
-  }
-
   boolArray2Number(boolArray: boolean[]): number{
     // Starts are array of booleans (e.g. [false,true,false, true])
     const binaryArray = boolArray.map((bool) => (+bool)).reverse(); // Array of 0s and 1s (e.g. [1,0,1,0])
@@ -76,7 +71,7 @@ export class MissionService {
   getTeamSize(): Observable<MissionSize> {
     return zip(
       this._base.getCollectionCount('player'),
-      this.currentMissionNo()
+      this._base.getGameProperty<number>('currentMission')
       ).pipe(
         map(([playerCount,missionNo]) => this.teamSize(playerCount,missionNo))
       )
