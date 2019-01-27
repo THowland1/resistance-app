@@ -3,7 +3,9 @@
     game-board works!
   </p>
   <div class="flex">
-    <span class="circle" [ngClass]="outcomeCss(outcome)" *ngFor="let outcome of missionOutcomes"></span>
+    <span class="circle" [ngClass]="[outcomeCss(outcome), twoFailCss(missionSizes[i])]" *ngFor="let outcome of missionOutcomes; let i = index;">
+        {{missionSizes[i].size}}
+    </span>
   </div>
 </div>
 

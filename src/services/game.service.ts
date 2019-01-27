@@ -13,4 +13,8 @@ export class GameService {
   get missionOutcomes(): Observable<MissionOutcome[]> {
     return this._base.getGameProperty<MissionOutcome[]>('missionOutcomes');
   }
+
+  get playerCount(): Observable<number> {
+    return this._base.getCollectionCount('player');
+  }
 }

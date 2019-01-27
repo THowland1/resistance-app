@@ -11,6 +11,7 @@ import { IMissionCard, cardsInPlay, missionCards, MissionCard } from 'src/enums/
 import { GameType } from 'src/enums/game-type';
 import { MissionOutcome } from 'src/enums/mission-outcome';
 import { Vote } from 'src/enums/vote.enum';
+import { gameVariables } from 'src/game.variables';
 
 @Injectable({
   providedIn: 'root'
@@ -172,15 +173,8 @@ export class MissionService {
   }
 
   private teamSize(noOfPlayers: number, missionNo: number): MissionSize {
-    return this.teamSizes[noOfPlayers-5][missionNo]
+    return gameVariables.missionSizes[noOfPlayers-5][missionNo]
   }
 
-  private teamSizes: MissionSize[][] = [
-    [{size: 2}, {size: 3}, {size: 2}, {size: 3}, {size: 3}],
-    [{size: 2}, {size: 3}, {size: 4}, {size: 3}, {size: 4}],
-    [{size: 2}, {size: 3}, {size: 3}, {size: 4, twoFail: true}, {size: 4}],
-    [{size: 3}, {size: 4}, {size: 4}, {size: 5, twoFail: true}, {size: 5}],
-    [{size: 3}, {size: 4}, {size: 4}, {size: 5, twoFail: true}, {size: 5}],
-    [{size: 3}, {size: 4}, {size: 4}, {size: 5, twoFail: true}, {size: 5}]
-  ]
+
 }

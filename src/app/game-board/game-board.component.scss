@@ -8,16 +8,24 @@ $failed: #faa;
     height: 50px;
     border-radius: 50%;
     position: relative;
+    text-align: center;
+    font-size: 30px;
+    line-height: 1.5em;
+    color: white;
 
     &.notstarted{
-        background-color: $notstarted
+        background-color: $notstarted;
     }
 
     &.passed{
-        background-color: $passed
+        background-color: $passed;
     }
 
     &.failed{
-        background-color: $failed
+        background-color: $failed;
+    }
+
+    &.twofail {
+        text-decoration: underline;
     }
 }
