@@ -67,8 +67,21 @@ export class VotePageComponent implements OnInit {
     this._missionService.moveOn(this.hasItGoneAhead);
   }
 
+  votePipe(vote: Vote): string {
+    switch (vote) {
+      case Vote.notVoted:
+        return 'not voted!';
+      case Vote.upvoted:
+        return 'voted it up!';
+      case Vote.downvoted:
+        return 'voted it down!';
+      default:
+        return 'error';
+    }
+  }
+
   get hasItGoneAhead(): boolean {
-    const upvotes = this.currentVotes.filter((vote) => vote).length;
+    const upvotes = this.currentVotes.filter((vote) => vote === Vote.upvoted).length;
     const downvotes = this.players.length - upvotes;
     return upvotes > downvotes;
   }

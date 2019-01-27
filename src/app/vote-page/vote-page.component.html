@@ -22,7 +22,7 @@
     <p>The team has {{hasItGoneAhead ? 'gone ahead' : 'not gone ahead'}}!</p>
     <p>The votes are ...</p>
     <ul *ngFor="let voter of players; let i = index;">
-      <li>{{voter.name}}: voted it {{currentVotes[i] ? 'up' : 'down'}}</li>
+      <li>{{voter.name}}: {{votePipe(currentVotes[i])}}</li>
     </ul>
     <button (click)="moveOn()">Move on</button>
   </div>

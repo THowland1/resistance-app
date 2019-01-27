@@ -112,7 +112,7 @@ export class MissionService {
           const newLeader = (game.leader + 1) % playerCount;
 
           this._base.updateGameProperty('leader',newLeader);
-          this._base.updateGameProperty('votes',new Array(playerCount).fill(null));
+          this._base.updateGameProperty('votes',new Array(playerCount).fill(Vote.notVoted));
           this._nav.goToStage(Stage.TeamPick);
         })
     } else {
@@ -147,7 +147,7 @@ export class MissionService {
           this._base.updateGameProperty('currentMission', game.currentMission + 1)
 
           // wipe current Mission info (keep the team the same)
-          this._base.updateGameProperty('votes',new Array(playerCount).fill(null));
+          this._base.updateGameProperty('votes',new Array(playerCount).fill(Vote.notVoted));
           this._base.updateGameProperty('playedCards',new Array(playerCount).fill(MissionCard.none));
           this._nav.goToStage(Stage.TeamPick);
         })
