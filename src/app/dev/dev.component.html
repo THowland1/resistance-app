@@ -18,8 +18,9 @@
     <button (click)="resetClick()">Go!</button>
   </form>
   <form class="col-12 my-1">
-      <span>Upvote room</span>
+      <span>Upvote/downvote room</span>
       <input type="text" placeholder="RoomCode" [(ngModel)]="upvoteRoomCode" name="roomCode">
-      <button (click)="upvoteClick()">Go!</button>
+      <button (click)="upOrDownvoteClick(true)">Upvote!</button>
+      <button (click)="upOrDownvoteClick(false)">Downvote!</button>
     </form>
 </div>

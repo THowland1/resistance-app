@@ -71,11 +71,13 @@ export class DevComponent implements OnInit {
   // Vote entire team up
   upvoteRoomCode: string;
 
-  upvoteClick(): void {
+  upOrDownvoteClick(upOrDown: boolean): void {
     const roomCode = this.upvoteRoomCode;
+    const vote = upOrDown ? Vote.upvoted : Vote.downvoted;
+
     this.base.getCollectionCount('player')
       .subscribe((count) => {
-        this.base.updateGameProperty('votes', new Array(count).fill(Vote.upvoted));
+        this.base.updateGameProperty('votes', new Array(count).fill(vote));
       })
   }
 }
