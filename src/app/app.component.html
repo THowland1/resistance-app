@@ -40,6 +40,11 @@
       [playerName]="session.name"
       [players]="players"
       ></app-mission-page>
+    <app-game-over-page
+      *ngIf="stageIsVisible(Stage.GameOver)"
+      [playerName]="session.name"
+      [players]="players"
+      ></app-game-over-page>
   </div>
 
   <app-dev 

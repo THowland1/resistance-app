@@ -17,6 +17,7 @@ import { TeamPickPageComponent } from './team-pick-page/team-pick-page.component
 import { VotePageComponent } from './vote-page/vote-page.component';
 import { MissionPageComponent } from './mission-page/mission-page.component';
 import { GameBoardComponent } from './game-board/game-board.component';
+import { GameOverPageComponent } from './game-over-page/game-over-page.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { GameBoardComponent } from './game-board/game-board.component';
     TeamPickPageComponent,
     VotePageComponent,
     MissionPageComponent,
-    GameBoardComponent
+    GameBoardComponent,
+    GameOverPageComponent
   ],
   imports: [
     BrowserModule,
