@@ -113,6 +113,7 @@ export class MissionService {
 
           this._base.updateGameProperty('leader',newLeader);
           this._base.updateGameProperty('votes',new Array(playerCount).fill(Vote.notVoted));
+          this._base.updateGameProperty('noOfDownvotedTeams', game.noOfDownvotedTeams + 1);
           this._nav.goToStage(Stage.TeamPick);
         })
     } else {
@@ -149,6 +150,7 @@ export class MissionService {
           // wipe current Mission info (keep the team the same)
           this._base.updateGameProperty('votes',new Array(playerCount).fill(Vote.notVoted));
           this._base.updateGameProperty('playedCards',new Array(playerCount).fill(MissionCard.none));
+          this._base.updateGameProperty('noOfDownvotedTeams',0);
           this._nav.goToStage(Stage.TeamPick);
         })
 

@@ -18,12 +18,17 @@ export class GameBoardComponent implements OnInit {
 
   missionOutcomes: MissionOutcome[];
   missionSizes: MissionSize[];
+  noOfDownvotedTeams: number;
   private destroy$ = new Subject();
 
   ngOnInit() {
     this._gameService.missionOutcomes
       .pipe(takeUntil(this.destroy$))
       .subscribe(bind(this,'missionOutcomes'));
+
+    this._gameService.noOfDownvotedTeams
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(bind(this,'noOfDownvotedTeams'));
 
     this._gameService.playerCount
       .pipe(first())

@@ -12,13 +12,14 @@ export interface Game {
     votes: Vote[],
     missionOutcomes: MissionOutcome[],
     currentMission: number,
+    noOfDownvotedTeams: number,
     leader: number,
     gameType: GameType,
     playedCards: MissionCard[],
     wait: boolean
   }
 
-export type GameProperty = 'stage' | 'startTime' | 'team' | 'votes' | 'missionOutcomes' | 'currentMission' | 'leader' | 'gameType' | 'playedCards' | 'wait';
+export type GameProperty = 'stage' | 'startTime' | 'team' | 'votes' | 'missionOutcomes' | 'currentMission' | 'noOfDownvotedTeams' | 'leader' | 'gameType' | 'playedCards' | 'wait';
 
 export function newGame() {
   const newGame: Game = {
@@ -28,6 +29,7 @@ export function newGame() {
     votes: [],
     missionOutcomes: Array(gameVariables.noOfMissionsPerGame).fill(MissionOutcome.notStarted),
     currentMission: 0,
+    noOfDownvotedTeams: 0,
     leader: null,
     gameType: GameType.regular, // TODO: make this customisable
     playedCards: [],

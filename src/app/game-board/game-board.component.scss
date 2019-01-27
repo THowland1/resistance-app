@@ -1,31 +1,51 @@
 $notstarted: #aaa;
 $passed: #aaf;
 $failed: #faa;
+$mission-circle-diameter: 50px;
+$vote-circle-diameter: 30px;
+
 
 .circle {
     display: inline-block;
-    width: 50px;
-    height: 50px;
     border-radius: 50%;
     position: relative;
     text-align: center;
-    font-size: 30px;
     line-height: 1.5em;
     color: white;
 
-    &.notstarted{
+
+    &.mission{
+        width: $mission-circle-diameter;
+        height: $mission-circle-diameter;
+        font-size: calc(0.6 * #{$mission-circle-diameter});
+
+        &.notstarted{
+            background-color: $notstarted;
+        }
+    
+        &.passed{
+            background-color: $passed;
+        }
+    
+        &.failed{
+            background-color: $failed;
+        }
+    
+        &.twofail {
+            text-decoration: underline;
+        }
+    }
+
+    
+    &.vote {
+        width: $vote-circle-diameter;
+        height: $vote-circle-diameter;
+        font-size: calc(0.6 * #{$vote-circle-diameter});
         background-color: $notstarted;
-    }
 
-    &.passed{
-        background-color: $passed;
-    }
-
-    &.failed{
-        background-color: $failed;
-    }
-
-    &.twofail {
-        text-decoration: underline;
+        &.downvoted{
+            background-color: $failed;
+        }
     }
 }
+

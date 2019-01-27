@@ -17,4 +17,8 @@ export class GameService {
   get playerCount(): Observable<number> {
     return this._base.getCollectionCount('player');
   }
+
+  get noOfDownvotedTeams(): Observable<number> {
+    return this._base.getGameProperty('noOfDownvotedTeams')
+  }
 }

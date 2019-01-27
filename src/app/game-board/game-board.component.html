@@ -1,12 +1,15 @@
 <div *ngIf="!isLoading">
-  <p>
-    game-board works!
-  </p>
   <div class="flex">
-    <span class="circle" [ngClass]="[outcomeCss(outcome), twoFailCss(missionSizes[i])]" *ngFor="let outcome of missionOutcomes; let i = index;">
+    <span class="mission circle" [ngClass]="[outcomeCss(outcome), twoFailCss(missionSizes[i])]" *ngFor="let outcome of missionOutcomes; let i = index;">
         {{missionSizes[i].size}}
     </span>
   </div>
+  <h6>Vote Tracker</h6>
+  <div class="flex">
+      <span class="vote circle" [ngClass]="{'downvoted': noOfDownvotedTeams >= votecount}" *ngFor="let votecount of [1,2,3,4,5]">
+          {{votecount}}
+      </span>
+    </div>
 </div>
 
 <div *ngIf="isLoading">Game board loading...</div>
