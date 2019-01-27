@@ -3,6 +3,8 @@ $passed: #aaf;
 $failed: #faa;
 $mission-circle-diameter: 50px;
 $vote-circle-diameter: 30px;
+$current-arrow-size: 5px;
+$current-arrow-colour: #777;
 
 
 .circle {
@@ -12,6 +14,29 @@ $vote-circle-diameter: 30px;
     text-align: center;
     line-height: 1.5em;
     color: white;
+
+    &.current {
+        &::before {
+            content: ' ';
+            border-left: $current-arrow-size solid transparent;
+            border-right: $current-arrow-size solid transparent;
+            border-bottom: $current-arrow-size solid $current-arrow-colour;
+            position: absolute;
+            bottom: -$current-arrow-size;
+          }
+
+        &.mission {
+            &::before{
+                left: calc(#{$mission-circle-diameter} / 2 - #{$current-arrow-size})
+            }
+          }
+
+        &.vote {
+            &::before{
+                left: calc(#{$vote-circle-diameter} / 2 - #{$current-arrow-size})
+            }
+        }
+    }
 
 
     &.mission{

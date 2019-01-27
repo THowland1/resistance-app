@@ -19,6 +19,7 @@ export class GameBoardComponent implements OnInit {
   missionOutcomes: MissionOutcome[];
   missionSizes: MissionSize[];
   noOfDownvotedTeams: number;
+  currentMission: number;
   private destroy$ = new Subject();
 
   ngOnInit() {
@@ -29,6 +30,10 @@ export class GameBoardComponent implements OnInit {
     this._gameService.noOfDownvotedTeams
       .pipe(takeUntil(this.destroy$))
       .subscribe(bind(this,'noOfDownvotedTeams'));
+
+    this._gameService.currentMission
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(bind(this,'currentMission'));
 
     this._gameService.playerCount
       .pipe(first())
@@ -54,12 +59,20 @@ export class GameBoardComponent implements OnInit {
     }
   }
 
-  twoFailCss(missionSize: MissionSize): string {
+  twoFailCss(missionIndex: number): string {
+    const missionSize = this.missionSizes[missionIndex]
     return missionSize.twoFail ? 'twofail' : '';
+  }
+
+  currentCss(missionIndex: number): string {
+    return this.currentMission === missionIndex ? 'current' : '';
   }
   
   get isLoading(): boolean {
-    return [this.missionOutcomes,this.missionSizes].some((prop) => prop === undefined);
+    return [this.missionOutcomes,
+      this.missionSizes,
+      this.noOfDownvotedTeams,
+      this.currentMission].some((prop) => prop === undefined);
   }
   ngOnDestroy(): void {
     this.destroy$.next();

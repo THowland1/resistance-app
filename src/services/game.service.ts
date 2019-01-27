@@ -20,7 +20,11 @@ export class GameService {
   }
 
   get noOfDownvotedTeams(): Observable<number> {
-    return this._base.getGameProperty('noOfDownvotedTeams')
+    return this._base.getGameProperty('noOfDownvotedTeams');
+  }
+
+  get currentMission(): Observable<number> {
+    return this._base.getGameProperty('currentMission');
   }
 
   get getGame(): Observable<Game> {
