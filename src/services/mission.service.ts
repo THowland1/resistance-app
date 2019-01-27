@@ -12,6 +12,7 @@ import { GameType } from 'src/enums/game-type';
 import { MissionOutcome } from 'src/enums/mission-outcome';
 import { Vote } from 'src/enums/vote.enum';
 import { gameVariables } from 'src/game.variables';
+import { Game } from 'src/models/game';
 
 @Injectable({
   providedIn: 'root'
@@ -111,10 +112,17 @@ export class MissionService {
         .subscribe(([playerCount,game]) => {
           const newLeader = (game.leader + 1) % playerCount;
 
+          game.noOfDownvotedTeams = game.noOfDownvotedTeams + 1;
+
           this._base.updateGameProperty('leader',newLeader);
           this._base.updateGameProperty('votes',new Array(playerCount).fill(Vote.notVoted));
-          this._base.updateGameProperty('noOfDownvotedTeams', game.noOfDownvotedTeams + 1);
-          this._nav.goToStage(Stage.TeamPick);
+          this._base.updateGameProperty('noOfDownvotedTeams', game.noOfDownvotedTeams);
+
+          if (this.isTheGameOver(game)) {
+            this._nav.goToStage(Stage.GameOver);
+          } else {
+            this._nav.goToStage(Stage.TeamPick);
+          }
         })
     } else {
       console.error('Something has gone wrong');
@@ -145,7 +153,7 @@ export class MissionService {
         this._base.updateGameProperty('playedCards',new Array(playerCount).fill(MissionCard.none));
         this._base.updateGameProperty('noOfDownvotedTeams',0);
 
-        if (this.isTheGameOver(game.missionOutcomes)){
+        if (this.isTheGameOver(game)){
           this._nav.goToStage(Stage.GameOver);
         } else {
           this._base.updateGameProperty('currentMission', game.currentMission + 1)
@@ -175,13 +183,17 @@ export class MissionService {
     return gameVariables.missionSizes[noOfPlayers-5][missionNo]
   }
   
-  private isTheGameOver(missionOutcomes: MissionOutcome[]): boolean {
+  private isTheGameOver(game: Game): boolean {
+    var missionOutcomes = game.missionOutcomes;
+    var noOfDownvotedTeams = game.noOfDownvotedTeams;
+
     var noOfMissionsToWin = gameVariables.noOfMissionsToWin;
+    var maxNoOfVotesPerMission = gameVariables.maxNoOfVotesPerMission;
 
     var noOfFails = missionOutcomes.filter((outcome) => outcome === MissionOutcome.fail).length;
     var noOfPasses = missionOutcomes.filter((outcome) => outcome === MissionOutcome.pass).length;
     
-    if (noOfFails >= noOfMissionsToWin || noOfPasses >= noOfMissionsToWin){
+    if (noOfFails >= noOfMissionsToWin || noOfPasses >= noOfMissionsToWin || noOfDownvotedTeams >= maxNoOfVotesPerMission){
       return true;
     } else {
       return false;

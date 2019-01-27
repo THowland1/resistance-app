@@ -5,6 +5,7 @@ export const gameVariables = {
     maxPlayers: 10,
     noOfMissionsPerGame: 5,
     noOfMissionsToWin: 3,
+    maxNoOfVotesPerMission: 5,
     missionSizes: [
         [{size: 2}, {size: 3}, {size: 2}, {size: 3}, {size: 3}],
         [{size: 2}, {size: 3}, {size: 4}, {size: 3}, {size: 4}],

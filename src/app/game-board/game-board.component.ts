@@ -34,6 +34,12 @@ export class GameBoardComponent implements OnInit {
       .pipe(first())
       .subscribe((count) => this.missionSizes = gameVariables.missionSizes[count-5]);
   }
+
+  get voteCountArray(): number[] {
+    var maxNoOfVotes = gameVariables.maxNoOfVotesPerMission;
+    // Creates an array of [1,2,...,maxNoOfVotes]
+    return new Array(maxNoOfVotes).fill(null).map((_,index) => index + 1);
+  }
   
   outcomeCss(missionOutcome: MissionOutcome): string {
     switch (missionOutcome) {

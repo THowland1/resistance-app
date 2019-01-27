@@ -6,7 +6,7 @@
   </div>
   <h6>Vote Tracker</h6>
   <div class="flex">
-      <span class="vote circle" [ngClass]="{'downvoted': noOfDownvotedTeams >= votecount}" *ngFor="let votecount of [1,2,3,4,5]">
+      <span class="vote circle" [ngClass]="{'downvoted': noOfDownvotedTeams >= votecount}" *ngFor="let votecount of voteCountArray">
           {{votecount}}
       </span>
     </div>
