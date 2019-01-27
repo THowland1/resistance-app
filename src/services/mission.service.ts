@@ -125,36 +125,33 @@ export class MissionService {
   }
 
   nextMission(didItPass: boolean):void {
-    var isTheGameOver = false;
-    if (isTheGameOver) {
-      // End the game
-    } else {
-      zip(
-        this._base.getCollectionCount('player'),
-        this._base.getGame())
-        .pipe(first())
-        .subscribe(([playerCount,game]) => {
-          // set new leader
-          const newLeader = (game.leader + 1) % playerCount;
-          this._base.updateGameProperty('leader', newLeader);
+    zip(
+      this._base.getCollectionCount('player'),
+      this._base.getGame())
+      .pipe(first())
+      .subscribe(([playerCount,game]) => {
+        // set new leader
+        const newLeader = (game.leader + 1) % playerCount;
+        this._base.updateGameProperty('leader', newLeader);
 
-          // add mission outcome to the Game object
-          game.missionOutcomes[game.currentMission] = didItPass
-            ? MissionOutcome.pass
-            : MissionOutcome.fail;
-          this._base.updateGameProperty('missionOutcomes', game.missionOutcomes);
+        // add mission outcome to the Game object
+        game.missionOutcomes[game.currentMission] = didItPass
+          ? MissionOutcome.pass
+          : MissionOutcome.fail;
+        this._base.updateGameProperty('missionOutcomes', game.missionOutcomes);
 
-          // move the mission count on
+        // wipe current Mission info (keep the team the same)
+        this._base.updateGameProperty('votes',new Array(playerCount).fill(Vote.notVoted));
+        this._base.updateGameProperty('playedCards',new Array(playerCount).fill(MissionCard.none));
+        this._base.updateGameProperty('noOfDownvotedTeams',0);
+
+        if (this.isTheGameOver(game.missionOutcomes)){
+          this._nav.goToStage(Stage.GameOver);
+        } else {
           this._base.updateGameProperty('currentMission', game.currentMission + 1)
-
-          // wipe current Mission info (keep the team the same)
-          this._base.updateGameProperty('votes',new Array(playerCount).fill(Vote.notVoted));
-          this._base.updateGameProperty('playedCards',new Array(playerCount).fill(MissionCard.none));
-          this._base.updateGameProperty('noOfDownvotedTeams',0);
           this._nav.goToStage(Stage.TeamPick);
-        })
-
-    }
+        }
+      })
   }
 
   updatePlayedCards(missionCards: MissionCard[]) {
@@ -169,14 +166,26 @@ export class MissionService {
     return this._base.getGameProperty<GameType>('gameType')
       .pipe(map((gameType) => cardsInPlay(gameType).map((card)=>missionCards[card])))
   }
-
+  
   get wait(): Observable<boolean> {
     return this._base.getGameProperty('wait');
   }
-
+  
   private teamSize(noOfPlayers: number, missionNo: number): MissionSize {
     return gameVariables.missionSizes[noOfPlayers-5][missionNo]
   }
+  
+  private isTheGameOver(missionOutcomes: MissionOutcome[]): boolean {
+    var noOfMissionsToWin = gameVariables.noOfMissionsToWin;
 
+    var noOfFails = missionOutcomes.filter((outcome) => outcome === MissionOutcome.fail).length;
+    var noOfPasses = missionOutcomes.filter((outcome) => outcome === MissionOutcome.pass).length;
+    
+    if (noOfFails >= noOfMissionsToWin || noOfPasses >= noOfMissionsToWin){
+      return true;
+    } else {
+      return false;
+    }
+  }
 
 }
