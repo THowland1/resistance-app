@@ -1,3 +1,9 @@
-<p>
-  game-over-page works!
-</p>
+<div *ngIf="!isLoading">
+  <p>The game is over.</p>
+  <p>Winning team: {{winningTeam}}</p>
+  <p>How: {{gameOutcomeMessage}}</p>
+</div>
+
+<div *ngIf="isLoading">
+    Loading...
+</div>
