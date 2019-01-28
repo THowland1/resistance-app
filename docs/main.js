@@ -67,7 +67,7 @@ var AppRoutingModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--The content below is only a placeholder and can be replaced.-->\r\n<div class=\"container\">\r\n  <ng-container *ngIf=\"session\">\r\n    <h1 class=\"text-center\"> Your name is {{session.name}} </h1>\r\n    <h1 class=\"text-center\"> Your room code is {{session.roomCode}} </h1>\r\n  </ng-container>\r\n  <h1 class=\"text-center\" *ngIf=\"player\"> You are a {{teamPipe(player.team)}} {{rolePipe(player.role)}} </h1>\r\n\r\n  <div *ngIf=\"canSeeGameBoard\" class=\"d-flex justify-content-center\">\r\n    <app-game-board></app-game-board>\r\n  </div>\r\n\r\n  <div class=\"image-container d-flex justify-content-center\">\r\n    <img width=\"300\" alt=\"Angular Logo\" src=\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==\">\r\n  </div>\r\n  \r\n  <router-outlet></router-outlet>\r\n\r\n  \r\n  <div class=\"d-flex justify-content-center\">\r\n    <app-lobby-page\r\n      *ngIf=\"stageIsVisible(Stage.NotBegun)\"\r\n      (joinedServer)=\"joinedServer($event)\"></app-lobby-page>\r\n    <app-role-reveal-page\r\n      *ngIf=\"stageIsVisible(Stage.RoleReveal)\"\r\n      [playerName]=\"session.name\"\r\n      (playersAssigned)=\"playersAssigned($event)\"></app-role-reveal-page>\r\n    <app-team-pick-page\r\n      *ngIf=\"stageIsVisible(Stage.TeamPick)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-team-pick-page>\r\n    <app-vote-page\r\n      *ngIf=\"stageIsVisible(Stage.Vote)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-vote-page>\r\n    <app-mission-page\r\n      *ngIf=\"stageIsVisible(Stage.Mission)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-mission-page>\r\n    <app-game-over-page\r\n      *ngIf=\"stageIsVisible(Stage.GameOver)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-game-over-page>\r\n  </div>\r\n\r\n  <app-dev \r\n    (joinedServer)=\"joinedServer($event)\"\r\n    (playersAssigned)=\"playersAssigned($event)\"></app-dev>\r\n</div>\r\n"
+module.exports = "<!--The content below is only a placeholder and can be replaced.-->\r\n<app-session-info-bar [session]=\"session\" [player]=\"player\"></app-session-info-bar>\r\n<div class=\"container\">\r\n\r\n  <div *ngIf=\"canSeeGameBoard\" class=\"d-flex justify-content-center\">\r\n    <app-game-board></app-game-board>\r\n  </div>\r\n\r\n  <div class=\"image-container d-flex justify-content-center\">\r\n    <img width=\"300\" alt=\"Angular Logo\" src=\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==\">\r\n  </div>\r\n  \r\n  <router-outlet></router-outlet>\r\n\r\n  \r\n  <div class=\"d-flex justify-content-center\">\r\n    <app-lobby-page\r\n      *ngIf=\"stageIsVisible(Stage.NotBegun)\"\r\n      (joinedServer)=\"joinedServer($event)\"></app-lobby-page>\r\n    <app-role-reveal-page\r\n      *ngIf=\"stageIsVisible(Stage.RoleReveal)\"\r\n      [playerName]=\"session.name\"\r\n      (playersAssigned)=\"playersAssigned($event)\"></app-role-reveal-page>\r\n    <app-team-pick-page\r\n      *ngIf=\"stageIsVisible(Stage.TeamPick)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-team-pick-page>\r\n    <app-vote-page\r\n      *ngIf=\"stageIsVisible(Stage.Vote)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-vote-page>\r\n    <app-mission-page\r\n      *ngIf=\"stageIsVisible(Stage.Mission)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-mission-page>\r\n    <app-game-over-page\r\n      *ngIf=\"stageIsVisible(Stage.GameOver)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-game-over-page>\r\n  </div>\r\n\r\n  <app-dev \r\n    (joinedServer)=\"joinedServer($event)\"\r\n    (playersAssigned)=\"playersAssigned($event)\"></app-dev>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -195,12 +195,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mission_page_mission_page_component__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./mission-page/mission-page.component */ "./src/app/mission-page/mission-page.component.ts");
 /* harmony import */ var _game_board_game_board_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./game-board/game-board.component */ "./src/app/game-board/game-board.component.ts");
 /* harmony import */ var _game_over_page_game_over_page_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./game-over-page/game-over-page.component */ "./src/app/game-over-page/game-over-page.component.ts");
+/* harmony import */ var _session_info_bar_session_info_bar_component__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./session-info-bar/session-info-bar.component */ "./src/app/session-info-bar/session-info-bar.component.ts");
+/* harmony import */ var _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! @fortawesome/angular-fontawesome */ "./node_modules/@fortawesome/angular-fontawesome/fesm5/angular-fontawesome.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
+
 
 
 
@@ -234,7 +238,8 @@ var AppModule = /** @class */ (function () {
                 _vote_page_vote_page_component__WEBPACK_IMPORTED_MODULE_15__["VotePageComponent"],
                 _mission_page_mission_page_component__WEBPACK_IMPORTED_MODULE_16__["MissionPageComponent"],
                 _game_board_game_board_component__WEBPACK_IMPORTED_MODULE_17__["GameBoardComponent"],
-                _game_over_page_game_over_page_component__WEBPACK_IMPORTED_MODULE_18__["GameOverPageComponent"]
+                _game_over_page_game_over_page_component__WEBPACK_IMPORTED_MODULE_18__["GameOverPageComponent"],
+                _session_info_bar_session_info_bar_component__WEBPACK_IMPORTED_MODULE_19__["SessionInfoBarComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
@@ -247,7 +252,8 @@ var AppModule = /** @class */ (function () {
                 _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatDialogModule"],
                 _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatCheckboxModule"],
                 _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_12__["BrowserAnimationsModule"],
-                _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatInputModule"]
+                _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatInputModule"],
+                _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_20__["FontAwesomeModule"]
             ],
             providers: [_angular_fire_firestore__WEBPACK_IMPORTED_MODULE_8__["AngularFirestore"]],
             bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_3__["AppComponent"]]
@@ -267,7 +273,7 @@ var AppModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"dev-area row\">\n  <h4 class=\"text-danger\">Dev functions</h4>\n  <form class=\"col-12 my-1\">\n    <span>Join room</span>\n    <input type=\"text\" placeholder=\"Name\" [(ngModel)]=\"hijackName\" name=\"name\">\n    <input type=\"text\" placeholder=\"RoomCode\" [(ngModel)]=\"hijackRoomCode\" name=\"roomCode\">\n    <button (click)=\"hijackClick()\">Go!</button>\n  </form>\n  <form class=\"col-12 my-1\">\n    <span>Create new room</span>\n    <input type=\"text\" placeholder=\"RoomCode\" [(ngModel)]=\"createRoomCode\" name=\"roomCode\">\n    <input type=\"number\" placeholder=\"Number of Players\" [(ngModel)]=\"createNoOfPlayers\" name=\"noOfPlayers\">\n    <button (click)=\"createClick()\">Go!</button>\n  </form>\n  <form class=\"col-12 my-1\">\n    <span>Reset room</span>\n    <input type=\"text\" placeholder=\"RoomCode\" [(ngModel)]=\"resetRoomCode\" name=\"roomCode\">\n    <button (click)=\"resetClick()\">Go!</button>\n  </form>\n  <form class=\"col-12 my-1\">\n      <span>Upvote/downvote room</span>\n      <input type=\"text\" placeholder=\"RoomCode\" [(ngModel)]=\"upvoteRoomCode\" name=\"roomCode\">\n      <button (click)=\"upOrDownvoteClick(true)\">Upvote!</button>\n      <button (click)=\"upOrDownvoteClick(false)\">Downvote!</button>\n    </form>\n</div>"
+module.exports = "<div *ngIf=\"devAreaVisible\" class=\"dev-area row\">\n  <h4 class=\"text-danger\">Dev functions</h4>\n  <form class=\"col-12 my-1\">\n    <span>Join room</span>\n    <input type=\"text\" placeholder=\"Name\" [(ngModel)]=\"hijackName\" name=\"name\">\n    <input type=\"text\" placeholder=\"RoomCode\" [(ngModel)]=\"hijackRoomCode\" name=\"roomCode\">\n    <button (click)=\"hijackClick()\">Go!</button>\n  </form>\n  <form class=\"col-12 my-1\">\n    <span>Create new room</span>\n    <input type=\"text\" placeholder=\"RoomCode\" [(ngModel)]=\"createRoomCode\" name=\"roomCode\">\n    <input type=\"number\" placeholder=\"Number of Players\" [(ngModel)]=\"createNoOfPlayers\" name=\"noOfPlayers\">\n    <button (click)=\"createClick()\">Go!</button>\n  </form>\n  <form class=\"col-12 my-1\">\n    <span>Reset room</span>\n    <input type=\"text\" placeholder=\"RoomCode\" [(ngModel)]=\"resetRoomCode\" name=\"roomCode\">\n    <button (click)=\"resetClick()\">Go!</button>\n  </form>\n  <form class=\"col-12 my-1\">\n      <span>Upvote/downvote room</span>\n      <input type=\"text\" placeholder=\"RoomCode\" [(ngModel)]=\"upvoteRoomCode\" name=\"roomCode\">\n      <button (click)=\"upOrDownvoteClick(true)\">Upvote!</button>\n      <button (click)=\"upOrDownvoteClick(false)\">Downvote!</button>\n    </form>\n</div>\n<div *ngIf=\"!devAreaVisible\" style=\"text-align: center; color: lightgray\">\n  <hr>\n  <fa-icon [icon]=faCoffee (click)=clickTheCoffee()></fa-icon>\n</div>"
 
 /***/ }),
 
@@ -301,6 +307,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var src_models_player__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! src/models/player */ "./src/models/player.ts");
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var src_enums_vote_enum__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! src/enums/vote.enum */ "./src/enums/vote.enum.ts");
+/* harmony import */ var _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons */ "./node_modules/@fortawesome/free-solid-svg-icons/index.es.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -319,6 +326,7 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var DevComponent = /** @class */ (function () {
     function DevComponent(base, _navService, _loginService, _roleService) {
         this.base = base;
@@ -327,6 +335,10 @@ var DevComponent = /** @class */ (function () {
         this._roleService = _roleService;
         this.joinedServer = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.playersAssigned = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
+        this.faCoffee = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_9__["faCoffee"];
+        this.devAreaVisible = false;
+        // Click the coffee
+        this.coffeeClicks = 0;
     }
     DevComponent.prototype.ngOnInit = function () {
     };
@@ -338,6 +350,12 @@ var DevComponent = /** @class */ (function () {
         this.base.getCollection('player').pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_7__["first"])()).subscribe(function (players) {
             _this.playersAssigned.emit(players);
         });
+    };
+    DevComponent.prototype.clickTheCoffee = function () {
+        this.coffeeClicks++;
+        if (this.coffeeClicks > 2) {
+            this.devAreaVisible = true;
+        }
     };
     DevComponent.prototype.createClick = function () {
         var roomCode = this.createRoomCode;
@@ -396,7 +414,7 @@ var DevComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"!isLoading\">\n  <div class=\"flex\">\n    <span class=\"mission circle\" [ngClass]=\"[outcomeCss(outcome), twoFailCss(i), currentCss(i)]\" *ngFor=\"let outcome of missionOutcomes; let i = index;\">\n        {{missionSizes[i].size}}\n    </span>\n  </div>\n  <h6>Vote Tracker</h6>\n  <div class=\"flex\">\n      <span class=\"vote circle\" [ngClass]=\"{'downvoted': noOfDownvotedTeams >= votecount, 'current': noOfDownvotedTeams === votecount - 1}\" *ngFor=\"let votecount of voteCountArray\">\n          {{votecount}}\n      </span>\n    </div>\n</div>\n\n<div *ngIf=\"isLoading\">Game board loading...</div>"
+module.exports = "<div *ngIf=\"!isLoading\">\n  <hr>\n  <h6>Mission Tracker</h6>\n  <div class=\"flex\">\n    <span class=\"mission circle\" [ngClass]=\"[outcomeCss(outcome), twoFailCss(i), currentCss(i)]\" *ngFor=\"let outcome of missionOutcomes; let i = index;\">\n        {{missionSizes[i].size}}\n    </span>\n  </div>\n  <hr>\n  <h6>Vote Tracker</h6>\n  <div class=\"flex\">\n      <span class=\"vote circle\" [ngClass]=\"{'downvoted': noOfDownvotedTeams >= votecount, 'current': noOfDownvotedTeams === votecount - 1}\" *ngFor=\"let votecount of voteCountArray\">\n          {{votecount}}\n      </span>\n    </div>\n    <hr>\n</div>\n\n<div *ngIf=\"isLoading\">Game board loading...</div>"
 
 /***/ }),
 
@@ -658,7 +676,7 @@ var GameOverPageComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<p>\r\n  lobby-page works!\r\n</p>\r\n\r\n<div class=\"lobby-form\" *ngIf=\"!isConnectedToARoom\">\r\n  <form class=\"d-block\">\r\n    <mat-form-field class=\"d-block\">\r\n      <input matInput [formControl]=\"name\" placeholder=\"Name\">\r\n      <mat-error *ngIf=\"name.invalid\">Please pick a longer name</mat-error>\r\n    </mat-form-field>\r\n    <mat-form-field *ngIf=\"!isNew\" class=\"d-block\">\r\n      <input matInput [formControl]=\"roomCode\" placeholder=\"Room code\" style=\"text-transform: uppercase;\" maxlength=\"4\">\r\n      <mat-error *ngIf=\"roomCode.invalid\">Room codes have 4 characters</mat-error>\r\n    </mat-form-field>\r\n    <mat-checkbox class=\"d-block\" [(ngModel)]=\"isNew\" name=\"isNew\">New Lobby?</mat-checkbox>\r\n    <button class=\"d-block\" *ngIf=\"!isConnectedToARoom\" [disabled]=\"canCreateOrJoinLobby\" (click)=\"createOrJoinLobby()\">\r\n      {{isNew ? 'Create' : 'Join'}} lobby\r\n    </button>\r\n  </form>\r\n</div>\r\n    \r\n<div class=\"start-game-buttons\" *ngIf=\"isConnectedToARoom\">\r\n  <button *ngIf=\"countDownTimer == null\" [disabled]=\"!canStartGame\" (click)=\"startGame()\">Start game</button>\r\n  <button *ngIf=\"countDownTimer != null\" (click)=\"cancelGame()\">Cancel</button>\r\n  <p>{{countDownTimer}}</p>\r\n</div>\r\n\r\n<div class=\"current-lobby\" *ngIf=\"isConnectedToARoom\">\r\n  <h4>Current lobby</h4>\r\n  <ul *ngFor=\"let item of lobbyPeople\">\r\n    <li>{{item}}</li>\r\n  </ul>\r\n</div>"
+module.exports = "<div class=\"lobby-form\" *ngIf=\"!isConnectedToARoom\">\r\n  <form class=\"d-block\">\r\n    <mat-form-field class=\"d-block\">\r\n      <input matInput [formControl]=\"name\" placeholder=\"Name\">\r\n      <mat-error *ngIf=\"name.invalid\">Please pick a longer name</mat-error>\r\n    </mat-form-field>\r\n    <mat-form-field *ngIf=\"!isNew\" class=\"d-block\">\r\n      <input matInput [formControl]=\"roomCode\" placeholder=\"Room code\" style=\"text-transform: uppercase;\" maxlength=\"4\">\r\n      <mat-error *ngIf=\"roomCode.invalid\">Room codes have 4 characters</mat-error>\r\n    </mat-form-field>\r\n    <mat-checkbox class=\"d-block\" [(ngModel)]=\"isNew\" name=\"isNew\">New Lobby?</mat-checkbox>\r\n    <button class=\"d-block\" *ngIf=\"!isConnectedToARoom\" [disabled]=\"canCreateOrJoinLobby\" (click)=\"createOrJoinLobby()\">\r\n      {{isNew ? 'Create' : 'Join'}} lobby\r\n    </button>\r\n  </form>\r\n</div>\r\n    \r\n<div class=\"start-game-buttons\" *ngIf=\"isConnectedToARoom\">\r\n  <button *ngIf=\"countDownTimer == null\" [disabled]=\"!canStartGame\" (click)=\"startGame()\">Start game</button>\r\n  <button *ngIf=\"countDownTimer != null\" (click)=\"cancelGame()\">Cancel</button>\r\n  <p>{{countDownTimer}}</p>\r\n</div>\r\n\r\n<div class=\"current-lobby\" *ngIf=\"isConnectedToARoom\">\r\n  <h4>Current lobby</h4>\r\n  <ul *ngFor=\"let item of lobbyPeople\">\r\n    <li>{{item}}</li>\r\n  </ul>\r\n</div>"
 
 /***/ }),
 
@@ -842,7 +860,7 @@ var LobbyPageComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n<div *ngIf=\"!isLoading\">\n  <p>The current team is...</p>\n  <ul *ngFor=\"let teamMember of currentTeam\">\n    <li>{{teamMember.name}}</li>\n  </ul>\n  <div *ngIf=\"!revealMode\">\n    <div *ngIf=\"!allCardsPlayed\">\n      <div *ngIf=\"youAreOnTheTeam\">\n        <p>You are on the team</p>\n        <div *ngIf=\"!alreadyPlayedCard\">\n          <p>Pick a card...</p>\n          <div *ngFor=\"let card of playableCards\">\n            <div>\n              <button (click)=\"selectCard(card.enumValue)\">{{card.name}}</button>\n            </div>\n          </div>\n        </div>\n        <div *ngIf=\"alreadyPlayedCard\">\n          <p>You have played your card.</p>\n          <p>Now to wait for the other person...</p>\n        </div>\n      </div>\n\n    <div *ngIf=\"!youAreOnTheTeam\">\n      <p>You are not on the team</p>\n      <p>So you'll have to wait...</p>\n    </div>\n  </div>\n  <div *ngIf=\"allCardsPlayed\">\n    <p>All cards have been played</p>\n    <button (click)=\"revealCards()\">Reveal cards?</button>\n  </div>\n  </div>\n  <div *ngIf=\"revealMode\">\n    <p>Cards: {{revealedCardsAsString}}</p>\n    <p>The mission {{missionPassed ? 'passed' : 'failed'}}</p>\n    <button (click)=\"nextMission()\">Next Mission</button>\n  </div>\n</div>\n<div *ngIf=\"isLoading\">\n  <p>Loading...</p>\n</div>"
+module.exports = "<div *ngIf=\"!isLoading\">\n  <p>The current team is...</p>\n  <ul *ngFor=\"let teamMember of currentTeam\">\n    <li>{{teamMember.name}}</li>\n  </ul>\n  <div *ngIf=\"!revealMode\">\n    <div *ngIf=\"!allCardsPlayed\">\n      <div *ngIf=\"youAreOnTheTeam\">\n        <p>You are on the team</p>\n        <div *ngIf=\"!alreadyPlayedCard\">\n          <p>Pick a card...</p>\n          <div *ngFor=\"let card of playableCards\">\n            <div>\n              <button (click)=\"selectCard(card.enumValue)\">{{card.name}}</button>\n            </div>\n          </div>\n        </div>\n        <div *ngIf=\"alreadyPlayedCard\">\n          <p>You have played your card.</p>\n          <p>Now to wait for the other person...</p>\n        </div>\n      </div>\n\n    <div *ngIf=\"!youAreOnTheTeam\">\n      <p>You are not on the team</p>\n      <p>So you'll have to wait...</p>\n    </div>\n  </div>\n  <div *ngIf=\"allCardsPlayed\">\n    <p>All cards have been played</p>\n    <button (click)=\"revealCards()\">Reveal cards?</button>\n  </div>\n  </div>\n  <div *ngIf=\"revealMode\">\n    <p>Cards: {{revealedCardsAsString}}</p>\n    <p>The mission {{missionPassed ? 'passed' : 'failed'}}</p>\n    <button (click)=\"nextMission()\">Next Mission</button>\n  </div>\n</div>\n<div *ngIf=\"isLoading\">\n  <p>Loading...</p>\n</div>"
 
 /***/ }),
 
@@ -1159,6 +1177,87 @@ var RoleRevealPageComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/session-info-bar/session-info-bar.component.html":
+/*!******************************************************************!*\
+  !*** ./src/app/session-info-bar/session-info-bar.component.html ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"nav-spacer\"></div>\n<div class=\"navbar fixed-top navbar-dark bg-dark\">\n  <ng-container *ngIf=\"!session && !player\" style=\"width:100%\">\n    <span></span>\n    <span>Tom's great resistance app</span>\n    <span></span>\n  </ng-container>\n  <ng-container *ngIf=\"!!session\">\n    <span>Name: {{session.name}}</span>\n    <span>/</span>\n    <span>Room Code: {{session.roomCode}}</span>\n  </ng-container>\n  <ng-container *ngIf=\"!!player\">\n      <span>/</span>\n      <fa-icon [icon]=\"faUser\" (click)=clickUser()></fa-icon>\n  </ng-container>\n</div>"
+
+/***/ }),
+
+/***/ "./src/app/session-info-bar/session-info-bar.component.scss":
+/*!******************************************************************!*\
+  !*** ./src/app/session-info-bar/session-info-bar.component.scss ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".nav-spacer {\n  padding-top: 40px; }\n\n.navbar {\n  color: white; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvc2Vzc2lvbi1pbmZvLWJhci9DOlxcVXNlcnNcXHVzZXJcXFByb2plY3RzXFxyZXNpc3RhbmNlLWFwcC9zcmNcXGFwcFxcc2Vzc2lvbi1pbmZvLWJhclxcc2Vzc2lvbi1pbmZvLWJhci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGtCQUFpQixFQUNwQjs7QUFFRDtFQUNJLGFBQVksRUFDZiIsImZpbGUiOiJzcmMvYXBwL3Nlc3Npb24taW5mby1iYXIvc2Vzc2lvbi1pbmZvLWJhci5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5uYXYtc3BhY2VyIHtcclxuICAgIHBhZGRpbmctdG9wOiA0MHB4O1xyXG59XHJcblxyXG4ubmF2YmFyIHtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxufSJdfQ== */"
+
+/***/ }),
+
+/***/ "./src/app/session-info-bar/session-info-bar.component.ts":
+/*!****************************************************************!*\
+  !*** ./src/app/session-info-bar/session-info-bar.component.ts ***!
+  \****************************************************************/
+/*! exports provided: SessionInfoBarComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SessionInfoBarComponent", function() { return SessionInfoBarComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var src_enums_team_enum__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! src/enums/team.enum */ "./src/enums/team.enum.ts");
+/* harmony import */ var src_enums_role_enum__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/enums/role.enum */ "./src/enums/role.enum.ts");
+/* harmony import */ var _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons */ "./node_modules/@fortawesome/free-solid-svg-icons/index.es.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+var SessionInfoBarComponent = /** @class */ (function () {
+    function SessionInfoBarComponent() {
+        this.faUser = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_3__["faUser"];
+    }
+    SessionInfoBarComponent.prototype.ngOnInit = function () {
+    };
+    SessionInfoBarComponent.prototype.clickUser = function () {
+        alert("You are a " + Object(src_enums_team_enum__WEBPACK_IMPORTED_MODULE_1__["teamPipe"])(this.player.team) + ": " + Object(src_enums_role_enum__WEBPACK_IMPORTED_MODULE_2__["rolePipe"])(this.player.role));
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Object)
+    ], SessionInfoBarComponent.prototype, "session", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Object)
+    ], SessionInfoBarComponent.prototype, "player", void 0);
+    SessionInfoBarComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-session-info-bar',
+            template: __webpack_require__(/*! ./session-info-bar.component.html */ "./src/app/session-info-bar/session-info-bar.component.html"),
+            styles: [__webpack_require__(/*! ./session-info-bar.component.scss */ "./src/app/session-info-bar/session-info-bar.component.scss")]
+        }),
+        __metadata("design:paramtypes", [])
+    ], SessionInfoBarComponent);
+    return SessionInfoBarComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/team-pick-page/team-pick-page.component.html":
 /*!**************************************************************!*\
   !*** ./src/app/team-pick-page/team-pick-page.component.html ***!
@@ -1166,7 +1265,7 @@ var RoleRevealPageComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ng-container *ngIf=\"isLoading\">\n  <p> Loading...</p>\n</ng-container>\n\n<ng-container *ngIf=\"!isLoading\">\n  <p>\n      team-pick-page works!\n  </p>\n\n  <p class=\"whos-turn\" *ngIf=\"!!currentLeader\">It is <i>{{whoseTurn}}</i> turn to pick a team</p>\n\n  <div *ngIf=\"youAreTheLeader\">\n    <h6> You are the leader.</h6>\n    <h6>Pick a team.</h6>\n    <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>\n    <ul *ngFor=\"let player of players; let i = index\">\n      <li>\n        <label for=\"select-{{i}}\">{{player.name}}</label>\n        <input id=\"select-{{i}}\" type=\"checkbox\" [(ngModel)]=\"selectedPlayers[i]\" (ngModelChange)=\"teamChange();\">\n      </li>\n    </ul>\n    \n    <button [disabled]=\"!canSubmitTeam\" (click)=\"submitTeam()\">Thats my team</button>\n  </div>\n\n  <div *ngIf=\"!youAreTheLeader\">\n      <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>\n      <ul *ngFor=\"let player of players; let i = index\">\n        <li>\n          <label>{{player.name}}</label>\n          <input disabled type=\"checkbox\" [ngModel]=\"selectedPlayers[i]\">\n        </li>\n      </ul>\n  </div>\n</ng-container>"
+module.exports = "<ng-container *ngIf=\"isLoading\">\n  <p>Loading...</p>\n</ng-container>\n\n<ng-container *ngIf=\"!isLoading\">\n  <p class=\"whos-turn\" *ngIf=\"!!currentLeader\">It is <i>{{whoseTurn}}</i> turn to pick a team</p>\n\n  <div *ngIf=\"youAreTheLeader\">\n    <h6> You are the leader.</h6>\n    <h6>Pick a team.</h6>\n    <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>\n    <ul *ngFor=\"let player of players; let i = index\">\n      <li>\n        <label for=\"select-{{i}}\">{{player.name}}</label>\n        <input id=\"select-{{i}}\" type=\"checkbox\" [(ngModel)]=\"selectedPlayers[i]\" (ngModelChange)=\"teamChange();\">\n      </li>\n    </ul>\n    \n    <button [disabled]=\"!canSubmitTeam\" (click)=\"submitTeam()\">Thats my team</button>\n  </div>\n\n  <div *ngIf=\"!youAreTheLeader\">\n      <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>\n      <ul *ngFor=\"let player of players; let i = index\">\n        <li>\n          <label>{{player.name}}</label>\n          <input disabled type=\"checkbox\" [ngModel]=\"selectedPlayers[i]\">\n        </li>\n      </ul>\n  </div>\n</ng-container>"
 
 /***/ }),
 
@@ -1320,7 +1419,7 @@ var TeamPickPageComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<p>\n  vote-page works!\n</p>\n\n<div *ngIf=\"!isLoading\">\n  <p>The team is ...</p>\n  <ul *ngFor=\"let teamPlayer of teamPick\">\n    <li>{{teamPlayer.name}}</li>\n  </ul>\n\n  <div *ngIf=\"!wait\">\n    <p>{{noOfVotesIn}} / {{players.length}} votes are in</p>\n    <p *ngIf=\"yourVote !== null\">You have voted this team {{yourVote ? 'up' : 'down'}}</p>\n    <button (click)=\"submitVote(true)\">Yes</button>\n    <button (click)=\"submitVote(false)\">No</button>\n    <div>\n      <button *ngIf=\"allVotesIn\" (click)=\"seeVotes()\">See votes</button>\n    </div>\n  </div>\n\n  <div *ngIf=\"wait\">\n    <p>The team has {{hasItGoneAhead ? 'gone ahead' : 'not gone ahead'}}!</p>\n    <p>The votes are ...</p>\n    <ul *ngFor=\"let voter of players; let i = index;\">\n      <li>{{voter.name}}: {{votePipe(currentVotes[i])}}</li>\n    </ul>\n    <button (click)=\"moveOn()\">Move on</button>\n  </div>\n</div>\n\n<div *ngIf=\"isLoading\">\n  <p>Loading...</p>\n</div>"
+module.exports = "<div *ngIf=\"!isLoading\">\n  <p>The team is ...</p>\n  <ul *ngFor=\"let teamPlayer of teamPick\">\n    <li>{{teamPlayer.name}}</li>\n  </ul>\n\n  <div *ngIf=\"!wait\">\n    <p>{{noOfVotesIn}} / {{players.length}} votes are in</p>\n    <p *ngIf=\"yourVote !== null\">You have voted this team {{yourVote ? 'up' : 'down'}}</p>\n    <button (click)=\"submitVote(true)\">Yes</button>\n    <button (click)=\"submitVote(false)\">No</button>\n    <div>\n      <button *ngIf=\"allVotesIn\" (click)=\"seeVotes()\">See votes</button>\n    </div>\n  </div>\n\n  <div *ngIf=\"wait\">\n    <p>The team has {{hasItGoneAhead ? 'gone ahead' : 'not gone ahead'}}!</p>\n    <p>The votes are ...</p>\n    <ul *ngFor=\"let voter of players; let i = index;\">\n      <li>{{voter.name}}: {{votePipe(currentVotes[i])}}</li>\n    </ul>\n    <button (click)=\"moveOn()\">Move on</button>\n  </div>\n</div>\n\n<div *ngIf=\"isLoading\">\n  <p>Loading...</p>\n</div>"
 
 /***/ }),
 
@@ -1395,7 +1494,6 @@ var VotePageComponent = /** @class */ (function () {
             console.error('Not all votes are in yet');
             return;
         }
-        alert(this.hasItGoneAhead ? 'Team approved' : 'Team denied');
         this._missionService.updateWait(true);
     };
     VotePageComponent.prototype.moveOn = function () {
