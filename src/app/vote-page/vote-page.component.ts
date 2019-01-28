@@ -53,7 +53,6 @@ export class VotePageComponent implements OnInit {
       console.error('Not all votes are in yet');
       return;
     }
-    alert(this.hasItGoneAhead ? 'Team approved' : 'Team denied');
     this._missionService.updateWait(true);
   }
 

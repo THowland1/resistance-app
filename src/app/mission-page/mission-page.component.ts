@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MissionService } from 'src/services/mission.service';
 import { Subject } from 'rxjs';
 import { takeUntil, first, map } from 'rxjs/operators';
-import { bind, log } from 'src/functions';
+import { bind} from 'src/functions';
 import { Player } from 'src/models/player';
 import { IMissionCard, MissionCard, missionCards } from 'src/enums/mission-card';
 import { MissionSize } from 'src/models/mission-size';

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Stage } from 'src/enums/stage.enum';
 import { NavService } from 'src/services/nav.service';
 import { Session } from 'src/models/session';
@@ -6,7 +6,6 @@ import { Player } from 'src/models/player';
 import { teamPipe } from 'src/enums/team.enum';
 import { rolePipe } from 'src/enums/role.enum';
 import { bind } from 'src/functions';
-import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',

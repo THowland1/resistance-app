@@ -6,7 +6,7 @@ import { bind } from 'src/functions';
 import { GameOutcome, GameOutcomeMessagePipe, GameOutcomeWinnerPipe } from 'src/enums/game-outcome.enum';
 import { MissionOutcome } from 'src/enums/mission-outcome';
 import { gameVariables } from 'src/game.variables';
-import { Team, teamPipe } from 'src/enums/team.enum';
+import { teamPipe } from 'src/enums/team.enum';
 
 @Component({
   selector: 'app-game-over-page',

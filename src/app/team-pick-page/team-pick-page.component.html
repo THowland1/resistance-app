@@ -1,12 +1,8 @@
 <ng-container *ngIf="isLoading">
-  <p> Loading...</p>
+  <p>Loading...</p>
 </ng-container>
 
 <ng-container *ngIf="!isLoading">
-  <p>
-      team-pick-page works!
-  </p>
-
   <p class="whos-turn" *ngIf="!!currentLeader">It is <i>{{whoseTurn}}</i> turn to pick a team</p>
 
   <div *ngIf="youAreTheLeader">
