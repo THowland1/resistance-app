@@ -18,6 +18,8 @@ import { VotePageComponent } from './vote-page/vote-page.component';
 import { MissionPageComponent } from './mission-page/mission-page.component';
 import { GameBoardComponent } from './game-board/game-board.component';
 import { GameOverPageComponent } from './game-over-page/game-over-page.component';
+import { SessionInfoBarComponent } from './session-info-bar/session-info-bar.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { GameOverPageComponent } from './game-over-page/game-over-page.component
     VotePageComponent,
     MissionPageComponent,
     GameBoardComponent,
-    GameOverPageComponent
+    GameOverPageComponent,
+    SessionInfoBarComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +45,8 @@ import { GameOverPageComponent } from './game-over-page/game-over-page.component
     MatDialogModule,
     MatCheckboxModule,
     BrowserAnimationsModule,
-    MatInputModule
+    MatInputModule,
+    FontAwesomeModule
   ],
   providers: [AngularFirestore],
   bootstrap: [AppComponent]
