@@ -1,10 +1,6 @@
 <!--The content below is only a placeholder and can be replaced.-->
+<app-session-info-bar [session]="session" [player]="player"></app-session-info-bar>
 <div class="container">
-  <ng-container *ngIf="session">
-    <h1 class="text-center"> Your name is {{session.name}} </h1>
-    <h1 class="text-center"> Your room code is {{session.roomCode}} </h1>
-  </ng-container>
-  <h1 class="text-center" *ngIf="player"> You are a {{teamPipe(player.team)}} {{rolePipe(player.role)}} </h1>
 
   <div *ngIf="canSeeGameBoard" class="d-flex justify-content-center">
     <app-game-board></app-game-board>
