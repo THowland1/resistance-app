@@ -1,4 +1,4 @@
-<div class="dev-area row">
+<div *ngIf="devAreaVisible" class="dev-area row">
   <h4 class="text-danger">Dev functions</h4>
   <form class="col-12 my-1">
     <span>Join room</span>
@@ -23,4 +23,8 @@
       <button (click)="upOrDownvoteClick(true)">Upvote!</button>
       <button (click)="upOrDownvoteClick(false)">Downvote!</button>
     </form>
+</div>
+<div *ngIf="!devAreaVisible" style="text-align: center; color: lightgray">
+  <hr>
+  <fa-icon [icon]=faCoffee (click)=clickTheCoffee()></fa-icon>
 </div>

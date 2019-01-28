@@ -8,6 +8,7 @@ import { newGame } from 'src/models/game';
 import { newPlayer, Player } from 'src/models/player';
 import { first } from 'rxjs/operators';
 import { Vote } from 'src/enums/vote.enum';
+import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-dev',
@@ -31,6 +32,9 @@ export class DevComponent implements OnInit {
   hijackName: string;
   hijackRoomCode: string;
 
+  faCoffee = faCoffee;
+  devAreaVisible: boolean = false;
+
   hijackClick(): void{
     const name = this.hijackName;
     const roomCode = this.hijackRoomCode;
@@ -39,6 +43,15 @@ export class DevComponent implements OnInit {
       this.playersAssigned.emit(players);
     })
     
+  }
+
+  // Click the coffee
+  coffeeClicks: number = 0;
+  clickTheCoffee(): void {
+    this.coffeeClicks++;
+    if (this.coffeeClicks > 2){
+      this.devAreaVisible = true;
+    }
   }
 
   // Create Room
