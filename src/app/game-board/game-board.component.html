@@ -1,15 +1,19 @@
 <div *ngIf="!isLoading">
+  <hr>
+  <h6>Mission Tracker</h6>
   <div class="flex">
     <span class="mission circle" [ngClass]="[outcomeCss(outcome), twoFailCss(i), currentCss(i)]" *ngFor="let outcome of missionOutcomes; let i = index;">
         {{missionSizes[i].size}}
     </span>
   </div>
+  <hr>
   <h6>Vote Tracker</h6>
   <div class="flex">
       <span class="vote circle" [ngClass]="{'downvoted': noOfDownvotedTeams >= votecount, 'current': noOfDownvotedTeams === votecount - 1}" *ngFor="let votecount of voteCountArray">
           {{votecount}}
       </span>
     </div>
+    <hr>
 </div>
 
 <div *ngIf="isLoading">Game board loading...</div>

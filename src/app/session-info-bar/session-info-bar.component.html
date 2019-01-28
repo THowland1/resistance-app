@@ -1,5 +1,10 @@
 <div class="nav-spacer"></div>
 <div class="navbar fixed-top navbar-dark bg-dark">
+  <ng-container *ngIf="!session && !player" style="width:100%">
+    <span></span>
+    <span>Tom's great resistance app</span>
+    <span></span>
+  </ng-container>
   <ng-container *ngIf="!!session">
     <span>Name: {{session.name}}</span>
     <span>/</span>
