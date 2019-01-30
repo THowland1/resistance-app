@@ -9,6 +9,7 @@ import { newPlayer, Player } from 'src/models/player';
 import { first } from 'rxjs/operators';
 import { Vote } from 'src/enums/vote.enum';
 import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-dev',
@@ -17,7 +18,8 @@ import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 })
 export class DevComponent implements OnInit {
 
-  constructor(private base: BaseService,
+  constructor(private _route: ActivatedRoute,
+    private base: BaseService,
     private _navService: NavService,
     private _loginService: LoginService,
     private _roleService: RoleService) { }
@@ -26,6 +28,7 @@ export class DevComponent implements OnInit {
   @Output() playersAssigned = new EventEmitter<Player[]>();
 
   ngOnInit() {
+    this._route.queryParams.subscribe((params) => { this.devAreaEnabled = params.dev});
   }
 
   // Hijack Room
@@ -34,6 +37,7 @@ export class DevComponent implements OnInit {
 
   faCoffee = faCoffee;
   devAreaVisible: boolean = false;
+  devAreaEnabled: boolean = false;
 
   hijackClick(): void{
     const name = this.hijackName;
@@ -48,6 +52,10 @@ export class DevComponent implements OnInit {
   // Click the coffee
   coffeeClicks: number = 0;
   clickTheCoffee(): void {
+    if(!this.devAreaEnabled){
+      return;
+    }
+
     this.coffeeClicks++;
     if (this.coffeeClicks > 2){
       this.devAreaVisible = true;
