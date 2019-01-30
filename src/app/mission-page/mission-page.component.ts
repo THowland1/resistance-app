@@ -6,6 +6,7 @@ import { bind} from 'src/functions';
 import { Player } from 'src/models/player';
 import { IMissionCard, MissionCard, missionCards } from 'src/enums/mission-card';
 import { MissionSize } from 'src/models/mission-size';
+import { Team } from 'src/enums/team.enum';
 
 @Component({
   selector: 'app-mission-page',
@@ -50,6 +51,11 @@ export class MissionPageComponent implements OnInit {
   }
 
   selectCard(missionCard: MissionCard): void{
+    // TODO refactor card filtering logic
+    if(!this.areYouASpy && missionCard === MissionCard.fail){
+      alert('you cannot play that card');
+      return;
+    }
     this.playedCards[this.playerIndex] = missionCard;
     this._missionService.updatePlayedCards(this.playedCards);
   }
@@ -87,6 +93,13 @@ export class MissionPageComponent implements OnInit {
 
   get alreadyPlayedCard(): boolean {
     return this.playedCards[this.playerIndex] != MissionCard.none;
+  }
+
+  get areYouASpy(): boolean{
+    var you = this.players.filter((player) => player.name === this.playerName);
+    if (you.length === 0){ return false;}
+    if (you[0].team === Team.spy) {return true;}
+    return false;
   }
 
   get isLoading(): boolean {
