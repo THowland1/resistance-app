@@ -67,7 +67,7 @@ var AppRoutingModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--The content below is only a placeholder and can be replaced.-->\r\n<app-session-info-bar [session]=\"session\" [player]=\"player\"></app-session-info-bar>\r\n<div class=\"container\">\r\n\r\n  <div *ngIf=\"canSeeGameBoard\" class=\"d-flex justify-content-center\">\r\n    <app-game-board></app-game-board>\r\n  </div>\r\n\r\n  <div class=\"image-container d-flex justify-content-center\">\r\n    <img width=\"300\" alt=\"Angular Logo\" src=\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==\">\r\n  </div>\r\n  \r\n  <router-outlet></router-outlet>\r\n\r\n  \r\n  <div class=\"d-flex justify-content-center\">\r\n    <app-lobby-page\r\n      *ngIf=\"stageIsVisible(Stage.NotBegun)\"\r\n      (joinedServer)=\"joinedServer($event)\"></app-lobby-page>\r\n    <app-role-reveal-page\r\n      *ngIf=\"stageIsVisible(Stage.RoleReveal)\"\r\n      [playerName]=\"session.name\"\r\n      (playersAssigned)=\"playersAssigned($event)\"></app-role-reveal-page>\r\n    <app-team-pick-page\r\n      *ngIf=\"stageIsVisible(Stage.TeamPick)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-team-pick-page>\r\n    <app-vote-page\r\n      *ngIf=\"stageIsVisible(Stage.Vote)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-vote-page>\r\n    <app-mission-page\r\n      *ngIf=\"stageIsVisible(Stage.Mission)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-mission-page>\r\n    <app-game-over-page\r\n      *ngIf=\"stageIsVisible(Stage.GameOver)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-game-over-page>\r\n  </div>\r\n\r\n  <app-dev \r\n    (joinedServer)=\"joinedServer($event)\"\r\n    (playersAssigned)=\"playersAssigned($event)\"></app-dev>\r\n</div>\r\n"
+module.exports = "<!--The content below is only a placeholder and can be replaced.-->\r\n<app-session-info-bar [session]=\"session\" [player]=\"player\" [players]=\"players\"></app-session-info-bar>\r\n<div class=\"container\">\r\n\r\n  <div *ngIf=\"canSeeGameBoard\" class=\"d-flex justify-content-center\">\r\n    <app-game-board></app-game-board>\r\n  </div>\r\n  \r\n  <router-outlet></router-outlet>\r\n  \r\n  <div class=\"d-flex justify-content-center\">\r\n    <app-lobby-page\r\n      *ngIf=\"stageIsVisible(Stage.NotBegun)\"\r\n      (joinedServer)=\"joinedServer($event)\"></app-lobby-page>\r\n    <app-role-reveal-page\r\n      *ngIf=\"stageIsVisible(Stage.RoleReveal)\"\r\n      [playerName]=\"session.name\"\r\n      (playersAssigned)=\"playersAssigned($event)\"></app-role-reveal-page>\r\n    <app-team-pick-page\r\n      *ngIf=\"stageIsVisible(Stage.TeamPick)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-team-pick-page>\r\n    <app-vote-page\r\n      *ngIf=\"stageIsVisible(Stage.Vote)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-vote-page>\r\n    <app-mission-page\r\n      *ngIf=\"stageIsVisible(Stage.Mission)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-mission-page>\r\n    <app-game-over-page\r\n      *ngIf=\"stageIsVisible(Stage.GameOver)\"\r\n      [playerName]=\"session.name\"\r\n      [players]=\"players\"\r\n      ></app-game-over-page>\r\n  </div>\r\n\r\n  <app-dev \r\n    (joinedServer)=\"joinedServer($event)\"\r\n    (playersAssigned)=\"playersAssigned($event)\"></app-dev>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -308,6 +308,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var src_enums_vote_enum__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! src/enums/vote.enum */ "./src/enums/vote.enum.ts");
 /* harmony import */ var _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons */ "./node_modules/@fortawesome/free-solid-svg-icons/index.es.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -327,8 +328,10 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var DevComponent = /** @class */ (function () {
-    function DevComponent(base, _navService, _loginService, _roleService) {
+    function DevComponent(_route, base, _navService, _loginService, _roleService) {
+        this._route = _route;
         this.base = base;
         this._navService = _navService;
         this._loginService = _loginService;
@@ -337,10 +340,13 @@ var DevComponent = /** @class */ (function () {
         this.playersAssigned = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.faCoffee = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_9__["faCoffee"];
         this.devAreaVisible = false;
+        this.devAreaEnabled = false;
         // Click the coffee
         this.coffeeClicks = 0;
     }
     DevComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this._route.queryParams.subscribe(function (params) { _this.devAreaEnabled = params.dev; });
     };
     DevComponent.prototype.hijackClick = function () {
         var _this = this;
@@ -352,6 +358,9 @@ var DevComponent = /** @class */ (function () {
         });
     };
     DevComponent.prototype.clickTheCoffee = function () {
+        if (!this.devAreaEnabled) {
+            return;
+        }
         this.coffeeClicks++;
         if (this.coffeeClicks > 2) {
             this.devAreaVisible = true;
@@ -395,7 +404,8 @@ var DevComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./dev.component.html */ "./src/app/dev/dev.component.html"),
             styles: [__webpack_require__(/*! ./dev.component.scss */ "./src/app/dev/dev.component.scss")]
         }),
-        __metadata("design:paramtypes", [src_services_base_service__WEBPACK_IMPORTED_MODULE_1__["BaseService"],
+        __metadata("design:paramtypes", [_angular_router__WEBPACK_IMPORTED_MODULE_10__["ActivatedRoute"],
+            src_services_base_service__WEBPACK_IMPORTED_MODULE_1__["BaseService"],
             src_services_nav_service__WEBPACK_IMPORTED_MODULE_4__["NavService"],
             src_services_login_service__WEBPACK_IMPORTED_MODULE_2__["LoginService"],
             src_services_role_service__WEBPACK_IMPORTED_MODULE_3__["RoleService"]])
@@ -860,7 +870,7 @@ var LobbyPageComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"!isLoading\">\n  <p>The current team is...</p>\n  <ul *ngFor=\"let teamMember of currentTeam\">\n    <li>{{teamMember.name}}</li>\n  </ul>\n  <div *ngIf=\"!revealMode\">\n    <div *ngIf=\"!allCardsPlayed\">\n      <div *ngIf=\"youAreOnTheTeam\">\n        <p>You are on the team</p>\n        <div *ngIf=\"!alreadyPlayedCard\">\n          <p>Pick a card...</p>\n          <div *ngFor=\"let card of playableCards\">\n            <div>\n              <button (click)=\"selectCard(card.enumValue)\">{{card.name}}</button>\n            </div>\n          </div>\n        </div>\n        <div *ngIf=\"alreadyPlayedCard\">\n          <p>You have played your card.</p>\n          <p>Now to wait for the other person...</p>\n        </div>\n      </div>\n\n    <div *ngIf=\"!youAreOnTheTeam\">\n      <p>You are not on the team</p>\n      <p>So you'll have to wait...</p>\n    </div>\n  </div>\n  <div *ngIf=\"allCardsPlayed\">\n    <p>All cards have been played</p>\n    <button (click)=\"revealCards()\">Reveal cards?</button>\n  </div>\n  </div>\n  <div *ngIf=\"revealMode\">\n    <p>Cards: {{revealedCardsAsString}}</p>\n    <p>The mission {{missionPassed ? 'passed' : 'failed'}}</p>\n    <button (click)=\"nextMission()\">Next Mission</button>\n  </div>\n</div>\n<div *ngIf=\"isLoading\">\n  <p>Loading...</p>\n</div>"
+module.exports = "<div *ngIf=\"!isLoading\">\n  <p>The current team is...</p>\n  <table class=\"player-table\">\n      <thead>\n        <tr>\n          <th>Name</th>\n          <th>On Team?</th>\n          <th>Played?</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let player of players; let i = index\">\n          <td>{{player.name}}</td>\n          <td><input disabled type=\"checkbox\" [ngModel]=\"currentTeam[i]\"></td>\n          <td>{{hasPlayedString(i)}}</td>\n        </tr>\n      </tbody>\n  </table>\n  <div *ngIf=\"!revealMode\">\n    <div *ngIf=\"!allCardsPlayed\">\n      <div *ngIf=\"youAreOnTheTeam\">\n        <p>You are on the team</p>\n        <div *ngIf=\"!alreadyPlayedCard\">\n          <p>Pick a card...</p>\n          <div *ngFor=\"let card of playableCards\">\n            <div>\n              <button (click)=\"selectCard(card.enumValue)\">{{card.name}}</button>\n            </div>\n          </div>\n        </div>\n        <div *ngIf=\"alreadyPlayedCard\">\n          <p>You have played your card.</p>\n          <p>Now to wait for the other person...</p>\n        </div>\n      </div>\n\n    <div *ngIf=\"!youAreOnTheTeam\">\n      <p>You are not on the team</p>\n      <p>So you'll have to wait...</p>\n    </div>\n  </div>\n  <div *ngIf=\"allCardsPlayed\">\n    <p>All cards have been played</p>\n    <button (click)=\"revealCards()\">Reveal cards?</button>\n  </div>\n  </div>\n  <div *ngIf=\"revealMode\">\n    <p>Cards: {{revealedCardsAsString}}</p>\n    <p>The mission {{missionPassed ? 'passed' : 'failed'}}</p>\n    <button (click)=\"nextMission()\">Next Mission</button>\n  </div>\n</div>\n<div *ngIf=\"isLoading\">\n  <p>Loading...</p>\n</div>"
 
 /***/ }),
 
@@ -871,7 +881,7 @@ module.exports = "<div *ngIf=\"!isLoading\">\n  <p>The current team is...</p>\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL21pc3Npb24tcGFnZS9taXNzaW9uLXBhZ2UuY29tcG9uZW50LnNjc3MifQ== */"
+module.exports = ".player-table {\n  text-align: center; }\n  .player-table th, .player-table td {\n    border: 1px solid black; }\n  .player-table label {\n    all: unset; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvbWlzc2lvbi1wYWdlL0M6XFxVc2Vyc1xcdXNlclxcUHJvamVjdHNcXHJlc2lzdGFuY2UtYXBwL3NyY1xcYXBwXFxtaXNzaW9uLXBhZ2VcXG1pc3Npb24tcGFnZS5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUVJLG1CQUFrQixFQVNyQjtFQVhEO0lBS1Esd0JBQXVCLEVBQzFCO0VBTkw7SUFTUSxXQUFVLEVBQ2IiLCJmaWxlIjoic3JjL2FwcC9taXNzaW9uLXBhZ2UvbWlzc2lvbi1wYWdlLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnBsYXllci10YWJsZSB7IC8vIFRPRE8gLSBNYWtlIHRoaXMgaXRzIG93biBjb21wb25lbnQgb3Igc29tZXRoaW5nXHJcblxyXG4gICAgdGV4dC1hbGlnbjogY2VudGVyO1xyXG5cclxuICAgIHRoLCB0ZHtcclxuICAgICAgICBib3JkZXI6IDFweCBzb2xpZCBibGFjaztcclxuICAgIH1cclxuXHJcbiAgICBsYWJlbCB7XHJcbiAgICAgICAgYWxsOiB1bnNldDtcclxuICAgIH1cclxufSJdfQ== */"
 
 /***/ }),
 
@@ -891,6 +901,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var src_functions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/functions */ "./src/functions.ts");
 /* harmony import */ var src_enums_mission_card__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/enums/mission-card */ "./src/enums/mission-card.ts");
+/* harmony import */ var src_enums_team_enum__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! src/enums/team.enum */ "./src/enums/team.enum.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -906,6 +917,7 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var MissionPageComponent = /** @class */ (function () {
     function MissionPageComponent(_missionService) {
         this._missionService = _missionService;
@@ -914,9 +926,8 @@ var MissionPageComponent = /** @class */ (function () {
         this.forceLoadScreen = false;
     }
     MissionPageComponent.prototype.ngOnInit = function () {
-        var _this = this;
         this._missionService.getTeamPick()
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["first"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (bools) { return _this.players.filter(function (_, index) { return bools[index]; }); }))
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["first"])())
             .subscribe(Object(src_functions__WEBPACK_IMPORTED_MODULE_4__["bind"])(this, 'currentTeam'));
         this._missionService.getPlayableCards
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["first"])())
@@ -929,6 +940,11 @@ var MissionPageComponent = /** @class */ (function () {
             .subscribe(Object(src_functions__WEBPACK_IMPORTED_MODULE_4__["bind"])(this, 'missionSize'));
     };
     MissionPageComponent.prototype.selectCard = function (missionCard) {
+        // TODO refactor card filtering logic
+        if (!this.areYouASpy && missionCard === src_enums_mission_card__WEBPACK_IMPORTED_MODULE_5__["MissionCard"].fail) {
+            alert('you cannot play that card');
+            return;
+        }
         this.playedCards[this.playerIndex] = missionCard;
         this._missionService.updatePlayedCards(this.playedCards);
     };
@@ -938,6 +954,13 @@ var MissionPageComponent = /** @class */ (function () {
     MissionPageComponent.prototype.nextMission = function () {
         this.forceLoadScreen = true;
         this._missionService.nextMission(this.missionPassed);
+    };
+    MissionPageComponent.prototype.hasPlayedString = function (index) {
+        return this.currentTeam[index]
+            ? this.playedCards[index] === src_enums_mission_card__WEBPACK_IMPORTED_MODULE_5__["MissionCard"].none
+                ? '...'
+                : 'played'
+            : '';
     };
     Object.defineProperty(MissionPageComponent.prototype, "revealedCardsAsString", {
         get: function () {
@@ -982,6 +1005,21 @@ var MissionPageComponent = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(MissionPageComponent.prototype, "areYouASpy", {
+        get: function () {
+            var _this = this;
+            var you = this.players.filter(function (player) { return player.name === _this.playerName; });
+            if (you.length === 0) {
+                return false;
+            }
+            if (you[0].team === src_enums_team_enum__WEBPACK_IMPORTED_MODULE_6__["Team"].spy) {
+                return true;
+            }
+            return false;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(MissionPageComponent.prototype, "isLoading", {
         get: function () {
             return [
@@ -996,8 +1034,7 @@ var MissionPageComponent = /** @class */ (function () {
     });
     Object.defineProperty(MissionPageComponent.prototype, "youAreOnTheTeam", {
         get: function () {
-            var _this = this;
-            return this.currentTeam.some(function (player) { return player.name === _this.playerName; });
+            return this.currentTeam[this.playerIndex] === true;
         },
         enumerable: true,
         configurable: true
@@ -1213,6 +1250,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var src_enums_team_enum__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! src/enums/team.enum */ "./src/enums/team.enum.ts");
 /* harmony import */ var src_enums_role_enum__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/enums/role.enum */ "./src/enums/role.enum.ts");
 /* harmony import */ var _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons */ "./node_modules/@fortawesome/free-solid-svg-icons/index.es.js");
+/* harmony import */ var src_services_base_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/services/base.service */ "./src/services/base.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1226,15 +1264,39 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var SessionInfoBarComponent = /** @class */ (function () {
-    function SessionInfoBarComponent() {
+    function SessionInfoBarComponent(_base) {
+        this._base = _base;
         this.faUser = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_3__["faUser"];
     }
     SessionInfoBarComponent.prototype.ngOnInit = function () {
     };
     SessionInfoBarComponent.prototype.clickUser = function () {
-        alert("You are a " + Object(src_enums_team_enum__WEBPACK_IMPORTED_MODULE_1__["teamPipe"])(this.player.team) + ": " + Object(src_enums_role_enum__WEBPACK_IMPORTED_MODULE_2__["rolePipe"])(this.player.role));
+        if (this.players === undefined) {
+            return;
+        }
+        if (this.player.team === src_enums_team_enum__WEBPACK_IMPORTED_MODULE_1__["Team"].spy) { // TODO improve the click info
+            alert("You are a " + Object(src_enums_team_enum__WEBPACK_IMPORTED_MODULE_1__["teamPipe"])(this.player.team) + ": " + Object(src_enums_role_enum__WEBPACK_IMPORTED_MODULE_2__["rolePipe"])(this.player.role) + ", and your fellow spies are " + this.fellowSpies);
+        }
+        else {
+            alert("You are a " + Object(src_enums_team_enum__WEBPACK_IMPORTED_MODULE_1__["teamPipe"])(this.player.team) + ": " + Object(src_enums_role_enum__WEBPACK_IMPORTED_MODULE_2__["rolePipe"])(this.player.role));
+        }
     };
+    Object.defineProperty(SessionInfoBarComponent.prototype, "fellowSpies", {
+        get: function () {
+            var _this = this;
+            if (this.player.team !== src_enums_team_enum__WEBPACK_IMPORTED_MODULE_1__["Team"].spy) {
+                return 'none of your business';
+            }
+            return this.players
+                .filter(function (player) { return player.team === src_enums_team_enum__WEBPACK_IMPORTED_MODULE_1__["Team"].spy && player.name !== _this.player.name; })
+                .map(function (player) { return player.name; })
+                .join(', ');
+        },
+        enumerable: true,
+        configurable: true
+    });
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", Object)
@@ -1243,13 +1305,17 @@ var SessionInfoBarComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", Object)
     ], SessionInfoBarComponent.prototype, "player", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Array)
+    ], SessionInfoBarComponent.prototype, "players", void 0);
     SessionInfoBarComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-session-info-bar',
             template: __webpack_require__(/*! ./session-info-bar.component.html */ "./src/app/session-info-bar/session-info-bar.component.html"),
             styles: [__webpack_require__(/*! ./session-info-bar.component.scss */ "./src/app/session-info-bar/session-info-bar.component.scss")]
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [src_services_base_service__WEBPACK_IMPORTED_MODULE_4__["BaseService"]])
     ], SessionInfoBarComponent);
     return SessionInfoBarComponent;
 }());
@@ -1265,7 +1331,7 @@ var SessionInfoBarComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ng-container *ngIf=\"isLoading\">\n  <p>Loading...</p>\n</ng-container>\n\n<ng-container *ngIf=\"!isLoading\">\n  <p class=\"whos-turn\" *ngIf=\"!!currentLeader\">It is <i>{{whoseTurn}}</i> turn to pick a team</p>\n\n  <div *ngIf=\"youAreTheLeader\">\n    <h6> You are the leader.</h6>\n    <h6>Pick a team.</h6>\n    <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>\n    <ul *ngFor=\"let player of players; let i = index\">\n      <li>\n        <label for=\"select-{{i}}\">{{player.name}}</label>\n        <input id=\"select-{{i}}\" type=\"checkbox\" [(ngModel)]=\"selectedPlayers[i]\" (ngModelChange)=\"teamChange();\">\n      </li>\n    </ul>\n    \n    <button [disabled]=\"!canSubmitTeam\" (click)=\"submitTeam()\">Thats my team</button>\n  </div>\n\n  <div *ngIf=\"!youAreTheLeader\">\n      <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>\n      <ul *ngFor=\"let player of players; let i = index\">\n        <li>\n          <label>{{player.name}}</label>\n          <input disabled type=\"checkbox\" [ngModel]=\"selectedPlayers[i]\">\n        </li>\n      </ul>\n  </div>\n</ng-container>"
+module.exports = "<ng-container *ngIf=\"isLoading\">\n  <p>Loading...</p>\n</ng-container>\n\n<ng-container *ngIf=\"!isLoading\">\n  <p class=\"whos-turn\" *ngIf=\"!!currentLeader\">It is <i>{{whoseTurn}}</i> turn to pick a team</p>\n\n  <div *ngIf=\"youAreTheLeader\">\n    <h6> You are the leader.</h6>\n    <h6>Pick a team.</h6>\n    <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>\n    <table class=\"player-table\">\n      <thead>\n        <tr>\n          <th>Name</th>\n          <th>On Team?</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let player of players; let i = index\">\n          <td><label for=\"select-{{i}}\">{{player.name}}</label></td>\n          <td><input id=\"select-{{i}}\" type=\"checkbox\" [(ngModel)]=\"selectedPlayers[i]\" (ngModelChange)=\"teamChange();\"></td>\n        </tr>\n      </tbody>\n    </table>\n    \n    <button [disabled]=\"!canSubmitTeam\" (click)=\"submitTeam()\">Thats my team</button>\n  </div>\n\n  <div *ngIf=\"!youAreTheLeader\">\n      <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>\n      <table class=\"player-table\">\n          <thead>\n            <tr>\n              <th>Name</th>\n              <th>On Team?</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr *ngFor=\"let player of players; let i = index\">\n              <td>{{player.name}}</td>\n              <td><input disabled type=\"checkbox\" [ngModel]=\"selectedPlayers[i]\"></td>\n            </tr>\n          </tbody>\n        </table>\n  </div>\n</ng-container>"
 
 /***/ }),
 
@@ -1276,7 +1342,7 @@ module.exports = "<ng-container *ngIf=\"isLoading\">\n  <p>Loading...</p>\n</ng-
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3RlYW0tcGljay1wYWdlL3RlYW0tcGljay1wYWdlLmNvbXBvbmVudC5zY3NzIn0= */"
+module.exports = ".player-table {\n  text-align: center; }\n  .player-table th, .player-table td {\n    border: 1px solid black; }\n  .player-table label {\n    all: unset; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvdGVhbS1waWNrLXBhZ2UvQzpcXFVzZXJzXFx1c2VyXFxQcm9qZWN0c1xccmVzaXN0YW5jZS1hcHAvc3JjXFxhcHBcXHRlYW0tcGljay1wYWdlXFx0ZWFtLXBpY2stcGFnZS5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUVJLG1CQUFrQixFQVNyQjtFQVhEO0lBS1Esd0JBQXVCLEVBQzFCO0VBTkw7SUFTUSxXQUFVLEVBQ2IiLCJmaWxlIjoic3JjL2FwcC90ZWFtLXBpY2stcGFnZS90ZWFtLXBpY2stcGFnZS5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5wbGF5ZXItdGFibGUgeyAvLyBUT0RPIC0gTWFrZSB0aGlzIGl0cyBvd24gY29tcG9uZW50IG9yIHNvbWV0aGluZ1xyXG5cclxuICAgIHRleHQtYWxpZ246IGNlbnRlcjtcclxuXHJcbiAgICB0aCwgdGR7XHJcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgYmxhY2s7XHJcbiAgICB9XHJcblxyXG4gICAgbGFiZWwge1xyXG4gICAgICAgIGFsbDogdW5zZXQ7XHJcbiAgICB9XHJcbn0iXX0= */"
 
 /***/ }),
 
@@ -1419,7 +1485,7 @@ var TeamPickPageComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"!isLoading\">\n  <p>The team is ...</p>\n  <ul *ngFor=\"let teamPlayer of teamPick\">\n    <li>{{teamPlayer.name}}</li>\n  </ul>\n\n  <div *ngIf=\"!wait\">\n    <p>{{noOfVotesIn}} / {{players.length}} votes are in</p>\n    <p *ngIf=\"yourVote !== null\">You have voted this team {{yourVote ? 'up' : 'down'}}</p>\n    <button (click)=\"submitVote(true)\">Yes</button>\n    <button (click)=\"submitVote(false)\">No</button>\n    <div>\n      <button *ngIf=\"allVotesIn\" (click)=\"seeVotes()\">See votes</button>\n    </div>\n  </div>\n\n  <div *ngIf=\"wait\">\n    <p>The team has {{hasItGoneAhead ? 'gone ahead' : 'not gone ahead'}}!</p>\n    <p>The votes are ...</p>\n    <ul *ngFor=\"let voter of players; let i = index;\">\n      <li>{{voter.name}}: {{votePipe(currentVotes[i])}}</li>\n    </ul>\n    <button (click)=\"moveOn()\">Move on</button>\n  </div>\n</div>\n\n<div *ngIf=\"isLoading\">\n  <p>Loading...</p>\n</div>"
+module.exports = "<div *ngIf=\"!isLoading\">\n  <p>The team is ...</p>\n  <table class=\"player-table\">\n      <thead>\n        <tr>\n          <th>Name</th>\n          <th>On Team?</th>\n          <th>Vote</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let player of players; let i = index\">\n          <td>{{player.name}}</td>\n          <td><input disabled type=\"checkbox\" [ngModel]=\"teamPick[i]\"></td>\n          <td>{{tableVote(i)}}</td>\n        </tr>\n      </tbody>\n    </table>\n\n  <div *ngIf=\"!wait\">\n    <p>{{noOfVotesIn}} / {{players.length}} votes are in</p>\n    <p *ngIf=\"yourVote !== null\">You have voted this team {{yourVote ? 'up' : 'down'}}</p>\n    <button *ngIf=\"!allVotesIn\"  (click)=\"submitVote(true)\">Yes</button>\n    <button *ngIf=\"!allVotesIn\"  (click)=\"submitVote(false)\">No</button>\n    <div>\n      <button *ngIf=\"allVotesIn\" (click)=\"seeVotes()\">See votes</button>\n    </div>\n  </div>\n\n  <div *ngIf=\"wait\">\n    <p>The team has {{hasItGoneAhead ? 'gone ahead' : 'not gone ahead'}}!</p>\n    <button (click)=\"moveOn()\">Move on</button>\n  </div>\n</div>\n\n<div *ngIf=\"isLoading\">\n  <p>Loading...</p>\n</div>"
 
 /***/ }),
 
@@ -1430,7 +1496,7 @@ module.exports = "<div *ngIf=\"!isLoading\">\n  <p>The team is ...</p>\n  <ul *n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3ZvdGUtcGFnZS92b3RlLXBhZ2UuY29tcG9uZW50LnNjc3MifQ== */"
+module.exports = ".player-table {\n  text-align: center; }\n  .player-table th, .player-table td {\n    border: 1px solid black; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvdm90ZS1wYWdlL0M6XFxVc2Vyc1xcdXNlclxcUHJvamVjdHNcXHJlc2lzdGFuY2UtYXBwL3NyY1xcYXBwXFx2b3RlLXBhZ2VcXHZvdGUtcGFnZS5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUVJLG1CQUFrQixFQUtyQjtFQVBEO0lBS1Esd0JBQXVCLEVBQzFCIiwiZmlsZSI6InNyYy9hcHAvdm90ZS1wYWdlL3ZvdGUtcGFnZS5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5wbGF5ZXItdGFibGUgeyAvLyBUT0RPIC0gTWFrZSB0aGlzIGl0cyBvd24gY29tcG9uZW50IG9yIHNvbWV0aGluZ1xyXG5cclxuICAgIHRleHQtYWxpZ246IGNlbnRlcjtcclxuXHJcbiAgICB0aCwgdGR7XHJcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgYmxhY2s7XHJcbiAgICB9XHJcbn0iXX0= */"
 
 /***/ }),
 
@@ -1471,14 +1537,13 @@ var VotePageComponent = /** @class */ (function () {
         this.destroy$ = new rxjs__WEBPACK_IMPORTED_MODULE_4__["Subject"]();
     }
     VotePageComponent.prototype.ngOnInit = function () {
-        var _this = this;
         // TODO Remove this eventually
         console.log(this.players);
         this._missionService.currentVotes()
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["takeUntil"])(this.destroy$))
             .subscribe(Object(src_functions__WEBPACK_IMPORTED_MODULE_2__["bind"])(this, 'currentVotes'));
         this._missionService.getTeamPick()
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["first"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (bools) { return _this.players.filter(function (_, index) { return bools[index]; }); }))
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["first"])())
             .subscribe(Object(src_functions__WEBPACK_IMPORTED_MODULE_2__["bind"])(this, 'teamPick'));
         this._missionService.wait.subscribe(Object(src_functions__WEBPACK_IMPORTED_MODULE_2__["bind"])(this, 'wait'));
     };
@@ -1514,6 +1579,17 @@ var VotePageComponent = /** @class */ (function () {
                 return 'voted it down!';
             default:
                 return 'error';
+        }
+    };
+    VotePageComponent.prototype.tableVote = function (index) {
+        if (!this.wait && this.currentVotes[index] !== src_enums_vote_enum__WEBPACK_IMPORTED_MODULE_5__["Vote"].notVoted) {
+            return '?';
+        }
+        else if (this.currentVotes[index] === src_enums_vote_enum__WEBPACK_IMPORTED_MODULE_5__["Vote"].notVoted) {
+            return '';
+        }
+        else {
+            return this.votePipe(this.currentVotes[index]);
         }
     };
     Object.defineProperty(VotePageComponent.prototype, "hasItGoneAhead", {
