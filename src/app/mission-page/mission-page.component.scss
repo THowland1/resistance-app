@@ -1,0 +1,12 @@
+.player-table { // TODO - Make this its own component or something
+
+    text-align: center;
+
+    th, td{
+        border: 1px solid black;
+    }
+
+    label {
+        all: unset;
+    }
+}

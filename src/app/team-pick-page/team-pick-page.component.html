@@ -9,23 +9,39 @@
     <h6> You are the leader.</h6>
     <h6>Pick a team.</h6>
     <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>
-    <ul *ngFor="let player of players; let i = index">
-      <li>
-        <label for="select-{{i}}">{{player.name}}</label>
-        <input id="select-{{i}}" type="checkbox" [(ngModel)]="selectedPlayers[i]" (ngModelChange)="teamChange();">
-      </li>
-    </ul>
+    <table class="player-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>On Team?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let player of players; let i = index">
+          <td><label for="select-{{i}}">{{player.name}}</label></td>
+          <td><input id="select-{{i}}" type="checkbox" [(ngModel)]="selectedPlayers[i]" (ngModelChange)="teamChange();"></td>
+        </tr>
+      </tbody>
+    </table>
     
     <button [disabled]="!canSubmitTeam" (click)="submitTeam()">Thats my team</button>
   </div>
 
   <div *ngIf="!youAreTheLeader">
       <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>
-      <ul *ngFor="let player of players; let i = index">
-        <li>
-          <label>{{player.name}}</label>
-          <input disabled type="checkbox" [ngModel]="selectedPlayers[i]">
-        </li>
-      </ul>
+      <table class="player-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>On Team?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let player of players; let i = index">
+              <td>{{player.name}}</td>
+              <td><input disabled type="checkbox" [ngModel]="selectedPlayers[i]"></td>
+            </tr>
+          </tbody>
+        </table>
   </div>
 </ng-container>

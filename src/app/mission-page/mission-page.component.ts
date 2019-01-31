@@ -20,7 +20,7 @@ export class MissionPageComponent implements OnInit {
   @Input() playerName: string;
   @Input() players: Player[];
 
-  currentTeam: Player[];
+  currentTeam: boolean[];
   playableCards: IMissionCard[];
   playedCards: MissionCard[];
   missionSize: MissionSize;
@@ -33,8 +33,7 @@ export class MissionPageComponent implements OnInit {
   ngOnInit() {
     this._missionService.getTeamPick()
       .pipe(
-        first(),
-        map((bools) => this.players.filter((_,index) => bools[index])))
+        first())
       .subscribe(bind(this,'currentTeam'));
 
     this._missionService.getPlayableCards
@@ -67,6 +66,14 @@ export class MissionPageComponent implements OnInit {
   nextMission(): void {
     this.forceLoadScreen = true;
     this._missionService.nextMission(this.missionPassed);
+  }
+
+  hasPlayedString(index: number): string {
+    return this.currentTeam[index]
+      ? this.playedCards[index] === MissionCard.none
+        ? '...' 
+        : 'played'
+      : ''
   }
 
   get revealedCardsAsString(): string {
@@ -112,7 +119,7 @@ export class MissionPageComponent implements OnInit {
   }
 
   get youAreOnTheTeam(): boolean {
-    return this.currentTeam.some((player) => player.name === this.playerName)
+    return this.currentTeam[this.playerIndex] === true;
   }
 
   ngOnDestroy(): void {

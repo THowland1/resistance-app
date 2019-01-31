@@ -1,14 +1,27 @@
 <div *ngIf="!isLoading">
   <p>The team is ...</p>
-  <ul *ngFor="let teamPlayer of teamPick">
-    <li>{{teamPlayer.name}}</li>
-  </ul>
+  <table class="player-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>On Team?</th>
+          <th>Vote</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let player of players; let i = index">
+          <td>{{player.name}}</td>
+          <td><input disabled type="checkbox" [ngModel]="teamPick[i]"></td>
+          <td>{{tableVote(i)}}</td>
+        </tr>
+      </tbody>
+    </table>
 
   <div *ngIf="!wait">
     <p>{{noOfVotesIn}} / {{players.length}} votes are in</p>
     <p *ngIf="yourVote !== null">You have voted this team {{yourVote ? 'up' : 'down'}}</p>
-    <button (click)="submitVote(true)">Yes</button>
-    <button (click)="submitVote(false)">No</button>
+    <button *ngIf="!allVotesIn"  (click)="submitVote(true)">Yes</button>
+    <button *ngIf="!allVotesIn"  (click)="submitVote(false)">No</button>
     <div>
       <button *ngIf="allVotesIn" (click)="seeVotes()">See votes</button>
     </div>
@@ -16,10 +29,6 @@
 
   <div *ngIf="wait">
     <p>The team has {{hasItGoneAhead ? 'gone ahead' : 'not gone ahead'}}!</p>
-    <p>The votes are ...</p>
-    <ul *ngFor="let voter of players; let i = index;">
-      <li>{{voter.name}}: {{votePipe(currentVotes[i])}}</li>
-    </ul>
     <button (click)="moveOn()">Move on</button>
   </div>
 </div>

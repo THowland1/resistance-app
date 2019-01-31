@@ -18,7 +18,7 @@ export class VotePageComponent implements OnInit {
   @Input() playerName: string;
   @Input() players: Player[];
 
-  teamPick: Player[];
+  teamPick: boolean[];
   currentVotes: Vote[];
   wait: boolean;
 
@@ -33,8 +33,7 @@ export class VotePageComponent implements OnInit {
     
     this._missionService.getTeamPick()
       .pipe(
-        first(),
-        map((bools) => this.players.filter((_,index) => bools[index])))
+        first())
       .subscribe(bind(this,'teamPick'));
 
     this._missionService.wait.subscribe(bind(this,'wait'))
@@ -65,20 +64,31 @@ export class VotePageComponent implements OnInit {
     this._missionService.updateWait(false);
     this._missionService.moveOn(this.hasItGoneAhead);
   }
-
+  
   votePipe(vote: Vote): string {
     switch (vote) {
       case Vote.notVoted:
         return 'not voted!';
-      case Vote.upvoted:
+        case Vote.upvoted:
         return 'voted it up!';
-      case Vote.downvoted:
+        case Vote.downvoted:
         return 'voted it down!';
-      default:
+        default:
         return 'error';
+      }
     }
-  }
+    
+  
+  tableVote(index: number): string {
+    if(!this.wait && this.currentVotes[index] !== Vote.notVoted){
+      return '?';
+    } else if(this.currentVotes[index] === Vote.notVoted){
+      return '';
+    } else {
+      return this.votePipe(this.currentVotes[index]);
+    }
 
+  }
   get hasItGoneAhead(): boolean {
     const upvotes = this.currentVotes.filter((vote) => vote === Vote.upvoted).length;
     const downvotes = this.players.length - upvotes;
@@ -100,6 +110,7 @@ export class VotePageComponent implements OnInit {
   get isLoading(): boolean {
     return [this.currentVotes, this.teamPick, this.wait].some((prop) => prop === undefined);
   }
+
 
   get yourVote(): boolean {
     switch (this.currentVotes[this.playerIndex]) {
