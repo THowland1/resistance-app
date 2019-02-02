@@ -8,6 +8,7 @@ import { Team, teamPipe } from 'src/enums/team.enum';
 import { NavService } from 'src/services/nav.service';
 import { Stage } from 'src/enums/stage.enum';
 import { MissionService } from 'src/services/mission.service';
+import { SessionService } from 'src/services/session.service';
 
 @Component({
   selector: 'app-role-reveal-page',
@@ -19,13 +20,14 @@ export class RoleRevealPageComponent implements OnInit {
   constructor(
     private _roleService: RoleService,
     private _navService: NavService,
-    private _missionService: MissionService) { }
+    private _missionService: MissionService,
+    private _sessionService: SessionService) { }
 
-  @Input() playerName: string;
-  @Output() playersAssigned = new EventEmitter<Player[]>();
-
-  teamEnum = Team;
-
+    @Output() playersAssigned = new EventEmitter<Player[]>();
+    
+    teamEnum = Team;
+    
+  playerName: string;
   canAssignRoles = false;
   rolesAssigned = false;
   player: Player;
@@ -35,6 +37,8 @@ export class RoleRevealPageComponent implements OnInit {
   rolePipe = rolePipe;
 
   ngOnInit() {
+    this.playerName = this._sessionService.name;
+
     this._roleService.currentPlayers()
       .pipe(takeUntil(this.destroy$))
       .subscribe((players) => {

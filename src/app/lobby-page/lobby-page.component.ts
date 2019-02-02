@@ -7,6 +7,7 @@ import { Subject, interval } from 'rxjs';
 import { Stage } from 'src/enums/stage.enum';
 import { FormControl, Validators } from '@angular/forms';
 import { gameVariables } from 'src/game.variables'
+import { SessionService } from 'src/services/session.service';
 
 @Component({
   selector: 'app-lobby-page',
@@ -17,7 +18,8 @@ export class LobbyPageComponent implements OnInit {
 
   constructor(
     private _loginService: LoginService,
-    private _navService: NavService) { }
+    private _navService: NavService,
+    private _sessionService: SessionService) { }
 
   canStartGame = false;
   lobbyPeople: string[] = [];
@@ -30,7 +32,6 @@ export class LobbyPageComponent implements OnInit {
   private destroy$ = new Subject();
   private countdownActive$ = new Subject();
 
-  @Output() joinedServer = new EventEmitter<Session>();
   // make it so canstart game is responsive to hasenoughplayers and isalive
   ngOnInit() {
     this._navService.isConnectedToARoom$
@@ -109,7 +110,11 @@ export class LobbyPageComponent implements OnInit {
   joinLobby(result: Session): void {
     this._loginService.joinLobby(result).subscribe({
       error: (err)=>{alert(err)},
-      complete: ()=>{this.joinedServer.emit(result);}
+      complete: ()=>{
+        this._sessionService.name = result.name;
+        this._sessionService.roomCode = result.roomCode;
+        this._navService.connectToRoom(result.roomCode);
+      }
     });
   }
 

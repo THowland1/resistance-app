@@ -7,6 +7,7 @@ import { Player } from 'src/models/player';
 import { IMissionCard, MissionCard, missionCards } from 'src/enums/mission-card';
 import { MissionSize } from 'src/models/mission-size';
 import { Team } from 'src/enums/team.enum';
+import { SessionService } from 'src/services/session.service';
 
 @Component({
   selector: 'app-mission-page',
@@ -15,15 +16,17 @@ import { Team } from 'src/enums/team.enum';
 })
 export class MissionPageComponent implements OnInit {
 
-  constructor(private _missionService: MissionService) { }
+  constructor(
+    private _missionService: MissionService,
+    private _sessionService: SessionService) { }
 
-  @Input() playerName: string;
-  @Input() players: Player[];
-
+    
   currentTeam: boolean[];
   playableCards: IMissionCard[];
   playedCards: MissionCard[];
+  playerName: string;
   missionSize: MissionSize;
+  players: Player[];
 
   revealMode: boolean = false;
 
@@ -31,6 +34,9 @@ export class MissionPageComponent implements OnInit {
   private forceLoadScreen = false;
 
   ngOnInit() {
+    this.playerName = this._sessionService.name;
+    this.players = this._sessionService.players;
+
     this._missionService.getTeamPick()
       .pipe(
         first())
@@ -114,7 +120,9 @@ export class MissionPageComponent implements OnInit {
       this.currentTeam,
       this.playableCards,
       this.playedCards,
-      this.missionSize
+      this.missionSize,
+      this.playerName,
+      this.players
     ].some((prop)=>prop === undefined) || this.forceLoadScreen;
   }
 

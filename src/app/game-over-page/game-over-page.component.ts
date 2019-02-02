@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Player } from '@angular/core/src/render3/interfaces/player';
 import { GameService } from 'src/services/game.service';
 import { Game } from 'src/models/game';
 import { bind } from 'src/functions';
@@ -7,6 +6,7 @@ import { GameOutcome, GameOutcomeMessagePipe, GameOutcomeWinnerPipe } from 'src/
 import { MissionOutcome } from 'src/enums/mission-outcome';
 import { gameVariables } from 'src/game.variables';
 import { teamPipe } from 'src/enums/team.enum';
+import { SessionService } from 'src/services/session.service';
 
 @Component({
   selector: 'app-game-over-page',
@@ -15,16 +15,16 @@ import { teamPipe } from 'src/enums/team.enum';
 })
 export class GameOverPageComponent implements OnInit {
 
-  constructor(private _gameService: GameService) { }
+  constructor(private _gameService: GameService,
+    private _sessionService: SessionService) { }
 
   game: Game;
+  playerName: string;
 
   ngOnInit() {
+    this.playerName = this._sessionService.name;
     this._gameService.getGame.subscribe(bind(this,'game'));
   }
-
-  @Input() playerName: string;
-  @Input() players: Player[];
 
   get gameOutcome(): GameOutcome {
     if (!this.game){
@@ -58,7 +58,7 @@ export class GameOverPageComponent implements OnInit {
   }
 
   get isLoading(): boolean {
-    return [this.game].some((prop) => prop === undefined);
+    return [this.game, this.playerName].some((prop) => prop === undefined);
   }
 
 }

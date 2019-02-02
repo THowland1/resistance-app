@@ -14,27 +14,18 @@
       (joinedServer)="joinedServer($event)"></app-lobby-page>
     <app-role-reveal-page
       *ngIf="stageIsVisible(Stage.RoleReveal)"
-      [playerName]="session.name"
       (playersAssigned)="playersAssigned($event)"></app-role-reveal-page>
     <app-team-pick-page
       *ngIf="stageIsVisible(Stage.TeamPick)"
-      [playerName]="session.name"
-      [players]="players"
       ></app-team-pick-page>
     <app-vote-page
       *ngIf="stageIsVisible(Stage.Vote)"
-      [playerName]="session.name"
-      [players]="players"
       ></app-vote-page>
     <app-mission-page
       *ngIf="stageIsVisible(Stage.Mission)"
-      [playerName]="session.name"
-      [players]="players"
       ></app-mission-page>
     <app-game-over-page
       *ngIf="stageIsVisible(Stage.GameOver)"
-      [playerName]="session.name"
-      [players]="players"
       ></app-game-over-page>
   </div>
 

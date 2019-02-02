@@ -6,6 +6,7 @@ import { NavService } from 'src/services/nav.service';
 import { Stage } from 'src/enums/stage.enum';
 import { bind } from 'src/functions';
 import { Player } from 'src/models/player';
+import { SessionService } from 'src/services/session.service';
 
 
 
@@ -18,19 +19,23 @@ import { Player } from 'src/models/player';
 export class TeamPickPageComponent implements OnInit {
 
   constructor(private _missionService: MissionService,
-    private _navService: NavService) { }
+    private _navService: NavService,
+    private _sessionService: SessionService) { }
   
-  @Input() players: Player[];
-
+    
   currentLeader: string;
   selectedPlayers: boolean[];
   teamSize: number;
-  
+  playerName: string;
+  players: Player[];
+
   private destroy$ = new Subject();
   
-  @Input() playerName: string;
 
   ngOnInit() { 
+    this.playerName = this._sessionService.name;
+    this.players = this._sessionService.players;
+
     this._missionService.currentLeader()
       .pipe(takeUntil(this.destroy$),map((leader) => this.players[leader].name))
       .subscribe(bind(this,'currentLeader'));
@@ -59,7 +64,9 @@ export class TeamPickPageComponent implements OnInit {
     return [
       this.currentLeader,
       this.selectedPlayers,
-      this.teamSize
+      this.teamSize,
+      this.playerName,
+      this.players
     ].some((prop) => prop === undefined);
   }
 

@@ -5,6 +5,7 @@ import { bind } from 'src/functions';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { Vote } from 'src/enums/vote.enum';
+import { SessionService } from 'src/services/session.service';
 
 @Component({
   selector: 'app-vote-page',
@@ -13,18 +14,20 @@ import { Vote } from 'src/enums/vote.enum';
 })
 export class VotePageComponent implements OnInit {
 
-  constructor(private _missionService: MissionService) { }
+  constructor(private _missionService: MissionService,
+    private _sessionService: SessionService) { }
   
-  @Input() playerName: string;
-  @Input() players: Player[];
-
   teamPick: boolean[];
   currentVotes: Vote[];
   wait: boolean;
+  playerName: string;
+  players: Player[];
 
   private destroy$ = new Subject();
   
   ngOnInit() {
+    this.playerName = this._sessionService.name;
+    this.players = this._sessionService.players;
     // TODO Remove this eventually
     console.log(this.players);
     this._missionService.currentVotes()
