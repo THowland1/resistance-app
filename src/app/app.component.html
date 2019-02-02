@@ -1,5 +1,6 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<app-session-info-bar [session]="session" [player]="player" [players]="players"></app-session-info-bar>
+<app-session-info-bar></app-session-info-bar>
+
 <div class="container">
 
   <div *ngIf="canSeeGameBoard" class="d-flex justify-content-center">
@@ -10,11 +11,9 @@
   
   <div class="d-flex justify-content-center">
     <app-lobby-page
-      *ngIf="stageIsVisible(Stage.NotBegun)"
-      (joinedServer)="joinedServer($event)"></app-lobby-page>
+      *ngIf="stageIsVisible(Stage.NotBegun)"></app-lobby-page>
     <app-role-reveal-page
-      *ngIf="stageIsVisible(Stage.RoleReveal)"
-      (playersAssigned)="playersAssigned($event)"></app-role-reveal-page>
+      *ngIf="stageIsVisible(Stage.RoleReveal)"></app-role-reveal-page>
     <app-team-pick-page
       *ngIf="stageIsVisible(Stage.TeamPick)"
       ></app-team-pick-page>
@@ -29,7 +28,5 @@
       ></app-game-over-page>
   </div>
 
-  <app-dev 
-    (joinedServer)="joinedServer($event)"
-    (playersAssigned)="playersAssigned($event)"></app-dev>
+  <app-dev></app-dev>
 </div>

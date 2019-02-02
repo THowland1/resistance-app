@@ -40,11 +40,10 @@ export class LobbyPageComponent implements OnInit {
         this.isConnectedToARoom = isConnected;
         if (isConnected) {
           this._navService.currentPlayers
-            .pipe(
-              takeUntil(this.destroy$),
-              map((players) => players.map((player) => player.name)))
+            .pipe(takeUntil(this.destroy$))
             .subscribe((players) => {
-              this.lobbyPeople = players;
+              this._sessionService.players = players;
+              this.lobbyPeople = players.map((player) => player.name);
               this.canStartGame = players.length >= gameVariables.minPlayers;
           })
 

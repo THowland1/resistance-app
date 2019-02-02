@@ -6,6 +6,7 @@ import { Player } from 'src/models/player';
 import { teamPipe } from 'src/enums/team.enum';
 import { rolePipe } from 'src/enums/role.enum';
 import { bind } from 'src/functions';
+import { SessionService } from 'src/services/session.service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ import { bind } from 'src/functions';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  constructor(private _navService: NavService){}
+  constructor(private _navService: NavService, private _sessionService: SessionService){}
 
   title = 'resistance-app';
   Stage = Stage;
@@ -25,6 +26,9 @@ export class AppComponent implements OnInit {
   rolePipe = rolePipe;
 
   ngOnInit(): void {
+    this._sessionService.roomCode$.subscribe((roomCode) => {
+      this.connectToRoom(roomCode);
+    })
   }
 
   stageIsVisible(stage: Stage): boolean {
@@ -35,18 +39,10 @@ export class AppComponent implements OnInit {
     this._navService.goToStage(stage);
   }
 
-  joinedServer(session: Session){
-    this._navService.connectToRoom(session.roomCode);
+  connectToRoom(roomCode: string){
+    this._navService.connectToRoom(roomCode);
 
     this._navService.currentStage.subscribe(bind(this,'stage'));
-    this.session = session;
-  }
-  
-  playersAssigned(players: Player[]): void{
-    this.players = players;
-    this.player = !!players
-      ? players.filter((player) => player.name === this.session.name)[0]
-      : null;
   }
 
   get canSeeGameBoard(): boolean {

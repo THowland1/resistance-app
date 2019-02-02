@@ -1,13 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Player, newPlayer } from 'src/models/player';
 import { Observable, of, Subject } from 'rxjs';
+import { BaseService } from './base.service';
+import { bind, log } from 'src/functions';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionService {
 
-  constructor() { }
+  constructor(private _baseService: BaseService) { 
+    this.roomCode$.subscribe((roomCode) => {
+      this._baseService.getCollection('player', roomCode).subscribe(bind(this,'players'));
+    })
+  }
 
   private _name: string;
   private _roomCode: string;

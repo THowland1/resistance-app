@@ -10,7 +10,7 @@
     <span>/</span>
     <span>Room Code: {{roomCode}}</span>
   </ng-container>
-  <ng-container *ngIf="!!player">
+  <ng-container *ngIf="!!player && player.role !== 0">
       <span>/</span>
       <fa-icon [icon]="faUser" (click)=clickUser()></fa-icon>
   </ng-container>

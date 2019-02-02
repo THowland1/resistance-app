@@ -10,6 +10,7 @@ import { first } from 'rxjs/operators';
 import { Vote } from 'src/enums/vote.enum';
 import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute } from '@angular/router';
+import { SessionService } from 'src/services/session.service';
 
 @Component({
   selector: 'app-dev',
@@ -22,10 +23,8 @@ export class DevComponent implements OnInit {
     private base: BaseService,
     private _navService: NavService,
     private _loginService: LoginService,
-    private _roleService: RoleService) { }
-
-  @Output() joinedServer = new EventEmitter<Session>();
-  @Output() playersAssigned = new EventEmitter<Player[]>();
+    private _roleService: RoleService,
+    private _sessionService: SessionService) { }
 
   ngOnInit() {
     this._route.queryParams.subscribe((params) => { this.devAreaEnabled = params.dev});
@@ -40,13 +39,8 @@ export class DevComponent implements OnInit {
   devAreaEnabled: boolean = false;
 
   hijackClick(): void{
-    const name = this.hijackName;
-    const roomCode = this.hijackRoomCode;
-    this.joinedServer.emit({name,roomCode});
-    this.base.getCollection<Player>('player').pipe(first()).subscribe((players) => {
-      this.playersAssigned.emit(players);
-    })
-    
+    this._sessionService.name = this.hijackName;
+    this._sessionService.roomCode = this.hijackRoomCode;    
   }
 
   // Click the coffee
