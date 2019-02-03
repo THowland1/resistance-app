@@ -7,3 +7,24 @@ export enum Stage {
     Reveal = 5,
     GameOver = 6
 }
+
+export function stageUrlPipe(stage: Stage): string {
+    switch (stage) {
+        case Stage.NotBegun:
+            return ''
+        case Stage.RoleReveal:
+            return 'role-reveal'
+        case Stage.TeamPick:
+            return 'team-pick'
+        case Stage.Vote:
+            return 'vote'
+        case Stage.Mission:
+            return 'mission'
+        case Stage.Reveal:
+            return 'reveal'
+        case Stage.GameOver:
+            return 'game-over'
+        default:
+            break;
+    }
+}

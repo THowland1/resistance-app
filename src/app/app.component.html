@@ -6,27 +6,10 @@
   <div *ngIf="canSeeGameBoard" class="d-flex justify-content-center">
     <app-game-board></app-game-board>
   </div>
-  
-  <router-outlet></router-outlet>
-  
-  <div class="d-flex justify-content-center">
-    <app-lobby-page
-      *ngIf="stageIsVisible(Stage.NotBegun)"></app-lobby-page>
-    <app-role-reveal-page
-      *ngIf="stageIsVisible(Stage.RoleReveal)"></app-role-reveal-page>
-    <app-team-pick-page
-      *ngIf="stageIsVisible(Stage.TeamPick)"
-      ></app-team-pick-page>
-    <app-vote-page
-      *ngIf="stageIsVisible(Stage.Vote)"
-      ></app-vote-page>
-    <app-mission-page
-      *ngIf="stageIsVisible(Stage.Mission)"
-      ></app-mission-page>
-    <app-game-over-page
-      *ngIf="stageIsVisible(Stage.GameOver)"
-      ></app-game-over-page>
-  </div>
 
+  <div class="d-flex justify-content-center">
+    <router-outlet></router-outlet>
+  </div>
+  
   <app-dev></app-dev>
 </div>
