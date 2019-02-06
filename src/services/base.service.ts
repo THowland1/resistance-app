@@ -58,16 +58,6 @@ export class BaseService {
     return this.game(roomCode).valueChanges();
   }
 
-  getGameProperty<T>(property: GameProperty, roomCode?: string): Observable<T> {
-    return this.game(roomCode).valueChanges()
-      .pipe(map((o) => !!o ? o[property] as unknown as T : null));
-  }
-
-  updateGameProperty(property: GameProperty, value: any, roomCode?:string): void {
-    const data = {};
-    data[property] = value;
-    this.game(roomCode).update(data);
-  }
 
   addGame(roomCode: string, game: Game): void {
     this.game(roomCode).set(game);

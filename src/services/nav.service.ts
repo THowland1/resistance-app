@@ -6,12 +6,13 @@ import { BaseService } from './base.service';
 import { first } from 'rxjs/operators';
 import { Vote } from 'src/enums/vote.enum';
 import { Router } from '@angular/router';
+import { GameService } from './game.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NavService {
-  constructor(private base: BaseService, private router: Router) {
+  constructor(private base: BaseService,private _gameService: GameService, private router: Router) {
   }
 
   isConnectedToARoom$ = new BehaviorSubject<boolean>(false);
@@ -25,7 +26,7 @@ export class NavService {
   }
 
   get currentStage(): Observable<Stage> {
-    return this.base.getGameProperty('stage');
+    return this._gameService.get('stage');
   }
 
   get currentPlayers(): Observable<Player[]> {
@@ -33,27 +34,30 @@ export class NavService {
   }
 
   get startTime(): Observable<number> {
-    return this.base.getGameProperty('startTime');
+    return this._gameService.get('startTime');
   }
 
   goToStage(stage: Stage): void {
-    this.base.updateGameProperty('stage',stage);
+    this._gameService.update('stage',stage);
+    this._gameService.saveChanges();
   }
 
   startGame(): void {
     const countdownMilliseconds = 4000;
     const currentTime = new Date().getTime();
-    this.base.updateGameProperty('startTime', currentTime + countdownMilliseconds);
 
     this.base.getCollectionCount('player')
       .pipe(first())
       .subscribe((playerCount) => {
-        this.base.updateGameProperty('votes', new Array(playerCount).fill(Vote.notVoted));
-        this.base.updateGameProperty('team', new Array(playerCount).fill(false));
+        this._gameService.update('startTime', currentTime + countdownMilliseconds);
+        this._gameService.update('votes', new Array(playerCount).fill(Vote.notVoted));
+        this._gameService.update('team', new Array(playerCount).fill(false));
+        this._gameService.saveChanges();
       })
   }
 
   cancel(): void {
-    this.base.updateGameProperty('startTime', null)
+    this._gameService.update('startTime', null);
+    this._gameService.saveChanges();
   }
 }  

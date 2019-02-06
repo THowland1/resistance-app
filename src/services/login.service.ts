@@ -7,13 +7,14 @@ import { newPlayer, Player } from 'src/models/player';
 import { Observable, zip } from 'rxjs';
 import { BaseService } from './base.service';
 import { gameVariables } from 'src/game.variables';
+import { GameService } from './game.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
 
-  constructor(private base: BaseService) {}
+  constructor(private base: BaseService, private _gameService: GameService) {}
 
   joinLobby(session: Session): Observable<void> {
     const name = session.name;
@@ -96,7 +97,7 @@ export class LoginService {
   }
 
   private hasGameStarted(roomCode: string): Observable<boolean> {
-    return this.base.getGameProperty('stage',roomCode)
+    return this._gameService.get('stage', roomCode)
       .pipe(map((stage: Stage) => stage !== Stage.NotBegun));
   }
 

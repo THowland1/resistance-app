@@ -23,15 +23,15 @@ export class GameBoardComponent implements OnInit {
   private destroy$ = new Subject();
 
   ngOnInit() {
-    this._gameService.missionOutcomes
+    this._gameService.get('missionOutcomes')
       .pipe(takeUntil(this.destroy$))
       .subscribe(bind(this,'missionOutcomes'));
 
-    this._gameService.noOfDownvotedTeams
+    this._gameService.get('noOfDownvotedTeams')
       .pipe(takeUntil(this.destroy$))
       .subscribe(bind(this,'noOfDownvotedTeams'));
 
-    this._gameService.currentMission
+    this._gameService.get('currentMission')
       .pipe(takeUntil(this.destroy$))
       .subscribe(bind(this,'currentMission'));
 

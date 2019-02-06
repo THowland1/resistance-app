@@ -13,16 +13,18 @@ import { MissionOutcome } from 'src/enums/mission-outcome';
 import { Vote } from 'src/enums/vote.enum';
 import { gameVariables } from 'src/game.variables';
 import { Game } from 'src/models/game';
+import { GameService } from './game.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MissionService {
 
-  constructor(private _base: BaseService,private _nav: NavService) { }
+  constructor(private _base: BaseService,private _nav: NavService, private _gameService: GameService) { }
 
   newMission(leader: number, missionNo: number): void {
-    this._base.updateGameProperty('leader',leader);
+    this._gameService.update('leader',leader);
+    this._gameService.saveChanges();
     this._base.addDoc('mission', newMission(), missionNo.toString());
   }
 
@@ -45,12 +47,11 @@ export class MissionService {
   }
 
   currentLeader(): Observable<number> {
-    // TODO: maybe refactor this to output the leader number next and do the name logic in the component
-    return this._base.getGameProperty<number>('leader');
+    return this._gameService.get('leader');
   }
 
   currentVotes(): Observable<Vote[]> {
-    return this._base.getGameProperty<Vote[]>('votes');
+    return this._gameService.get('votes');
   }
 
   submitVote(vote: boolean, index: number): void {
@@ -62,7 +63,10 @@ export class MissionService {
       .pipe(
         first(),
         map((votes) => {votes[index] = newVote; return votes;}))
-      .subscribe((votes) => this._base.updateGameProperty('votes',votes))
+      .subscribe((votes) => {
+        this._gameService.update('votes',votes);
+        this._gameService.saveChanges();
+      });
   }
 
   getPlayers(): Observable<string[]> {
@@ -73,22 +77,24 @@ export class MissionService {
   getTeamSize(): Observable<MissionSize> {
     return zip(
       this._base.getCollectionCount('player'),
-      this._base.getGameProperty<number>('currentMission')
+      this._gameService.get('currentMission')
       ).pipe(
         map(([playerCount,missionNo]) => this.teamSize(playerCount,missionNo))
       )
   }
 
   getTeamPick(): Observable<boolean[]> {
-    return this._base.getGameProperty('team')
+    return this._gameService.get('team')
   }
 
   updateTeamPick(teamPick: boolean[]): void {
-    this._base.updateGameProperty('team',teamPick);
+    this._gameService.update('team',teamPick);
+    this._gameService.saveChanges();
   }
 
   updateWait(wait: boolean): void {
-    this._base.updateGameProperty('wait',wait);
+    this._gameService.update('wait',wait);
+    this._gameService.saveChanges();
   }
 
   moveOn(hasItGoneAhead: boolean): void {
@@ -98,7 +104,8 @@ export class MissionService {
       this._base.getCollectionCount('player')
         .pipe(first())
         .subscribe((count) => {
-          this._base.updateGameProperty('playedCards', new Array(count).fill(MissionCard.none));
+          this._gameService.update('playedCards', new Array(count).fill(MissionCard.none));
+          this._gameService.saveChanges();
           this._nav.goToStage(Stage.Mission);
         })
     } else if (hasItGoneAhead === false) {
@@ -107,16 +114,17 @@ export class MissionService {
 
       zip(
         this._base.getCollectionCount('player'),
-        this._base.getGame())
+        this._gameService.game$)
         .pipe(first())
         .subscribe(([playerCount,game]) => {
           const newLeader = (game.leader + 1) % playerCount;
 
           game.noOfDownvotedTeams = game.noOfDownvotedTeams + 1;
 
-          this._base.updateGameProperty('leader',newLeader);
-          this._base.updateGameProperty('votes',new Array(playerCount).fill(Vote.notVoted));
-          this._base.updateGameProperty('noOfDownvotedTeams', game.noOfDownvotedTeams);
+          this._gameService.update('leader',newLeader);
+          this._gameService.update('votes',new Array(playerCount).fill(Vote.notVoted));
+          this._gameService.update('noOfDownvotedTeams', game.noOfDownvotedTeams);
+          this._gameService.saveChanges();
 
           if (this.isTheGameOver(game)) {
             this._nav.goToStage(Stage.GameOver);
@@ -135,48 +143,50 @@ export class MissionService {
   nextMission(didItPass: boolean):void {
     zip(
       this._base.getCollectionCount('player'),
-      this._base.getGame())
+      this._gameService.game$)
       .pipe(first())
       .subscribe(([playerCount,game]) => {
         // set new leader
         const newLeader = (game.leader + 1) % playerCount;
-        this._base.updateGameProperty('leader', newLeader);
+        this._gameService.update('leader', newLeader);
 
         // add mission outcome to the Game object
         game.missionOutcomes[game.currentMission] = didItPass
           ? MissionOutcome.pass
           : MissionOutcome.fail;
-        this._base.updateGameProperty('missionOutcomes', game.missionOutcomes);
+        this._gameService.update('missionOutcomes', game.missionOutcomes);
 
         // wipe current Mission info (keep the team the same)
-        this._base.updateGameProperty('votes',new Array(playerCount).fill(Vote.notVoted));
-        this._base.updateGameProperty('playedCards',new Array(playerCount).fill(MissionCard.none));
-        this._base.updateGameProperty('noOfDownvotedTeams',0);
+        this._gameService.update('votes', new Array(playerCount).fill(Vote.notVoted));
+        this._gameService.update('playedCards', new Array(playerCount).fill(MissionCard.none));
+        this._gameService.update('noOfDownvotedTeams', 0);
 
         if (this.isTheGameOver(game)){
           this._nav.goToStage(Stage.GameOver);
         } else {
-          this._base.updateGameProperty('currentMission', game.currentMission + 1)
+          this._gameService.update('currentMission', game.currentMission + 1);
+          this._gameService.saveChanges();
           this._nav.goToStage(Stage.TeamPick);
         }
       })
   }
 
   updatePlayedCards(missionCards: MissionCard[]) {
-    this._base.updateGameProperty('playedCards', missionCards);
+    this._gameService.update('playedCards', missionCards);
+    this._gameService.saveChanges();
   }
 
   get getPlayedCards(): Observable<MissionCard[]> {
-    return this._base.getGameProperty('playedCards');
+    return this._gameService.get('playedCards');
   }
 
   get getPlayableCards(): Observable<IMissionCard[]> {
-    return this._base.getGameProperty<GameType>('gameType')
+    return this._gameService.get('gameType')
       .pipe(map((gameType) => cardsInPlay(gameType).map((card)=>missionCards[card])))
   }
   
   get wait(): Observable<boolean> {
-    return this._base.getGameProperty('wait');
+    return this._gameService.get('wait');
   }
   
   private teamSize(noOfPlayers: number, missionNo: number): MissionSize {

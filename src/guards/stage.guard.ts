@@ -23,8 +23,7 @@ export class StageGuard implements CanActivate {
       }
       // the page is unreachable if the room's game is not at the current stage
       const stage = next.data['stage'] as Stage;
-      console.log(stage);
-      return this._gameService.stageWithRoomCode(this._sessionService.roomCode)
+      return this._gameService.get('stage')
         .pipe(map((currentStage) => {
           const isSameStage = currentStage === stage;
           if(!isSameStage){

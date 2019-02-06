@@ -23,7 +23,7 @@ export class GameOverPageComponent implements OnInit {
 
   ngOnInit() {
     this.playerName = this._sessionService.name;
-    this._gameService.getGame.subscribe(bind(this,'game'));
+    this._gameService.game$.subscribe(bind(this,'game'));
   }
 
   get gameOutcome(): GameOutcome {
