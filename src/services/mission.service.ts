@@ -21,15 +21,13 @@ import { PlayerService } from './player.service';
 })
 export class MissionService {
 
-  constructor(private _base: BaseService,
-    private _nav: NavService,
+  constructor(private _nav: NavService,
     private _gameService: GameService,
     private _playerService: PlayerService) { }
 
-  newMission(leader: number, missionNo: number): void {
+  newMission(leader: number): void {
     this._gameService.update('leader',leader);
     this._gameService.saveChanges();
-    this._base.addDoc('mission', newMission(), missionNo.toString());
   }
 
   boolArray2Number(boolArray: boolean[]): number{
@@ -74,7 +72,7 @@ export class MissionService {
   }
 
   getPlayers(): Observable<string[]> {
-    return this._base.getCollection<Player>('player')
+    return this._playerService.players$
       .pipe(map((player)=>player.map((player)=>player.name)))
   }
 

@@ -65,7 +65,7 @@ export class RoleRevealPageComponent implements OnInit {
 
   startGame(): void {
     if (!this.playerIsAssigned(this.player)) {return;}
-    this._missionService.newMission(0,0);
+    this._missionService.newMission(0);
     this._navService.goToStage(Stage.TeamPick);
   }
   
