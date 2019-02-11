@@ -53,11 +53,4 @@ export class GameService {
   }
   }
 
-  get currentMission(): Observable<number> {
-    return this._base.getGameProperty('currentMission');
-  }
-
-  get getGame(): Observable<Game> {
-    return this._base.getGame();
-  }
 }

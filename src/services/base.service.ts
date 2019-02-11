@@ -24,6 +24,7 @@ export class BaseService {
 
   constructor(private db: AngularFirestore) {}
   storedGame: AngularFirestoreDocument<Game>;
+  private _batch = this.db.firestore.batch();
 
   gameString: string = 'game';
   playerString: string = 'player';
@@ -73,24 +74,22 @@ export class BaseService {
       .valueChanges();
   }
   
-  getCollectionCount(collection: CollectionType, roomCode?: string): Observable<number> {
-    return this.game(roomCode).collection(collection)
-      .get()
-      .pipe(map((snapshot) => snapshot.size));
-  }
-  
   getDocProperty<T>(collection: CollectionType, reference: string, property: DocProperty, roomCode?: string): Observable<T>{
     return this.game(roomCode).collection(collection).doc(reference)
       .valueChanges()
       .pipe(map((o) => !!o ? o[property] : null));
   }
   
-  updateDocProperty(collection: CollectionType, reference: string, property: DocProperty, value: any, roomCode?:string): void {
+  update(roomCode:string, collection: CollectionType, reference: string, property: DocProperty, value: any): void {
+    const documentReference = this.db.firestore.doc(`game/${roomCode}/${collection}/${reference}`);
     const data = {};
     data[property] = value;
-    
-    this.game(roomCode).collection(collection).doc(reference)
-      .update(data);
+
+    this._batch.update(documentReference,data)
+  }
+
+  saveChanges(): Promise<void> {
+    return this._batch.commit();
   }
   
   addDoc(collection: CollectionType, doc: CollectionInterface, reference: string, roomCode?: string): void{

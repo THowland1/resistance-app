@@ -5,16 +5,17 @@ import { Role } from 'src/enums/role.enum';
 import { Team } from 'src/enums/team.enum';
 import { first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { PlayerService } from './player.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoleService {
 
-  constructor(private base: BaseService) { }
+  constructor(private _playerService: PlayerService) { }
 
   assignRoles(): void {
-    this.currentPlayers()
+    this._playerService.players$
       .pipe(first())
       .subscribe((players) => {
         let unassignedPlayers = players;
@@ -25,14 +26,11 @@ export class RoleService {
           const roleToAssign = allRoles.pop();
           const whichPlayerToAssign = unassignedPlayers.splice(whichPlayerIndexToAssign,1)[0];
 
-          this.base.updateDocProperty('player', whichPlayerToAssign.name, 'role', roleToAssign.role);
-          this.base.updateDocProperty('player', whichPlayerToAssign.name, 'team', roleToAssign.team);
+          this._playerService.update('role',roleToAssign.role,whichPlayerToAssign.name);
+          this._playerService.update('team',roleToAssign.team,whichPlayerToAssign.name);
         }
+        this._playerService.saveChanges();
     })
-  }
-
-  currentPlayers(): Observable<Player[]> {
-    return this.base.getCollection<Player>('player');
   }
 
   private randomInt(max: number){

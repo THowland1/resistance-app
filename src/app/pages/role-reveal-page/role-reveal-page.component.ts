@@ -9,6 +9,7 @@ import { NavService } from 'src/services/nav.service';
 import { Stage } from 'src/enums/stage.enum';
 import { MissionService } from 'src/services/mission.service';
 import { SessionService } from 'src/services/session.service';
+import { PlayerService } from 'src/services/player.service';
 
 @Component({
   selector: 'app-role-reveal-page',
@@ -21,7 +22,8 @@ export class RoleRevealPageComponent implements OnInit {
     private _roleService: RoleService,
     private _navService: NavService,
     private _missionService: MissionService,
-    private _sessionService: SessionService) { }
+    private _sessionService: SessionService,
+    private _playerService: PlayerService) { }
 
     @Output() playersAssigned = new EventEmitter<Player[]>();
     
@@ -39,7 +41,7 @@ export class RoleRevealPageComponent implements OnInit {
   ngOnInit() {
     this.playerName = this._sessionService.name;
 
-    this._roleService.currentPlayers()
+    this._playerService.players$
       .pipe(takeUntil(this.destroy$))
       .subscribe((players) => {
         if (players.every((player) => this.playerIsAssigned(player))){

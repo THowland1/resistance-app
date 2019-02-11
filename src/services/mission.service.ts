@@ -14,13 +14,17 @@ import { Vote } from 'src/enums/vote.enum';
 import { gameVariables } from 'src/game.variables';
 import { Game } from 'src/models/game';
 import { GameService } from './game.service';
+import { PlayerService } from './player.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MissionService {
 
-  constructor(private _base: BaseService,private _nav: NavService, private _gameService: GameService) { }
+  constructor(private _base: BaseService,
+    private _nav: NavService,
+    private _gameService: GameService,
+    private _playerService: PlayerService) { }
 
   newMission(leader: number, missionNo: number): void {
     this._gameService.update('leader',leader);
@@ -76,7 +80,7 @@ export class MissionService {
 
   getTeamSize(): Observable<MissionSize> {
     return zip(
-      this._base.getCollectionCount('player'),
+      this._playerService.count$,
       this._gameService.get('currentMission')
       ).pipe(
         map(([playerCount,missionNo]) => this.teamSize(playerCount,missionNo))
@@ -101,7 +105,7 @@ export class MissionService {
     this.updateWait(false);
 
     if(hasItGoneAhead === true){
-      this._base.getCollectionCount('player')
+      this._playerService.count$
         .pipe(first())
         .subscribe((count) => {
           this._gameService.update('playedCards', new Array(count).fill(MissionCard.none));
@@ -113,7 +117,7 @@ export class MissionService {
       // TODO: add to list of failed votes
 
       zip(
-        this._base.getCollectionCount('player'),
+        this._playerService.count$,
         this._gameService.game$)
         .pipe(first())
         .subscribe(([playerCount,game]) => {
@@ -142,7 +146,7 @@ export class MissionService {
 
   nextMission(didItPass: boolean):void {
     zip(
-      this._base.getCollectionCount('player'),
+      this._playerService.count$,
       this._gameService.game$)
       .pipe(first())
       .subscribe(([playerCount,game]) => {

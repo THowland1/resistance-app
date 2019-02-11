@@ -11,6 +11,8 @@ import { Vote } from 'src/enums/vote.enum';
 import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute } from '@angular/router';
 import { SessionService } from 'src/services/session.service';
+import { GameService } from 'src/services/game.service';
+import { PlayerService } from 'src/services/player.service';
 
 @Component({
   selector: 'app-dev',
@@ -24,7 +26,9 @@ export class DevComponent implements OnInit {
     private _navService: NavService,
     private _loginService: LoginService,
     private _roleService: RoleService,
-    private _sessionService: SessionService) { }
+    private _sessionService: SessionService,
+    private _gameService: GameService,
+    private _playerService: PlayerService) { }
 
   ngOnInit() {
     this._route.queryParams.subscribe((params) => { this.devAreaEnabled = params.dev});
@@ -89,10 +93,12 @@ export class DevComponent implements OnInit {
   upOrDownvoteClick(upOrDown: boolean): void {
     const roomCode = this.upvoteRoomCode;
     const vote = upOrDown ? Vote.upvoted : Vote.downvoted;
+    this._sessionService.roomCode = roomCode;
 
-    this.base.getCollectionCount('player')
-      .subscribe((count) => {
-        this.base.updateGameProperty('votes', new Array(count).fill(vote));
+    this._playerService.count$.toPromise()
+      .then((count) => {
+        this._gameService.update('votes', new Array(count).fill(vote));
+        this._gameService.saveChanges();
       })
   }
 }

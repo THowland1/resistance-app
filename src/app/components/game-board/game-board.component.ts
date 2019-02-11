@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { takeUntil, first } from 'rxjs/operators';
 import { MissionSize } from 'src/models/mission-size';
 import { gameVariables } from 'src/game.variables';
+import { PlayerService } from 'src/services/player.service';
 
 @Component({
   selector: 'app-game-board',
@@ -14,7 +15,7 @@ import { gameVariables } from 'src/game.variables';
 })
 export class GameBoardComponent implements OnInit {
 
-  constructor(private _gameService: GameService) { }
+  constructor(private _gameService: GameService, private _playerService: PlayerService) { }
 
   missionOutcomes: MissionOutcome[];
   missionSizes: MissionSize[];
@@ -35,7 +36,7 @@ export class GameBoardComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(bind(this,'currentMission'));
 
-    this._gameService.playerCount
+    this._playerService.count$
       .pipe(first())
       .subscribe((count) => this.missionSizes = gameVariables.missionSizes[count-5]);
   }

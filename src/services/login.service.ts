@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { newGame } from 'src/models/game';
-import { first, map } from 'rxjs/operators';
+import { first, map, pluck } from 'rxjs/operators';
 import { Stage } from 'src/enums/stage.enum';
 import { Session } from 'src/models/session';
 import { newPlayer, Player } from 'src/models/player';
@@ -87,13 +87,33 @@ export class LoginService {
     return this.base.doesDocExist('','',roomCode);
   }
 
+  private check_exists(roomCode: string): Promise<boolean> {
+    return this.base.game(roomCode).get().pipe(map((metadata) => metadata.exists)).toPromise();
+  }
+
   private isNameTaken(session: Session): Observable<boolean> {
     return this.base.doesDocExist('player',session.name,session.roomCode);
+  }
+
+  private check_nameIsAvailable(roomCode: string, name: string): Promise<boolean> {
+    return this.base.doesDocExist('player', name, roomCode).toPromise();
   }
 
   private isRoomFull(roomCode: string): Observable<boolean> {
     return this.base.getCollection<Player>('player',roomCode)
       .pipe(map((players) => players.length >= gameVariables.maxPlayers ));
+  }
+
+  private check_spaceIsAvailable(roomCode: string): Promise<boolean> {
+    return this.base.getCollection<Player>('player',roomCode)
+      .pipe(map((players) => players.length >= gameVariables.maxPlayers ))
+      .toPromise();
+  }
+
+  private check_gameHasntStarted(roomCode: string): Promise<boolean> {
+    return this._gameService.get('stage', roomCode)
+    .pipe(map((stage: Stage) => stage !== Stage.NotBegun))
+    .toPromise();
   }
 
   private hasGameStarted(roomCode: string): Observable<boolean> {

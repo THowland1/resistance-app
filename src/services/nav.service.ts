@@ -7,12 +7,16 @@ import { first } from 'rxjs/operators';
 import { Vote } from 'src/enums/vote.enum';
 import { Router } from '@angular/router';
 import { GameService } from './game.service';
+import { PlayerService } from './player.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NavService {
-  constructor(private base: BaseService,private _gameService: GameService, private router: Router) {
+  constructor(private base: BaseService,
+    private _gameService: GameService,
+    private _playerService: PlayerService,
+    private router: Router) {
   }
 
   isConnectedToARoom$ = new BehaviorSubject<boolean>(false);
@@ -46,7 +50,7 @@ export class NavService {
     const countdownMilliseconds = 4000;
     const currentTime = new Date().getTime();
 
-    this.base.getCollectionCount('player')
+    this._playerService.count$
       .pipe(first())
       .subscribe((playerCount) => {
         this._gameService.update('startTime', currentTime + countdownMilliseconds);
