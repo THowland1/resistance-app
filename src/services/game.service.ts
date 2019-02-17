@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
-import { MissionOutcome } from 'src/enums/mission-outcome';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { Game } from 'src/models/game';
-import { Stage } from 'src/enums/stage.enum';
+import { SessionService } from './session.service';
+import { shareReplay, pluck, map, distinctUntilChanged } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -31,13 +31,17 @@ export class GameService {
       ? this._base.getGame(roomCode)
       : this._game;
 
-    return game.pipe(
-      map((game) => game[key]),
-      distinctUntilChanged());
+      return game.pipe(
+        map((game) => game[key]),
+        distinctUntilChanged());
   }
 
   get game$(): Observable<Game> {
     return this._game;
+  }
+
+  check_doesGameExist(roomCode: string): Observable<boolean> {
+    return this._base.doesDocExist('','',roomCode);
   }
 
   update<K extends keyof Game>(key: K, value: Game[K], roomCode?:string): void {
@@ -50,7 +54,7 @@ export class GameService {
       this._base.game(roomCode).update(this._gameDelta);
       this._gameDelta = {};
       this._hasChanged = false;
-  }
+    }
   }
 
 }

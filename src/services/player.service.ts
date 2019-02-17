@@ -31,6 +31,14 @@ export class PlayerService {
     )
   }
 
+  count(roomCode: string): Observable<number> {
+    return this._base.getCollection<Player>('player', roomCode).pipe(map((players) => players.length));
+  }
+
+  check_doesPlayerExist(roomCode: string, name: string): Promise<boolean> {
+    return this._base.doesDocExist('player', name, roomCode).toPromise();
+  }
+
   update<K extends keyof Player>(key: K, value: Player[K], name: string): void {
     const roomCode = this._sessionService.roomCode;
 
