@@ -17,7 +17,7 @@ export class SessionService {
 
   private _name: string;
   private _roomCode: string;
-  private _players: Player[];
+  private _players: Player[] = [];
   
   roomCode$ = new Subject<string>();
 
@@ -49,7 +49,7 @@ export class SessionService {
   }
 
   get player() {
-    if (this._players === undefined){
+    if (!this._players.length){
        return undefined;
     }
 

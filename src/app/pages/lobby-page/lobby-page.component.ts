@@ -1,6 +1,5 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Session } from 'src/models/session';
-import { first, takeUntil, map, mergeMap, tap, repeatWhen, expand, takeWhile, take } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { first, takeUntil, map, mergeMap, tap, repeatWhen, expand, takeWhile, take, withLatestFrom } from 'rxjs/operators';
 import { NavService } from 'src/services/nav.service';
 import { Subject, interval, Observable, iif, of, zip } from 'rxjs';
 import { Stage } from 'src/enums/stage.enum';
@@ -25,67 +24,29 @@ export class LobbyPageComponent implements OnInit {
     private _sessionService: SessionService,
     private _gameService: GameService) { }
 
-  canStartGame = false;
-  lobbyPeople: string[] = [];
+  
   isConnectedToARoom: boolean = false;
   countDownTimer: number = null;
   isNew = false;
   name = new FormControl('', [Validators.required, Validators.minLength(3)]);
   roomCode = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]);
-  private ticker = interval(1000);
   private destroy$ = new Subject();
   private countdownActive$ = new Subject();
 
-  // make it so canstart game is responsive to hasenoughplayers and isalive
   ngOnInit() {
     this._navService.isConnectedToARoom$
       .pipe(takeUntil(this.destroy$))
       .subscribe((isConnected) => {
         this.isConnectedToARoom = isConnected;
         if (isConnected) {
-          this._navService.currentPlayers
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((players) => {
-              this._sessionService.players = players;
-              this.lobbyPeople = players.map((player) => player.name);
-              this.canStartGame = players.length >= gameVariables.minPlayers;
-          })
-
-          this._navService.startTime
-            .pipe(
-              takeUntil(this.destroy$)
-            )
-            .subscribe((startTime) => {
-              if(!!startTime){
-                //do the countdown
-                this.ticker
-                  .pipe(takeUntil(this.countdownActive$))
-                  .subscribe(() => {
-                    const currentTime = new Date().getTime();
-                    const secondsRemaining =  Math.ceil((startTime - currentTime)/1000)
-                    if(secondsRemaining > 0) {
-                      this.countDownTimer = secondsRemaining;
-                    } else {
-                      this.countDownTimer = 0;
-                      this._navService.goToStage(Stage.RoleReveal);
-                    }
-                  });
-              } else {
-                // cancel the countdown
-                this.countdownActive$.next();
-                this.countDownTimer = null;
-              }
-            })
+          this._bind_currentPlayers();
+          this._bind_countdownTimer();
         }
       });
   }
 
-  get canCreateOrJoinLobby(): boolean {
-    return this.name.invalid || (this.roomCode.invalid && !this.isNew);
-  }
-
-  createOrJoinLobby(): void {
-    if (this.canCreateOrJoinLobby){
+  onCreateOrJoinLobbyClick(): void {
+    if (!this.canCreateOrJoinLobby){
       this.name.markAsTouched();
       this.roomCode.markAsTouched();
       return;
@@ -95,17 +56,38 @@ export class LobbyPageComponent implements OnInit {
     const roomCode = (this.roomCode.value as string).toUpperCase();
 
     this.isNew
-      ? this.createAndJoinNewLobby(name)
+      ? this.createLobby().subscribe((newRoomCode) => this.joinLobby(name, newRoomCode))
       : this.joinLobby(name, roomCode);
   }
 
-  createAndJoinNewLobby(name: string): void {
-    this.createLobby()
-      .pipe(first())
-      .subscribe((roomCode)=> this.joinLobby(name, roomCode));
+  onStartGameClick(): void {
+    this._navService.startGame();
   }
 
-  joinLobby(name: string, roomCode: string): void {
+  onCancelGameClick(): void {
+    this._navService.cancel();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.countdownActive$.next();
+    this.countdownActive$.complete();
+  }
+
+  get lobbyPeople(): string[] {
+    return this._sessionService.players.map((player) => player.name);
+  }
+
+  get canStartGame(): boolean {
+    return !!this._sessionService.players && this._sessionService.players.length >= gameVariables.minPlayers;
+  }
+  
+  get canCreateOrJoinLobby(): boolean {
+    return this.name.valid && (this.roomCode.valid || this.isNew);
+  }
+
+  private joinLobby(name: string, roomCode: string): void {
     console.log(`user "${name}" attempting to join room ${roomCode}`);
     
     this._check_canJoinRoom$(name, roomCode).subscribe((canJoinRoom) => {
@@ -120,7 +102,7 @@ export class LobbyPageComponent implements OnInit {
     });
   }
 
-  createLobby(): Observable<string> {
+  private createLobby(): Observable<string> {
     const MAX_ATTEMPTS = 200;
     let attemptNo = 1;
 
@@ -141,19 +123,33 @@ export class LobbyPageComponent implements OnInit {
       )
   }
 
-  startGame(): void {
-    this._navService.startGame();
+  private _bind_currentPlayers(): void {
+    this._navService.currentPlayers
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((players) => this._sessionService.players = players)
   }
-
-  cancelGame(): void {
-    this._navService.cancel();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.countdownActive$.next();
-    this.countdownActive$.complete();
+  
+  private _bind_countdownTimer(): void {
+    const ticker$ = interval(500);
+    ticker$
+      .pipe(
+        withLatestFrom(this._navService.startTime),
+        takeUntil(this.destroy$))
+      .subscribe(([_,startTime]) => {
+        console.log('hit')
+        if (!!startTime){ 
+          const currentTime = new Date().getTime();
+          const secondsRemaining =  Math.ceil((startTime - currentTime)/1000)
+          if(secondsRemaining > 0) {
+            this.countDownTimer = secondsRemaining;
+          } else {
+            this.countDownTimer = 0;
+            this._navService.goToStage(Stage.RoleReveal);
+          }
+        } else {
+          this.countDownTimer = null;
+        }
+      })
   }
 
   private _check_canJoinRoom$(name: string, roomCode: string): Observable<boolean> {

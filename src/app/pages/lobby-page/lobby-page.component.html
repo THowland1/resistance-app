@@ -9,15 +9,15 @@
       <mat-error *ngIf="roomCode.invalid">Room codes have 4 characters</mat-error>
     </mat-form-field>
     <mat-checkbox class="d-block" [(ngModel)]="isNew" name="isNew">New Lobby?</mat-checkbox>
-    <button class="d-block" *ngIf="!isConnectedToARoom" [disabled]="canCreateOrJoinLobby" (click)="createOrJoinLobby()">
+    <button class="d-block" *ngIf="!isConnectedToARoom" [disabled]="!canCreateOrJoinLobby" (click)="onCreateOrJoinLobbyClick()">
       {{isNew ? 'Create' : 'Join'}} lobby
     </button>
   </form>
 </div>
-    
+    <button (click)="dothing()"></button>
 <div class="start-game-buttons" *ngIf="isConnectedToARoom">
-  <button *ngIf="countDownTimer == null" [disabled]="!canStartGame" (click)="startGame()">Start game</button>
-  <button *ngIf="countDownTimer != null" (click)="cancelGame()">Cancel</button>
+  <button *ngIf="countDownTimer == null" [disabled]="!canStartGame" (click)="onStartGameClick()">Start game</button>
+  <button *ngIf="countDownTimer != null" (click)="onCancelGameClick()">Cancel</button>
   <p>{{countDownTimer}}</p>
 </div>
 
