@@ -1,0 +1,6 @@
+<div class="info-dialog" [ngClass]="modalTypeString">
+  <h4>{{title}}</h4>
+  <hr>
+  <ng-content></ng-content>
+  <button class="btn btn-block" (click)="onCloseClick()">Got it!</button>
+</div>

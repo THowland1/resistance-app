@@ -1,0 +1,3 @@
+<app-modal-shell [modalType]="dialogData.modalType" [title]="dialogData.title" (close)="onClose()">
+  <p *ngFor="let message of dialogData.messages">{{message}}</p>
+</app-modal-shell>

@@ -1,0 +1,21 @@
+$unassigned-border-color: grey;
+$info-border-color: green;
+$warn-border-color: yellow;
+$error-border-color: red;
+
+.info-dialog {
+    border: 3px solid $unassigned-border-color;
+    padding: 1rem;
+
+    &.info {
+        border-color: $info-border-color;
+    }
+
+    &.warn{
+        border-color: $info-border-color;
+    }
+    
+    &.error {
+        border-color: $error-border-color;
+    }
+}

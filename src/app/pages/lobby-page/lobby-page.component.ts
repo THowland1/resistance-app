@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { first, takeUntil, map, mergeMap, tap, repeatWhen, expand, takeWhile, take, withLatestFrom } from 'rxjs/operators';
+import { first, takeUntil, map, mergeMap, tap, expand, take, withLatestFrom } from 'rxjs/operators';
 import { NavService } from 'src/services/nav.service';
 import { Subject, interval, Observable, iif, of, zip } from 'rxjs';
 import { Stage } from 'src/enums/stage.enum';
@@ -10,6 +10,7 @@ import { GameService } from 'src/services/game.service';
 import { BaseService } from 'src/services/base.service';
 import { Player, newPlayer } from 'src/models/player';
 import { newGame } from 'src/models/game';
+import { ModalService } from 'src/app/components/modal/modal.service';
 
 @Component({
   selector: 'app-lobby-page',
@@ -22,7 +23,8 @@ export class LobbyPageComponent implements OnInit {
     private _baseService: BaseService,
     private _navService: NavService,
     private _sessionService: SessionService,
-    private _gameService: GameService) { }
+    private _gameService: GameService,
+    public _modalService: ModalService) { }
 
   
   isConnectedToARoom: boolean = false;
@@ -31,7 +33,6 @@ export class LobbyPageComponent implements OnInit {
   name = new FormControl('', [Validators.required, Validators.minLength(3)]);
   roomCode = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]);
   private destroy$ = new Subject();
-  private countdownActive$ = new Subject();
 
   ngOnInit() {
     this._navService.isConnectedToARoom$
@@ -71,8 +72,6 @@ export class LobbyPageComponent implements OnInit {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.countdownActive$.next();
-    this.countdownActive$.complete();
   }
 
   get lobbyPeople(): string[] {
@@ -212,7 +211,7 @@ export class LobbyPageComponent implements OnInit {
   private _reportError(message: string): (result: boolean) => void {
     return (result: boolean) => {
       if(!result) {
-        alert(message);
+        this._modalService.error('Join failed', [message])
       }
     }
   }

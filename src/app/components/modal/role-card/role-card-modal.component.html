@@ -1,0 +1,10 @@
+<app-modal-shell [modalType]="dialogData.modalType" [title]="dialogData.title" (close)="onClose()">
+  <p><strong>Team: </strong>{{team}}</p>
+  <p><strong>Role: </strong>{{role}}</p>
+  <div *ngIf="!!fellowSpies">
+    <span><strong>Fellow spies:</strong></span>
+    <ul>
+      <li *ngFor="let spy of fellowSpies">{{spy}}</li>
+    </ul>
+  </div>
+</app-modal-shell>

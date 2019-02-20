@@ -20,6 +20,9 @@ import { GameBoardComponent } from './components/game-board/game-board.component
 import { GameOverPageComponent } from './pages/game-over-page/game-over-page.component';
 import { SessionInfoBarComponent } from './components/session-info-bar/session-info-bar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ModalShellComponent } from './components/modal/modal-shell.component';
+import { AlertModalComponent } from './components/modal/alert/alert-modal.component';
+import { RoleCardModalComponent } from './components/modal/role-card/role-card-modal.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +35,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MissionPageComponent,
     GameBoardComponent,
     GameOverPageComponent,
-    SessionInfoBarComponent
+    SessionInfoBarComponent,
+    ModalShellComponent,
+    AlertModalComponent,
+    RoleCardModalComponent
   ],
   imports: [
     BrowserModule,
@@ -49,6 +55,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     FontAwesomeModule
   ],
   providers: [AngularFirestore],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [AlertModalComponent,RoleCardModalComponent]
 })
 export class AppModule { }
