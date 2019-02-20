@@ -19,3 +19,12 @@ export function log<T>() {
         return value;
     });
 }
+
+export function randomInt(max: number){
+    const randomInt = Math.floor(Math.random()*(max+1));
+
+    if (randomInt > max) { // if Math.random() returns exactly 1
+      return max;
+    }
+    return randomInt;
+  }

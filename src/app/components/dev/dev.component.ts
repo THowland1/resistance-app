@@ -1,6 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { BaseService } from 'src/services/base.service';
-import { RoleService } from 'src/services/role.service';
 import { NavService } from 'src/services/nav.service';
 import { Session } from 'src/models/session';
 import { newGame } from 'src/models/game';
@@ -23,7 +22,6 @@ export class DevComponent implements OnInit {
   constructor(private _route: ActivatedRoute,
     private base: BaseService,
     private _navService: NavService,
-    private _roleService: RoleService,
     private _sessionService: SessionService,
     private _gameService: GameService,
     private _playerService: PlayerService) { }

@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { RoleService } from 'src/services/role.service';
 import { Subject } from 'rxjs';
 import { Player } from 'src/models/player';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, first } from 'rxjs/operators';
 import { Role, rolePipe } from 'src/enums/role.enum';
 import { Team, teamPipe } from 'src/enums/team.enum';
 import { NavService } from 'src/services/nav.service';
@@ -10,6 +9,8 @@ import { Stage } from 'src/enums/stage.enum';
 import { MissionService } from 'src/services/mission.service';
 import { SessionService } from 'src/services/session.service';
 import { PlayerService } from 'src/services/player.service';
+import { RoleDistribution } from 'src/app/static-data/player-setup';
+import { randomInt } from 'src/functions';
 
 @Component({
   selector: 'app-role-reveal-page',
@@ -19,7 +20,6 @@ import { PlayerService } from 'src/services/player.service';
 export class RoleRevealPageComponent implements OnInit {
 
   constructor(
-    private _roleService: RoleService,
     private _navService: NavService,
     private _missionService: MissionService,
     private _sessionService: SessionService,
@@ -60,7 +60,22 @@ export class RoleRevealPageComponent implements OnInit {
 
   assignRoles(): void {
     if (!this.canAssignRoles){return;}
-    this._roleService.assignRoles();
+    this._playerService.players$
+      .pipe(first())
+      .subscribe((players) => {
+        let unassignedPlayers = players;
+        let allRoles = RoleDistribution.allRoles('Regular', players.length);
+
+        while (unassignedPlayers.length > 0) {
+          const whichPlayerIndexToAssign = randomInt(unassignedPlayers.length-1);
+          const roleToAssign = allRoles.pop();
+          const whichPlayerToAssign = unassignedPlayers.splice(whichPlayerIndexToAssign,1)[0];
+
+          this._playerService.update('role',roleToAssign.role,whichPlayerToAssign.name);
+          this._playerService.update('team',roleToAssign.team,whichPlayerToAssign.name);
+        }
+        this._playerService.saveChanges();
+    })
   }
 
   startGame(): void {
