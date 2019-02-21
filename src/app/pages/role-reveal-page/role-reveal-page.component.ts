@@ -25,11 +25,9 @@ export class RoleRevealPageComponent implements OnInit {
     private _sessionService: SessionService,
     private _playerService: PlayerService) { }
 
-    @Output() playersAssigned = new EventEmitter<Player[]>();
+  teamEnum = Team;
     
-    teamEnum = Team;
-    
-  playerName: string;
+  playerName: string = this._sessionService.name;
   canAssignRoles = false;
   rolesAssigned = false;
   player: Player;
@@ -39,8 +37,6 @@ export class RoleRevealPageComponent implements OnInit {
   rolePipe = rolePipe;
 
   ngOnInit() {
-    this.playerName = this._sessionService.name;
-
     this._playerService.players$
       .pipe(takeUntil(this.destroy$))
       .subscribe((players) => {
@@ -49,7 +45,6 @@ export class RoleRevealPageComponent implements OnInit {
           this.rolesAssigned = true;
           this.canAssignRoles = false;
           this.player = players.filter((player) => player.name === this.playerName)[0];
-          this.playersAssigned.emit(players);
         } else {
           this.currentPlayers = [];
           this.rolesAssigned = false;
@@ -63,19 +58,18 @@ export class RoleRevealPageComponent implements OnInit {
     this._playerService.players$
       .pipe(first())
       .subscribe((players) => {
-        let unassignedPlayers = players;
-        let allRoles = RoleDistribution.allRoles('Regular', players.length);
+        const allRoleCards = RoleDistribution
+          .allRoles('Regular',players.length)
+          .shuffle();
 
-        while (unassignedPlayers.length > 0) {
-          const whichPlayerIndexToAssign = randomInt(unassignedPlayers.length-1);
-          const roleToAssign = allRoles.pop();
-          const whichPlayerToAssign = unassignedPlayers.splice(whichPlayerIndexToAssign,1)[0];
+        players.forEach((player,index) => {
+          const roleCard = allRoleCards[index];
+          this._playerService.update('team',roleCard.team,player.name);
+          this._playerService.update('role',roleCard.role,player.name);
+        });
 
-          this._playerService.update('role',roleToAssign.role,whichPlayerToAssign.name);
-          this._playerService.update('team',roleToAssign.team,whichPlayerToAssign.name);
-        }
         this._playerService.saveChanges();
-    })
+      })
   }
 
   startGame(): void {
