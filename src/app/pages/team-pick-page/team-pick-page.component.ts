@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MissionService } from 'src/services/mission.service';
 import { Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
@@ -7,6 +7,8 @@ import { Stage } from 'src/enums/stage.enum';
 import { bind } from 'src/functions';
 import { Player } from 'src/models/player';
 import { SessionService } from 'src/services/session.service';
+import { GameService } from 'src/services/game.service';
+import { IColumn } from 'src/app/components/player-table/player-table.component';
 
 
 
@@ -19,6 +21,7 @@ import { SessionService } from 'src/services/session.service';
 export class TeamPickPageComponent implements OnInit {
 
   constructor(private _missionService: MissionService,
+    private _gameService: GameService,
     private _navService: NavService,
     private _sessionService: SessionService) { }
   
@@ -31,6 +34,8 @@ export class TeamPickPageComponent implements OnInit {
 
   private destroy$ = new Subject();
   
+  columns: IColumn;
+  }
 
   ngOnInit() { 
     this.playerName = this._sessionService.name;
