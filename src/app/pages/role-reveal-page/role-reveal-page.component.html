@@ -1,16 +1,12 @@
-<button *ngIf="canAssignRoles" (click)="assignRoles()">Assign Roles</button>
 
-<div *ngIf="!canAssignRoles && !rolesAssigned">Loading...</div>
-<div *ngIf="player">
-  <p>You are a {{teamPipe(player.team)}} {{rolePipe(player.role)}}</p>
-  <div class="fellow spies" *ngIf="player.team == teamEnum.spy">
-    Your fellow spies are:
-    <ul *ngFor="let player of fellowSpies">
-      <li>{{player.name}}</li>
-    </ul>
-  </div>
+<div *ngIf="!canAssignRoles && !canStartGame">Loading...</div>
+
+<div *ngIf="canAssignRoles">
+  <button (click)="onAssignRolesClick()">Assign Roles</button>
 </div>
 
-<div *ngIf="rolesAssigned">
-  <button (click)="startGame()">Start the game</button>
+<div *ngIf="canStartGame">
+  <p>You have been assigned a role card!</p>
+  <p>Click the user icon on the top right to see your card!</p>
+  <button (click)="onStartGameClick()">Start the game</button>
 </div>

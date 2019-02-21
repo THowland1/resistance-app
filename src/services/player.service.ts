@@ -3,29 +3,45 @@ import { BaseService } from './base.service';
 import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { Game } from 'src/models/game';
 import { SessionService } from './session.service';
-import { map, distinctUntilChanged, shareReplay, pluck } from 'rxjs/operators';
+import { map, distinctUntilChanged, shareReplay, pluck, tap } from 'rxjs/operators';
 import { log } from 'src/functions';
 import { Player } from 'src/models/player';
+import { ModalService } from 'src/app/components/modal/modal.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerService {
 
-  constructor(private _base: BaseService, private _sessionService: SessionService) {
+  constructor(
+    private _base: BaseService,
+    private _sessionService: SessionService,
+    private _modalService: ModalService) {
     this._sessionService.roomCode$.subscribe((roomCode) => {
-       this._players = this._base.getCollection<Player>('player', roomCode).pipe(shareReplay(1),log());
+       this._players$ = this._base.getCollection<Player>('player', roomCode)
+        .pipe(
+          tap((players) => this._players = players),
+          shareReplay(1),
+          log());
      })
   }
 
-  private _players: Observable<Player[]>;
+  private _players$: Observable<Player[]>;
+  private _players: Player[];
+
+  get players(): Player[] {
+    if(this._players){
+      this._modalService.error('Internal error',['Players have not been assigned'])
+    }
+    return this._players;
+  }
 
   get players$(): Observable<Player[]>{
-    return this._players.pipe(distinctUntilChanged());
+    return this._players$.pipe(distinctUntilChanged());
   }
 
   get count$(): Observable<number> {
-    return this._players.pipe(
+    return this._players$.pipe(
       map((players) => players.length),
       distinctUntilChanged()
     )

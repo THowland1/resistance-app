@@ -25,29 +25,6 @@ export class MissionService {
     private _gameService: GameService,
     private _playerService: PlayerService) { }
 
-  newMission(leader: number): void {
-    this._gameService.update('leader',leader);
-    this._gameService.saveChanges();
-  }
-
-  boolArray2Number(boolArray: boolean[]): number{
-    // Starts are array of booleans (e.g. [false,true,false, true])
-    const binaryArray = boolArray.map((bool) => (+bool)).reverse(); // Array of 0s and 1s (e.g. [1,0,1,0])
-    const charArray = binaryArray.map((bit) => bit.toString()); // Array of '0's and '1's (e.g. ['1','0','1','0'])
-    const binaryString = charArray.join(''); // String with '0' and '1' chars (e.g. '1010')
-    const decimalNumber = parseInt(binaryString,2); // Decimal value of the binary number (e.g. 10)
-    return decimalNumber;
-  }
-
-  number2BoolArray(decimalNumber: number): boolean[]{
-    // Starts as decimal value of the number (e.g. 10)
-    const binaryString = decimalNumber.toString(2);  // String with '0' and '1' chars (e.g. '1010')
-    const charArray = binaryString.split(''); // Array of '0's and '1's (e.g. ['1','0','1','0'])
-    const binaryArray = charArray.map((char) => parseInt(char)); // Array of 0s and 1s (e.g. [1,0,1,0])
-    const boolArray = binaryArray.map((number) => number ? true : false).reverse(); // Array of booleans (e.g. [false,true,false,true])
-    return boolArray;
-  }
-
   currentLeader(): Observable<number> {
     return this._gameService.get('leader');
   }
