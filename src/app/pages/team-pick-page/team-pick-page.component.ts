@@ -27,21 +27,18 @@ export class TeamPickPageComponent implements OnInit {
   
     
   currentLeader: string;
-  selectedPlayers: boolean[];
   teamSize: number;
   playerName: string;
   players: Player[];
+  columns: IColumn = {};
 
   private destroy$ = new Subject();
-  
-  columns: IColumn;
-  }
 
   ngOnInit() { 
     this.playerName = this._sessionService.name;
     this.players = this._sessionService.players;
 
-    this._missionService.currentLeader()
+    this._gameService.get('leader')
       .pipe(takeUntil(this.destroy$),map((leader) => this.players[leader].name))
       .subscribe(bind(this,'currentLeader'));
 
@@ -51,53 +48,54 @@ export class TeamPickPageComponent implements OnInit {
 
     this._missionService.getTeamPick()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(bind(this,'selectedPlayers'));
+      .subscribe((selectedPlayers) => this.columns['Team'] = selectedPlayers);
   }
 
-  teamChange() {
-    this._missionService.updateTeamPick(this.selectedPlayers);
+  onTeamChange(position:string): void {
+    const pos = position.toLowerCase() as any; // [TODO] - Make it so it knows
+      this._gameService.update(pos,this.columns[position]);
+      this._gameService.saveChanges();
   }
 
-  submitTeam(): void {
+  onSubmitTeamClick(): void {
     if (!this.canSubmitTeam){
       return;
     }
     this._navService.goToStage(Stage.Vote);
   }
 
-  get isLoading(): boolean {
-    return [
-      this.currentLeader,
-      this.selectedPlayers,
-      this.teamSize,
-      this.playerName,
-      this.players
-    ].some((prop) => prop === undefined);
-  }
-
-  get canSubmitTeam(): boolean {
-    return this.numberOfSelectedPlayers === this.teamSize && this.youAreTheLeader;
-  }
-
   get numberOfSelectedPlayers(): number{
-    return this.selectedPlayers.filter((selected) => selected).length;
-  }
-
-  get youAreTheLeader(): boolean {
-    return this.playerName === this.currentLeader;
+    return this.columns['Team'].filter((selected) => selected).length;
   }
 
   get whoseTurn(): string {
-    if (this.youAreTheLeader){
+    if (this.canEditTeam){
       return 'YOUR'
     } else {
       return `${this.currentLeader}'s`;
     }
   }
 
+  get canEditTeam(): boolean {
+    return this.playerName === this.currentLeader;;
+  }
+  
+  get canSubmitTeam(): boolean {
+    return this.numberOfSelectedPlayers === this.teamSize && this.canEditTeam;
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+  
+  get isLoading(): boolean {
+    return [
+      this.currentLeader,
+      this.teamSize,
+      this.playerName,
+      this.players
+    ].some((prop) => prop === undefined);
   }
 
 }

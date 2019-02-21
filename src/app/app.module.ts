@@ -23,6 +23,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModalShellComponent } from './components/modal/modal-shell.component';
 import { AlertModalComponent } from './components/modal/alert/alert-modal.component';
 import { RoleCardModalComponent } from './components/modal/role-card/role-card-modal.component';
+import { PlayerTableComponent } from './components/player-table/player-table.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { RoleCardModalComponent } from './components/modal/role-card/role-card-m
     SessionInfoBarComponent,
     ModalShellComponent,
     AlertModalComponent,
-    RoleCardModalComponent
+    RoleCardModalComponent,
+    PlayerTableComponent
   ],
   imports: [
     BrowserModule,
