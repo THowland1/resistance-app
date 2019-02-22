@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { MissionService } from 'src/services/mission.service';
 import { Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { NavService } from 'src/services/nav.service';
 import { Stage } from 'src/enums/stage.enum';
-import { bind } from 'src/functions';
 import { Player } from 'src/models/player';
 import { SessionService } from 'src/services/session.service';
 import { GameService } from 'src/services/game.service';
 import { IColumn } from 'src/app/components/player-table/player-table.component';
+import { gameVariables } from 'src/game.variables';
 
 
 
@@ -20,16 +19,14 @@ import { IColumn } from 'src/app/components/player-table/player-table.component'
 
 export class TeamPickPageComponent implements OnInit {
 
-  constructor(private _missionService: MissionService,
-    private _gameService: GameService,
+  constructor(private _gameService: GameService,
     private _navService: NavService,
     private _sessionService: SessionService) { }
   
-    
-  currentLeader: string;
-  teamSize: number;
   playerName: string;
   players: Player[];
+  currentLeader: string;
+  teamSize: number;
   columns: IColumn = {};
 
   private destroy$ = new Subject();
@@ -38,17 +35,9 @@ export class TeamPickPageComponent implements OnInit {
     this.playerName = this._sessionService.name;
     this.players = this._sessionService.players;
 
-    this._gameService.get('leader')
-      .pipe(takeUntil(this.destroy$),map((leader) => this.players[leader].name))
-      .subscribe(bind(this,'currentLeader'));
-
-    this._missionService.getTeamSize()
-      .pipe(takeUntil(this.destroy$),map((teamSize) => teamSize.size))
-      .subscribe(bind(this,'teamSize'));
-
-    this._missionService.getTeamPick()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((selectedPlayers) => this.columns['Team'] = selectedPlayers);
+    this._bind_currentLeader();
+    this._bind_currentMission();
+    this._bind_team();
   }
 
   onTeamChange(position:string): void {
@@ -64,7 +53,7 @@ export class TeamPickPageComponent implements OnInit {
     this._navService.goToStage(Stage.Vote);
   }
 
-  get numberOfSelectedPlayers(): number{
+  get selectedPlayersCount(): number{
     return this.columns['Team'].filter((selected) => selected).length;
   }
 
@@ -77,11 +66,11 @@ export class TeamPickPageComponent implements OnInit {
   }
 
   get canEditTeam(): boolean {
-    return this.playerName === this.currentLeader;;
+    return this.playerName === this.currentLeader;
   }
   
   get canSubmitTeam(): boolean {
-    return this.numberOfSelectedPlayers === this.teamSize && this.canEditTeam;
+    return this.selectedPlayersCount === this.teamSize && this.canEditTeam;
   }
 
   ngOnDestroy(): void {
@@ -98,4 +87,21 @@ export class TeamPickPageComponent implements OnInit {
     ].some((prop) => prop === undefined);
   }
 
+  private _bind_currentLeader(): void {
+    this._gameService.get('leader')
+      .pipe(takeUntil(this.destroy$),map((leader) => this.players[leader].name))
+      .subscribe((leader) => this.currentLeader = leader);
+  }
+
+  private _bind_currentMission(): void {
+    this._gameService.get('currentMission')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((missionNo) => this.teamSize = gameVariables.missionSizes[this.players.length-5][missionNo].size)
+  }
+
+  private _bind_team(): void {
+    this._gameService.get('team')
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((selectedPlayers) => this.columns['Team'] = selectedPlayers);
+  }
 }

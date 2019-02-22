@@ -7,7 +7,7 @@
   <app-player-table [isReadonly]="!canEditTeam" [columns]="columns" (teamChange)="onTeamChange($event)"></app-player-table>
 
   <p class="whos-turn" *ngIf="!!currentLeader">It is <i>{{whoseTurn}}</i> turn to pick a team</p>
-  <p>{{numberOfSelectedPlayers}}/{{teamSize}} players selected</p>
+  <p>{{selectedPlayersCount}}/{{teamSize}} players selected</p>
 
   <div *ngIf="canEditTeam">
     <button [disabled]="!canSubmitTeam" (click)="onSubmitTeamClick()">Thats my team</button>
