@@ -4,6 +4,8 @@ import { Team } from 'src/enums/team.enum';
 import { Role } from 'src/enums/role.enum';
 import { ModalService } from '../modal/modal.service';
 import { PlayerService } from 'src/services/player.service';
+import { first } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-player-table',
@@ -20,9 +22,10 @@ export class PlayerTableComponent implements OnInit {
   @Input() isReadonly: boolean;
   @Output() teamChange: EventEmitter<string> = new EventEmitter(); // [TODO] - Limit this to a type of Team/Investigator/etc
   
-  players: Player[] = this._playerService.players;
+  players: Player[];
 
   ngOnInit() {
+    this._bind_players();
     this._sanityChecks();
   }
 
@@ -40,12 +43,24 @@ export class PlayerTableComponent implements OnInit {
     })
   }
 
+  get isLoading$(): Observable<boolean> {
+    const isLoading = this.players === undefined;
+
+    return of(isLoading);
+  }
+
   private _sanityChecks(): void {
     // Are all columns the same size 
-    const columnsCorrectlength: boolean = this.columnData.every((column) => column.length === this.players.length);
-    if(!columnsCorrectlength){
-      this._modalService.error('Internal error', ['Inconsistent column length'])
-    }
+    this.isLoading$.pipe(first((isLoading) => !isLoading)).subscribe((_) => {
+      const columnsCorrectlength: boolean = this.columnData.every((column) => column.length === this.players.length);
+      if(!columnsCorrectlength){
+        this._modalService.error('Internal error', ['Inconsistent column length'])
+      }
+    })
+  }
+
+  private _bind_players(): void {
+    this._playerService.players$.pipe(first()).subscribe((players) => this.players = players);
   }
 }
 
