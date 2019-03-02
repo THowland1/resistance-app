@@ -1,11 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MissionService } from 'src/services/mission.service';
 import { Player } from 'src/models/player';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { Vote } from 'src/enums/vote.enum';
 import { SessionService } from 'src/services/session.service';
 import { IColumn } from 'src/app/components/player-table/player-table.component';
+import { PlayerService } from 'src/services/player.service';
+import { GameService } from 'src/services/game.service';
+import { MissionCard } from 'src/enums/mission-card';
+import { Stage } from 'src/enums/stage.enum';
+import { ModalService } from 'src/app/components/modal/modal.service';
 
 @Component({
   selector: 'app-vote-page',
@@ -14,10 +18,12 @@ import { IColumn } from 'src/app/components/player-table/player-table.component'
 })
 export class VotePageComponent implements OnInit {
 
-  constructor(private _missionService: MissionService,
-    private _sessionService: SessionService) { }
+  constructor(private _playerService: PlayerService,
+    private _sessionService: SessionService,
+    private _gameService: GameService,
+    private _modalService: ModalService) { }
   
-  currentVotes: Vote[];
+  private _currentVotes: Vote[];
   wait: boolean;
   playerName: string;
   players: Player[];
@@ -30,115 +36,112 @@ export class VotePageComponent implements OnInit {
     this.playerName = this._sessionService.name;
     this.players = this._sessionService.players;
 
-    this._missionService.getTeamPick()
+    this._gameService.get('team')
       .pipe(first())
       .subscribe((teamPick) => this.columns['Team'] = teamPick);
 
-    this._missionService.currentVotes()
+    this._gameService.get('votes')
       .pipe(takeUntil(this.destroy$))
       .subscribe((votes) => {
-        this.currentVotes = votes;
+        this._currentVotes = votes;
         if (!this.wait) {
-          this.columns['vote in'] = this.currentVotes.map((vote) => vote !== Vote.notVoted);
+          this.columns['vote in'] = this._currentVotes.map((vote) => vote !== Vote.notVoted);
         }
       });
 
-    this._missionService.wait
+    this._gameService.get('wait')
       .pipe(takeUntil(this.destroy$))
       .subscribe((wait) => {
         this.wait = wait;
         if (wait) {
           delete this.columns['vote in'];
-          this.columns['vote'] = this.currentVotes.map((vote) => vote === Vote.upvoted);
+          this.columns['vote'] = this._currentVotes.map((vote) => vote === Vote.upvoted);
         }
       })
   }
 
-  submitVote(vote: boolean){
-    if (this.playerIndex === -1){
-      console.error('You are not a player in this game');
-      return;
-    }
-    this._missionService.submitVote(vote,this.playerIndex);
-  }
-
-  seeVotes(): void{
-    if(!this.allVotesIn){
-      console.error('Not all votes are in yet');
-      return;
-    }
-    this._missionService.updateWait(true);
-  }
-
-  moveOn(): void{
-    if(!this.allVotesIn){
-      console.error('The votes aren\'t all in')
+  onSubmitVoteClick(vote: boolean){
+    const playerIndex = this._sessionService.playerIndex;
+    if (playerIndex === -1){
+      this._modalService.error('Illegal Action',['You cannot vote!','You are not a player in this game!']);
       return;
     }
 
-    this._missionService.updateWait(false);
-    this._missionService.moveOn(this.hasItGoneAhead);
+    const newVote = vote ? Vote.upvoted : Vote.downvoted;
+    this._currentVotes[playerIndex] = newVote;
+
+    this._gameService.update('votes',this._currentVotes);
+    this._gameService.saveChanges();
   }
-  
-  votePipe(vote: Vote): string {
-    switch (vote) {
-      case Vote.notVoted:
-        return 'not voted!';
-        case Vote.upvoted:
-        return 'voted it up!';
-        case Vote.downvoted:
-        return 'voted it down!';
-        default:
-        return 'error';
-      }
+
+  onSeeVotesClick(): void{
+    if (!this.check_allPlayersHaveVoted){
+      this._modalService.error('Illegal Action',['You cannot see the votes!','Not all votes are in yet!']);
+      return;
     }
-    
-  
-  tableVote(index: number): string {
-    if(!this.wait && this.currentVotes[index] !== Vote.notVoted){
-      return '?';
-    } else if(this.currentVotes[index] === Vote.notVoted){
-      return '';
+    this._gameService.update('wait',true);
+    this._gameService.saveChanges();
+  }
+
+  onMoveOnClick(): void {
+    if (!this.check_allPlayersHaveVoted){
+      this._modalService.error('Illegal Action',['You cannot move on!','Not all votes are in yet!']);
+      return;
+    }
+
+    if (this.check_teamApproved === true){
+      this._do_startMission();
+    } else if (this.check_teamApproved === false) {
+      this._do_resetTeamPick();
     } else {
-      return this.votePipe(this.currentVotes[index]);
-    }
-
+      console.error('Something has gone wrong');
+    }    
+  }    
+  
+  get count_votes(): number {
+    return this._currentVotes.filter((vote) => vote !== Vote.notVoted).length;
   }
-  get hasItGoneAhead(): boolean {
-    const upvotes = this.currentVotes.filter((vote) => vote === Vote.upvoted).length;
+  
+  get check_teamApproved(): boolean {
+    const upvotes = this._currentVotes.filter((vote) => vote === Vote.upvoted).length;
     const downvotes = this.players.length - upvotes;
     return upvotes > downvotes;
   }
 
-  get playerIndex(): number {
-    return this.players.map((player) => player.name).indexOf(this.playerName);
-  }
-
-  get noOfVotesIn(): number {
-    return this.currentVotes.filter((vote) => vote !== Vote.notVoted).length;
-  }
-
-  get allVotesIn(): boolean {
-    return this.noOfVotesIn === this.players.length;
+  get check_allPlayersHaveVoted(): boolean {
+    return this.count_votes === this.players.length;
   }
 
   get isLoading(): boolean {
-    return [this.currentVotes, this.wait].some((prop) => prop === undefined);
+    return [this._currentVotes, this.wait].some((prop) => prop === undefined);
+  }
+  
+  private _do_startMission(): void {
+    this._gameService.update('wait',false);
+    this._gameService.update('playedCards', new Array(this._playerService.count).fill(MissionCard.none));
+    this._gameService.update('stage', Stage.Mission);
+    this._gameService.saveChanges();
   }
 
+  private _do_resetTeamPick(): void {
+    this._gameService.game$
+      .pipe(first())
+      .subscribe((game) => {
+        game.leader = (game.leader + 1) % this._playerService.count;
+        game.noOfDownvotedTeams = game.noOfDownvotedTeams + 1;
 
-  get yourVote(): boolean {
-    switch (this.currentVotes[this.playerIndex]) {
-      case Vote.notVoted:
-        return null;
-      case Vote.upvoted:
-        return true;
-      case Vote.downvoted:
-        return false;
-      default:
-        console.error('An error with the votes has occurred')
-        return null;
-    }
+        this._gameService.update('wait',false);
+        this._gameService.update('leader', game.leader);
+        this._gameService.update('votes', new Array(this._playerService.count).fill(Vote.notVoted));
+        this._gameService.update('noOfDownvotedTeams', game.noOfDownvotedTeams);
+        
+        if (this._gameService.check_isGameOver(game)) {
+          this._gameService.update('stage', Stage.GameOver);
+        } else {
+          this._gameService.update('stage', Stage.TeamPick);
+        }
+        this._gameService.saveChanges();
+    })
   }
 
   ngOnDestroy(): void {

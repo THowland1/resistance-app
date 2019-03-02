@@ -47,8 +47,8 @@ export class PlayerService {
     )
   }
 
-  count(roomCode: string): Observable<number> {
-    return this._base.getCollection<Player>('player', roomCode).pipe(map((players) => players.length));
+  get count(): number {
+    return this._players.length;
   }
 
   check_doesPlayerExist(roomCode: string, name: string): Promise<boolean> {

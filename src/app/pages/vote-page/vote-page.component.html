@@ -2,18 +2,17 @@
   <app-player-table [isReadonly]="true" [columns]="columns"></app-player-table>
 
   <div *ngIf="!wait">
-    <p>{{noOfVotesIn}} / {{players.length}} votes are in</p>
-    <p *ngIf="yourVote !== null">You have voted this team {{yourVote ? 'up' : 'down'}}</p>
-    <button *ngIf="!allVotesIn"  (click)="submitVote(true)">Yes</button>
-    <button *ngIf="!allVotesIn"  (click)="submitVote(false)">No</button>
+    <p>{{count_votes}} / {{players.length}} votes are in</p>
+    <button *ngIf="!check_allPlayersHaveVoted"  (click)="onSubmitVoteClick(true)">Yes</button>
+    <button *ngIf="!check_allPlayersHaveVoted"  (click)="onSubmitVoteClick(false)">No</button>
     <div>
-      <button *ngIf="allVotesIn" (click)="seeVotes()">See votes</button>
+      <button *ngIf="check_allPlayersHaveVoted" (click)="onSeeVotesClick()">See votes</button>
     </div>
   </div>
 
   <div *ngIf="wait">
-    <p>The team has {{hasItGoneAhead ? 'gone ahead' : 'not gone ahead'}}!</p>
-    <button (click)="moveOn()">Move on</button>
+    <p>The team has {{check_teamApproved ? 'gone ahead' : 'not gone ahead'}}!</p>
+    <button (click)="onMoveOnClick()">Move on</button>
   </div>
 </div>
 

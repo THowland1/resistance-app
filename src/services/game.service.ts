@@ -4,6 +4,8 @@ import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { Game } from 'src/models/game';
 import { SessionService } from './session.service';
 import { shareReplay, pluck, map, distinctUntilChanged } from 'rxjs/operators';
+import { gameVariables } from 'src/game.variables';
+import { MissionOutcome } from 'src/enums/mission-outcome';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +56,23 @@ export class GameService {
       this._base.game(roomCode).update(this._gameDelta);
       this._gameDelta = {};
       this._hasChanged = false;
+    }
+  }
+
+  check_isGameOver(game: Game): boolean {
+    var missionOutcomes = game.missionOutcomes;
+    var noOfDownvotedTeams = game.noOfDownvotedTeams;
+
+    var noOfMissionsToWin = gameVariables.noOfMissionsToWin;
+    var maxNoOfVotesPerMission = gameVariables.maxNoOfVotesPerMission;
+
+    var noOfFails = missionOutcomes.filter((outcome) => outcome === MissionOutcome.fail).length;
+    var noOfPasses = missionOutcomes.filter((outcome) => outcome === MissionOutcome.pass).length;
+    
+    if (noOfFails >= noOfMissionsToWin || noOfPasses >= noOfMissionsToWin || noOfDownvotedTeams >= maxNoOfVotesPerMission){
+      return true;
+    } else {
+      return false;
     }
   }
 

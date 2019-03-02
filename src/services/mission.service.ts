@@ -29,25 +29,6 @@ export class MissionService {
     return this._gameService.get('leader');
   }
 
-  currentVotes(): Observable<Vote[]> {
-    return this._gameService.get('votes');
-  }
-
-  submitVote(vote: boolean, index: number): void {
-    //TODO update so it updates part of an array instead of just adding onto the end
-
-    const newVote = vote ? Vote.upvoted : Vote.downvoted;
-
-    this.currentVotes()
-      .pipe(
-        first(),
-        map((votes) => {votes[index] = newVote; return votes;}))
-      .subscribe((votes) => {
-        this._gameService.update('votes',votes);
-        this._gameService.saveChanges();
-      });
-  }
-
   getPlayers(): Observable<string[]> {
     return this._playerService.players$
       .pipe(map((player)=>player.map((player)=>player.name)))
@@ -76,48 +57,6 @@ export class MissionService {
     this._gameService.saveChanges();
   }
 
-  moveOn(hasItGoneAhead: boolean): void {
-    this.updateWait(false);
-
-    if(hasItGoneAhead === true){
-      this._playerService.count$
-        .pipe(first())
-        .subscribe((count) => {
-          this._gameService.update('playedCards', new Array(count).fill(MissionCard.none));
-          this._gameService.saveChanges();
-          this._nav.goToStage(Stage.Mission);
-        })
-    } else if (hasItGoneAhead === false) {
-      // TODO: add to list of failed missions
-      // TODO: add to list of failed votes
-
-      zip(
-        this._playerService.count$,
-        this._gameService.game$)
-        .pipe(first())
-        .subscribe(([playerCount,game]) => {
-          const newLeader = (game.leader + 1) % playerCount;
-
-          game.noOfDownvotedTeams = game.noOfDownvotedTeams + 1;
-
-          this._gameService.update('leader',newLeader);
-          this._gameService.update('votes',new Array(playerCount).fill(Vote.notVoted));
-          this._gameService.update('noOfDownvotedTeams', game.noOfDownvotedTeams);
-          this._gameService.saveChanges();
-
-          if (this.isTheGameOver(game)) {
-            this._nav.goToStage(Stage.GameOver);
-          } else {
-            this._nav.goToStage(Stage.TeamPick);
-          }
-        })
-    } else {
-      console.error('Something has gone wrong');
-    }
-    // move to new page
-
-    //const nextLeader = this._base.getGameProperty('')
-  }
 
   nextMission(didItPass: boolean):void {
     zip(
@@ -162,10 +101,6 @@ export class MissionService {
   get getPlayableCards(): Observable<IMissionCard[]> {
     return this._gameService.get('gameType')
       .pipe(map((gameType) => cardsInPlay(gameType).map((card)=>missionCards[card])))
-  }
-  
-  get wait(): Observable<boolean> {
-    return this._gameService.get('wait');
   }
   
   private teamSize(noOfPlayers: number, missionNo: number): MissionSize {
