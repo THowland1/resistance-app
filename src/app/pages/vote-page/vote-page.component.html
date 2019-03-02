@@ -1,21 +1,5 @@
 <div *ngIf="!isLoading">
-  <p>The team is ...</p>
-  <table class="player-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>On Team?</th>
-          <th>Vote</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let player of players; let i = index">
-          <td>{{player.name}}</td>
-          <td><input disabled type="checkbox" [ngModel]="teamPick[i]"></td>
-          <td>{{tableVote(i)}}</td>
-        </tr>
-      </tbody>
-    </table>
+  <app-player-table [isReadonly]="true" [columns]="columns"></app-player-table>
 
   <div *ngIf="!wait">
     <p>{{noOfVotesIn}} / {{players.length}} votes are in</p>

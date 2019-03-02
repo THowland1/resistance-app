@@ -1,11 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MissionService } from 'src/services/mission.service';
 import { Player } from 'src/models/player';
-import { bind } from 'src/functions';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { Vote } from 'src/enums/vote.enum';
 import { SessionService } from 'src/services/session.service';
+import { IColumn } from 'src/app/components/player-table/player-table.component';
 
 @Component({
   selector: 'app-vote-page',
@@ -17,29 +17,41 @@ export class VotePageComponent implements OnInit {
   constructor(private _missionService: MissionService,
     private _sessionService: SessionService) { }
   
-  teamPick: boolean[];
   currentVotes: Vote[];
   wait: boolean;
   playerName: string;
   players: Player[];
+
+  columns: IColumn = {}
 
   private destroy$ = new Subject();
   
   ngOnInit() {
     this.playerName = this._sessionService.name;
     this.players = this._sessionService.players;
-    // TODO Remove this eventually
-    console.log(this.players);
+
+    this._missionService.getTeamPick()
+      .pipe(first())
+      .subscribe((teamPick) => this.columns['Team'] = teamPick);
+
     this._missionService.currentVotes()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(bind(this,'currentVotes'));
-    
-    this._missionService.getTeamPick()
-      .pipe(
-        first())
-      .subscribe(bind(this,'teamPick'));
+      .subscribe((votes) => {
+        this.currentVotes = votes;
+        if (!this.wait) {
+          this.columns['vote in'] = this.currentVotes.map((vote) => vote !== Vote.notVoted);
+        }
+      });
 
-    this._missionService.wait.subscribe(bind(this,'wait'))
+    this._missionService.wait
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((wait) => {
+        this.wait = wait;
+        if (wait) {
+          delete this.columns['vote in'];
+          this.columns['vote'] = this.currentVotes.map((vote) => vote === Vote.upvoted);
+        }
+      })
   }
 
   submitVote(vote: boolean){
@@ -111,7 +123,7 @@ export class VotePageComponent implements OnInit {
   }
 
   get isLoading(): boolean {
-    return [this.currentVotes, this.teamPick, this.wait].some((prop) => prop === undefined);
+    return [this.currentVotes, this.wait].some((prop) => prop === undefined);
   }
 
 
