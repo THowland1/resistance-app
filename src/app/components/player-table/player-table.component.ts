@@ -54,7 +54,7 @@ export class PlayerTableComponent implements OnInit {
     this.isLoading$.pipe(first((isLoading) => !isLoading)).subscribe((_) => {
       const columnsCorrectlength: boolean = this.columnData.every((column) => column.length === this.players.length);
       if(!columnsCorrectlength){
-        this._modalService.error('Internal error', ['Inconsistent column length'])
+        this._modalService.error('Internal Error', ['Inconsistent column length'])
       }
     })
   }

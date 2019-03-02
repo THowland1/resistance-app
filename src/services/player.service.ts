@@ -31,7 +31,7 @@ export class PlayerService {
 
   get players(): Player[] {
     if(this._players === undefined){
-      this._modalService.error('Internal error',['Players have not been assigned'])
+      this._modalService.error('Internal Error',['Players have not been assigned'])
     }
     return this._players;
   }
