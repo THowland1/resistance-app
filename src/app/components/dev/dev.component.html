@@ -18,11 +18,33 @@
     <button (click)="resetClick()">Go!</button>
   </form>
   <form class="col-12 my-1">
-      <span>Upvote/downvote room</span>
-      <input type="text" placeholder="RoomCode" [(ngModel)]="upvoteRoomCode" name="roomCode">
-      <button (click)="upOrDownvoteClick(true)">Upvote!</button>
-      <button (click)="upOrDownvoteClick(false)">Downvote!</button>
-    </form>
+    <span>Upvote/downvote room</span>
+    <input type="text" placeholder="RoomCode" [(ngModel)]="upvoteRoomCode" name="roomCode">
+    <button (click)="upOrDownvoteClick(true)">Upvote!</button>
+    <button (click)="upOrDownvoteClick(false)">Downvote!</button>
+  </form>
+  <form class="col-12 my-1">
+      <span>Initialise table</span>
+      <button (click)="initialiseTable()">Initialise</button>
+  </form>
+  <form class="col-12 my-1">
+      <span>Set table readonlyness</span>
+      <input type="text" placeholder="column" [(ngModel)]="column" name="column">
+      <button (click)="setVisibility(true)">Readonly!</button>
+      <button (click)="setVisibility(false)">Not readonly!</button>
+  </form>
+  <form class="col-12 my-1">
+    <span>Set column readonlyness</span>
+    <input type="text" placeholder="column" [(ngModel)]="column" name="column">
+    <button (click)="setColReadonly(true)">Readonly!</button>
+    <button (click)="setColReadonly(false)">Not readonly!</button>
+  </form>
+  <form class="col-12 my-1">
+    <span>Set column visibility</span>
+    <input type="text" placeholder="column" [(ngModel)]="column" name="column">
+    <button (click)="setColVisibility(true)">Show!</button>
+    <button (click)="setColVisibility(false)">Hide!</button>
+  </form>
 </div>
 <div *ngIf="!devAreaVisible" style="text-align: center; color: lightgray">
   <hr>

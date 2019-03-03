@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, of, Observable } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { NavService } from 'src/services/nav.service';
 import { Stage } from 'src/enums/stage.enum';
 import { Player } from 'src/models/player';
 import { SessionService } from 'src/services/session.service';
 import { GameService } from 'src/services/game.service';
-import { IColumn } from 'src/app/components/player-table/player-table.component';
 import { gameVariables } from 'src/game.variables';
-
-
+import { PlayerTableService } from 'src/app/components/player-table/player-table.service';
 
 @Component({
   selector: 'app-team-pick-page',
@@ -21,13 +19,14 @@ export class TeamPickPageComponent implements OnInit {
 
   constructor(private _gameService: GameService,
     private _navService: NavService,
-    private _sessionService: SessionService) { }
+    private _sessionService: SessionService,
+    private _tableService: PlayerTableService) { }
   
   playerName: string;
   players: Player[];
   currentLeader: string;
   teamSize: number;
-  columns: IColumn = {};
+  team: boolean[];
 
   private destroy$ = new Subject();
 
@@ -38,23 +37,26 @@ export class TeamPickPageComponent implements OnInit {
     this._bind_currentLeader();
     this._bind_currentMission();
     this._bind_team();
-  }
 
-  onTeamChange(position:string): void {
-    const pos = position.toLowerCase() as any; // [TODO] - Make it so it knows
-      this._gameService.update(pos,this.columns[position]);
-      this._gameService.saveChanges();
+    this._tableService.initialiseTable();
+    this._tableService.setVisibility(true);
+    this._tableService.setColumnVisibility('team',true);
+
+    this.canEditTeam$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((canEditTeam) => this._tableService.setColumnReadonly('team', !canEditTeam));
   }
 
   onSubmitTeamClick(): void {
     if (!this.canSubmitTeam){
       return;
     }
+    this._tableService.setColumnReadonly('team',true);
     this._navService.goToStage(Stage.Vote);
   }
 
   get selectedPlayersCount(): number{
-    return this.columns['Team'].filter((selected) => selected).length;
+    return this.team.filter((selected) => selected).length;
   }
 
   get whoseTurn(): string {
@@ -67,6 +69,10 @@ export class TeamPickPageComponent implements OnInit {
 
   get canEditTeam(): boolean {
     return this.playerName === this.currentLeader;
+  }
+
+  get canEditTeam$(): Observable<boolean> {
+    return of(this.canEditTeam);
   }
   
   get canSubmitTeam(): boolean {
@@ -102,6 +108,6 @@ export class TeamPickPageComponent implements OnInit {
   private _bind_team(): void {
     this._gameService.get('team')
     .pipe(takeUntil(this.destroy$))
-    .subscribe((selectedPlayers) => this.columns['Team'] = selectedPlayers);
+    .subscribe((selectedPlayers) => this.team = selectedPlayers);
   }
 }

@@ -4,12 +4,12 @@ import { first, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { Vote } from 'src/enums/vote.enum';
 import { SessionService } from 'src/services/session.service';
-import { IColumn } from 'src/app/components/player-table/player-table.component';
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
 import { MissionCard } from 'src/enums/mission-card';
 import { Stage } from 'src/enums/stage.enum';
 import { ModalService } from 'src/app/components/modal/modal.service';
+import { PlayerTableService } from 'src/app/components/player-table/player-table.service';
 
 @Component({
   selector: 'app-vote-page',
@@ -21,14 +21,13 @@ export class VotePageComponent implements OnInit {
   constructor(private _playerService: PlayerService,
     private _sessionService: SessionService,
     private _gameService: GameService,
-    private _modalService: ModalService) { }
+    private _modalService: ModalService,
+    private _tableService: PlayerTableService) { }
   
   private _currentVotes: Vote[];
   wait: boolean;
   playerName: string;
   players: Player[];
-
-  columns: IColumn = {}
 
   private destroy$ = new Subject();
   
@@ -36,17 +35,14 @@ export class VotePageComponent implements OnInit {
     this.playerName = this._sessionService.name;
     this.players = this._sessionService.players;
 
-    this._gameService.get('team')
-      .pipe(first())
-      .subscribe((teamPick) => this.columns['Team'] = teamPick);
+    this._tableService.setColumnVisibility('team',true);
+    this._tableService.setColumnVisibility('hasVoted',true);
+    this._tableService.setColumnVisibility('vote',false);
 
     this._gameService.get('votes')
       .pipe(takeUntil(this.destroy$))
       .subscribe((votes) => {
         this._currentVotes = votes;
-        if (!this.wait) {
-          this.columns['vote in'] = this._currentVotes.map((vote) => vote !== Vote.notVoted);
-        }
       });
 
     this._gameService.get('wait')
@@ -54,8 +50,8 @@ export class VotePageComponent implements OnInit {
       .subscribe((wait) => {
         this.wait = wait;
         if (wait) {
-          delete this.columns['vote in'];
-          this.columns['vote'] = this._currentVotes.map((vote) => vote === Vote.upvoted);
+          this._tableService.setColumnVisibility('hasVoted',false);
+          this._tableService.setColumnVisibility('vote',true);
         }
       })
   }
@@ -124,6 +120,8 @@ export class VotePageComponent implements OnInit {
   }
 
   private _do_resetTeamPick(): void {
+    this._tableService.setColumnVisibility('vote',false);
+
     this._gameService.game$
       .pipe(first())
       .subscribe((game) => {

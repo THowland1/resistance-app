@@ -11,6 +11,8 @@ import { ActivatedRoute } from '@angular/router';
 import { SessionService } from 'src/services/session.service';
 import { GameService } from 'src/services/game.service';
 import { PlayerService } from 'src/services/player.service';
+import { PlayerTableService } from '../player-table/player-table.service';
+import { ITable } from '../player-table/player-table.component';
 
 @Component({
   selector: 'app-dev',
@@ -24,7 +26,8 @@ export class DevComponent implements OnInit {
     private _navService: NavService,
     private _sessionService: SessionService,
     private _gameService: GameService,
-    private _playerService: PlayerService) { }
+    private _playerService: PlayerService,
+    private _tableService: PlayerTableService) { }
 
   ngOnInit() {
     this._route.queryParams.subscribe((params) => { this.devAreaEnabled = params.dev});
@@ -96,5 +99,23 @@ export class DevComponent implements OnInit {
         this._gameService.update('votes', new Array(count).fill(vote));
         this._gameService.saveChanges();
       })
+  }
+
+  // Table stuff
+  column: keyof ITable;
+
+  initialiseTable(): void {
+    this._tableService.initialiseTable();
+  }
+
+  setVisibility(value: boolean): void {
+    this._tableService.setVisibility(value);
+  }
+
+  setColReadonly(value: boolean){
+    this._tableService.setColumnReadonly(this.column, value)
+  }
+  setColVisibility(value: boolean){
+    this._tableService.setColumnVisibility(this.column, value)
   }
 }

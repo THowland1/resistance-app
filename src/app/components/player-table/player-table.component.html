@@ -1,40 +1,24 @@
-<ng-container *ngIf="isLoading$ | async">
-  <p>Loading...</p>
-</ng-container>
-
-<ng-container *ngIf="!(isLoading$ | async)">
-<table class="player-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th *ngFor="let heading of columnHeadings">{{heading}}</th>
-    </tr>
-  </thead>
-  
-  <ng-template *ngIf="isReadonly; then readonly; else notreadonly"></ng-template>
-
-</table>
-</ng-container>
-
-<!-- tbody templates -->
-<ng-template #notreadonly>
-  <tbody>
-    <tr *ngFor="let player of players; let i = index">
-      <td>{{player.name}}</td>
-      <td *ngFor="let column of columnData; let j = index">
-          <input type="checkbox" [(ngModel)]="column[i]" (ngModelChange)="onTeamChange(columnHeadings[j])">
-      </td>
-    </tr>
-  </tbody>
-</ng-template>
-
-<ng-template #readonly>
-  <tbody>
-    <tr *ngFor="let player of players; let i = index">
-      <td>{{player.name}}</td>
-      <td *ngFor="let column of columnData">
-          <input disabled type="checkbox" [ngModel]="column[i]">
-      </td>
-    </tr>
-  </tbody>
-</ng-template>
+<div *ngIf="isTableVisible">
+  <ng-container *ngIf="isLoading$ | async">
+      <p>Loading...</p>
+  </ng-container>
+    
+  <ng-container *ngIf="!(isLoading$ | async)">
+    <table class="player-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th *ngFor="let column of columns">{{column.heading}}</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let player of players; let i = index">
+            <td>{{player.name}}</td>
+            <td *ngFor="let column of columns">
+                <input [disabled]="column.readonly" type="checkbox" [(ngModel)]="column.data[i]" (ngModelChange)="onColChange()">
+            </td>
+          </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</div>
