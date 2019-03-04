@@ -9,6 +9,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { PlayerTableService } from './player-table.service';
 import { GameService } from 'src/services/game.service';
 import { Vote } from 'src/enums/vote.enum';
+import { MissionCard } from 'src/enums/mission-card';
 
 @Component({
   selector: 'app-player-table',
@@ -47,12 +48,19 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
     readonly: true,
     display: false
   };
+  hasPlayed: IColumn = {
+    heading: 'Played?',
+    data: [],
+    readonly: true,
+    display: false
+  };
 
   get columns(): IColumn[] {
     return [
       this.team,
       this.hasVoted,
-      this.vote
+      this.vote,
+      this.hasPlayed
     ].filter((column) => column.display === true);
   }
 
@@ -73,6 +81,7 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
     this._bind_players();
     this._bind_team();
     this._bind_votes();
+    this._bind_playedCards();
     this.isInitialised = true;
   }
 
@@ -133,6 +142,14 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
         this.vote.data = votes.map((vote) => vote === Vote.upvoted);
       });
   }
+
+  private _bind_playedCards(): void {
+    this._gameService.get('playedCards')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((playedCards) => {
+        this.hasPlayed.data = playedCards.map((vote) => vote !== MissionCard.none);
+      });
+  }
 }
 
 export interface TableMethods {
@@ -149,6 +166,7 @@ export interface ITable {
   team?: IColumn;
   hasVoted?: IColumn;
   vote?: IColumn;
+  hasPlayed?: IColumn;
 }
 
 export interface IColumn {

@@ -1,21 +1,4 @@
 <div *ngIf="!isLoading">
-  <p>The current team is...</p>
-  <table class="player-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>On Team?</th>
-          <th>Played?</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let player of players; let i = index">
-          <td>{{player.name}}</td>
-          <td><input disabled type="checkbox" [ngModel]="currentTeam[i]"></td>
-          <td>{{hasPlayedString(i)}}</td>
-        </tr>
-      </tbody>
-  </table>
   <div *ngIf="!revealMode">
     <div *ngIf="!allCardsPlayed">
       <div *ngIf="youAreOnTheTeam">

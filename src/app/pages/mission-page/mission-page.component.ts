@@ -8,6 +8,7 @@ import { IMissionCard, MissionCard, missionCards } from 'src/enums/mission-card'
 import { MissionSize } from 'src/models/mission-size';
 import { Team } from 'src/enums/team.enum';
 import { SessionService } from 'src/services/session.service';
+import { PlayerTableService } from 'src/app/components/player-table/player-table.service';
 
 @Component({
   selector: 'app-mission-page',
@@ -18,7 +19,8 @@ export class MissionPageComponent implements OnInit {
 
   constructor(
     private _missionService: MissionService,
-    private _sessionService: SessionService) { }
+    private _sessionService: SessionService,
+    private _tableService: PlayerTableService) { }
 
     
   currentTeam: boolean[];
@@ -53,6 +55,8 @@ export class MissionPageComponent implements OnInit {
     this._missionService.getTeamSize()
         .pipe(first())
         .subscribe(bind(this,'missionSize'))
+
+    this._tableService.setColumnVisibility('hasPlayed',true);
   }
 
   selectCard(missionCard: MissionCard): void{
@@ -72,14 +76,6 @@ export class MissionPageComponent implements OnInit {
   nextMission(): void {
     this.forceLoadScreen = true;
     this._missionService.nextMission(this.missionPassed);
-  }
-
-  hasPlayedString(index: number): string {
-    return this.currentTeam[index]
-      ? this.playedCards[index] === MissionCard.none
-        ? '...' 
-        : 'played'
-      : ''
   }
 
   get revealedCardsAsString(): string {
@@ -131,6 +127,7 @@ export class MissionPageComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
+    this._tableService.setColumnVisibility('hasPlayed',false);
     this.destroy$.next();
     this.destroy$.complete();
   }
