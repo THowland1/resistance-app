@@ -1,14 +1,19 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MissionService } from 'src/services/mission.service';
-import { Subject } from 'rxjs';
+import { Subject, zip } from 'rxjs';
 import { takeUntil, first, map } from 'rxjs/operators';
 import { bind} from 'src/functions';
 import { Player } from 'src/models/player';
-import { IMissionCard, MissionCard, missionCards } from 'src/enums/mission-card';
+import { IMissionCard, MissionCard, missionCards, cardsInPlay } from 'src/enums/mission-card';
 import { MissionSize } from 'src/models/mission-size';
 import { Team } from 'src/enums/team.enum';
 import { SessionService } from 'src/services/session.service';
 import { PlayerTableService } from 'src/app/components/player-table/player-table.service';
+import { GameService } from 'src/services/game.service';
+import { PlayerService } from 'src/services/player.service';
+import { gameVariables } from 'src/game.variables';
+import { MissionOutcome } from 'src/enums/mission-outcome';
+import { Stage } from 'src/enums/stage.enum';
+import { Vote } from 'src/enums/vote.enum';
 
 @Component({
   selector: 'app-mission-page',
@@ -18,7 +23,8 @@ import { PlayerTableService } from 'src/app/components/player-table/player-table
 export class MissionPageComponent implements OnInit {
 
   constructor(
-    private _missionService: MissionService,
+    private _gameService: GameService,
+    private _playerService: PlayerService,
     private _sessionService: SessionService,
     private _tableService: PlayerTableService) { }
 
@@ -39,22 +45,28 @@ export class MissionPageComponent implements OnInit {
     this.playerName = this._sessionService.name;
     this.players = this._sessionService.players;
 
-    this._missionService.getTeamPick()
+    this._gameService.get('team')
       .pipe(
         first())
       .subscribe(bind(this,'currentTeam'));
 
-    this._missionService.getPlayableCards
-        .pipe(first())
-        .subscribe(bind(this,'playableCards'));
+    this._gameService.get('gameType')
+      .pipe(
+        first(),
+        map((gameType) => cardsInPlay(gameType).map((card)=>missionCards[card])))
+      .subscribe(bind(this,'playableCards'));
 
-    this._missionService.getPlayedCards
+    this._gameService.get('playedCards')
         .pipe(takeUntil(this.destroy$))
         .subscribe(bind(this,'playedCards'));
 
-    this._missionService.getTeamSize()
-        .pipe(first())
-        .subscribe(bind(this,'missionSize'))
+    zip(
+      this._playerService.count$,
+      this._gameService.get('currentMission'))
+    .pipe(
+      first(),
+      map(([playerCount,missionNo]) => gameVariables.missionSizes[playerCount-5][missionNo]))
+    .subscribe(bind(this,'missionSize'))
 
     this._tableService.setColumnVisibility('hasPlayed',true);
   }
@@ -66,16 +78,48 @@ export class MissionPageComponent implements OnInit {
       return;
     }
     this.playedCards[this.playerIndex] = missionCard;
-    this._missionService.updatePlayedCards(this.playedCards);
+    this.updatePlayedCards(this.playedCards);
+  }
+
+  updatePlayedCards(missionCards: MissionCard[]) {
+    this._gameService.update('playedCards', missionCards);
+    this._gameService.saveChanges();
   }
 
   revealCards(): void{
     this.revealMode = true;
   }
 
-  nextMission(): void {
+  nextMission():void {
     this.forceLoadScreen = true;
-    this._missionService.nextMission(this.missionPassed);
+    zip(
+      this._playerService.count$,
+      this._gameService.game$)
+      .pipe(first())
+      .subscribe(([playerCount,game]) => {
+        // set new leader
+        const newLeader = (game.leader + 1) % playerCount;
+        this._gameService.update('leader', newLeader);
+
+        // add mission outcome to the Game object
+        game.missionOutcomes[game.currentMission] = this.missionPassed
+          ? MissionOutcome.pass
+          : MissionOutcome.fail;
+        this._gameService.update('missionOutcomes', game.missionOutcomes);
+
+        // wipe current Mission info (keep the team the same)
+        this._gameService.update('votes', new Array(playerCount).fill(Vote.notVoted));
+        this._gameService.update('playedCards', new Array(playerCount).fill(MissionCard.none));
+        this._gameService.update('noOfDownvotedTeams', 0);
+
+        if (this._gameService.check_isGameOver(game)){
+          this._gameService.update('stage',Stage.GameOver);
+        } else {
+          this._gameService.update('currentMission', game.currentMission + 1);
+          this._gameService.update('stage',Stage.TeamPick);
+        }
+        this._gameService.saveChanges();
+      })
   }
 
   get revealedCardsAsString(): string {
