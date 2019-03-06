@@ -51,7 +51,7 @@ export class RoleRevealPageComponent implements OnInit {
 
   onAssignRolesClick(): void {
     if(!this.canAssignRoles){
-      this._modalService.error('Internal Error', ['You cannot assign roles at this time']);
+      this._modalService.error('Internal Error', 'You cannot assign roles at this time');
       return;
     }
     
@@ -71,7 +71,7 @@ export class RoleRevealPageComponent implements OnInit {
   
   onStartGameClick(): void {
     if (!this.canStartGame) {
-      this._modalService.error('Internal Error', ['You cannot start the game at this time']);
+      this._modalService.error('Internal Error', 'You cannot start the game at this time');
       return;
     }
 

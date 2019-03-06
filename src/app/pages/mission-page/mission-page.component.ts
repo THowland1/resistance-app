@@ -15,6 +15,7 @@ import { MissionOutcome } from 'src/enums/mission-outcome';
 import { Stage } from 'src/enums/stage.enum';
 import { Vote } from 'src/enums/vote.enum';
 import { ModalService } from 'src/app/components/modal/modal.service';
+import { MissionSizes } from 'src/app/static-data/mission-sizes';
 
 @Component({
   selector: 'app-mission-page',
@@ -158,7 +159,7 @@ export class MissionPageComponent implements OnInit {
   private _load_missionSize(): void {
     this._gameService.get('currentMission')
       .pipe(first())
-      .subscribe((missionNo) => this.missionSize = gameVariables.missionSizes[this._playerService.count-5][missionNo])
+      .subscribe((missionNo) => this.missionSize = MissionSizes.allMissionSizes(this._playerService.count)[missionNo])
   }
 
   private _load_playableCards(): void {
