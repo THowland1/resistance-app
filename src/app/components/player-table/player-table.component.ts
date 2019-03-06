@@ -70,11 +70,14 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
   }
 
   // Table commands
-  setVisibility(value: boolean): void {
+  setVisibility(value: any): void {
+    if (typeof(value) !== 'boolean'){
+      this._modalService.error('Internal Error','Table visibility cannot be set','A non-bool was passed to the visibility function')
+    }
     this.isTableVisible = value;
   }
 
-  onInit(): void {
+  onInit(value: any): void {
     if(this.isInitialised) {
       return;
     }
@@ -153,8 +156,8 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
 }
 
 export interface TableMethods {
-  setVisibility(value: boolean): void;
-  onInit(): void;
+  setVisibility(value: any): void;
+  onInit(value: any): void;
 }
 
 export interface ColumnMethods {

@@ -11,42 +11,42 @@ import { Stage, stageUrlPipe } from 'src/enums/stage.enum';
 
 const routes: Routes = [
   { 
-    path: stageUrlPipe(Stage.NotBegun), 
+    path: '', 
     component: LobbyPageComponent 
   },
   { 
-    path: stageUrlPipe(Stage.RoleReveal), 
+    path: 'role-reveal', 
     component: RoleRevealPageComponent, 
     canActivate: [StageGuard], 
     data:{stage: Stage.RoleReveal} 
   },
   { 
-    path: stageUrlPipe(Stage.TeamPick), 
+    path: 'team-pick', 
     component: TeamPickPageComponent,
     canActivate: [StageGuard], 
     data:{stage: Stage.TeamPick} 
   },
   {
-    path: stageUrlPipe(Stage.Vote),
+    path: 'vote',
     component: VotePageComponent, 
     canActivate: [StageGuard], 
     data:{stage: Stage.Vote} 
   },
   {
-    path: stageUrlPipe(Stage.Mission), 
+    path: 'mission', 
     component: MissionPageComponent, 
     canActivate: [StageGuard], 
     data:{stage: Stage.Mission} 
   },
   { 
-    path: stageUrlPipe(Stage.GameOver), 
+    path: 'game-over', 
     component: GameOverPageComponent, 
     canActivate: [StageGuard], 
     data:{stage: Stage.GameOver} 
   },
   { 
     path: '**',
-    redirectTo: stageUrlPipe(Stage.NotBegun),
+    redirectTo: '',
     pathMatch: 'full'
   }
 ];
