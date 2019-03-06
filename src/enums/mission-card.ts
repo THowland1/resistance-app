@@ -17,12 +17,17 @@ export const missionCards: IMissionCard[] = [
     {enumValue: MissionCard.fail, name: 'Fail'}
 ]
 
-export function cardsInPlay(gameType: GameType): MissionCard[] {
+export function cardsInPlay(gameType: GameType): IMissionCard[] {
+    let playableCards: MissionCard[];
+
     switch (gameType) {
         case GameType.regular:
-            return [MissionCard.pass,MissionCard.fail];    
+            playableCards = [MissionCard.pass, MissionCard.fail];
+            break;    
         default:
-            console.error('Game must have a game type')
-            return [];
+            console.error('Game must have a game type');
+            playableCards = [];
     }
+
+    return playableCards.map((enumValue) => missionCards[enumValue])
 }

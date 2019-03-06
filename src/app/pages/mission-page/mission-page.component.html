@@ -1,38 +1,40 @@
 <div *ngIf="!isLoading">
-  <div *ngIf="!revealMode">
-    <div *ngIf="!allCardsPlayed">
-      <div *ngIf="youAreOnTheTeam">
-        <p>You are on the team</p>
-        <div *ngIf="!alreadyPlayedCard">
-          <p>Pick a card...</p>
-          <div *ngFor="let card of playableCards">
-            <div>
-              <button (click)="selectCard(card.enumValue)">{{card.name}}</button>
-            </div>
+    <div [ngSwitch]="pageMode">
+
+      <!-- play-card mode -->
+      <ng-template [ngSwitchCase]="'play-card'">
+        <p>Pick a card...</p>
+        <div *ngFor="let card of playableCards">
+          <div>
+            <button (click)="click_selectCard(card.enumValue)">{{card.name}}</button>
           </div>
         </div>
-        <div *ngIf="alreadyPlayedCard">
-          <p>You have played your card.</p>
-          <p>Now to wait for the other person...</p>
-        </div>
-      </div>
+      </ng-template>
 
-    <div *ngIf="!youAreOnTheTeam">
-      <p>You are not on the team</p>
-      <p>So you'll have to wait...</p>
+      <!-- wait mode -->
+      <ng-template [ngSwitchCase]="'wait'">
+        <p>Waiting for all cards to be played...</p>
+      </ng-template>
+
+      <!-- can-reveal mode -->
+      <ng-template [ngSwitchCase]="'can-reveal'">
+        <p>All cards have been played</p>
+        <button (click)="click_revealCards()">Reveal cards?</button>
+      </ng-template>
+
+      <!-- reveal mode -->
+      <ng-template [ngSwitchCase]="'reveal'">
+          <p>Cards: {{revealedCards}}</p>
+          <p>The mission {{check_missionPassed ? 'passed' : 'failed'}}</p>
+          <button (click)="click_nextMission()">Next Mission</button>
+      </ng-template>
+
+      <!-- no mode (an error)-->
+      <ng-template ngSwitchDefault>
+          <p>An error has occurred</p>
+      </ng-template>
     </div>
-  </div>
-  <div *ngIf="allCardsPlayed">
-    <p>All cards have been played</p>
-    <button (click)="revealCards()">Reveal cards?</button>
-  </div>
-  </div>
-  <div *ngIf="revealMode">
-    <p>Cards: {{revealedCardsAsString}}</p>
-    <p>The mission {{missionPassed ? 'passed' : 'failed'}}</p>
-    <button (click)="nextMission()">Next Mission</button>
-  </div>
-</div>
+
 <div *ngIf="isLoading">
   <p>Loading...</p>
 </div>

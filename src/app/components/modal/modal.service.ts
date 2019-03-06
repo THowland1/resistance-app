@@ -25,7 +25,7 @@ export class ModalService {
     return this._alert(ModalType.warn,title,messages);
   }
 
-  error(title: ErrorType, messages: string[]): MatDialogRef<AlertModalComponent> {
+  error(title: ErrorType, ...messages: string[]): MatDialogRef<AlertModalComponent> {
     return this._alert(ModalType.error,title,messages);
   }
 

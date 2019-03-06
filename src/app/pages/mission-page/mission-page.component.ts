@@ -14,6 +14,7 @@ import { gameVariables } from 'src/game.variables';
 import { MissionOutcome } from 'src/enums/mission-outcome';
 import { Stage } from 'src/enums/stage.enum';
 import { Vote } from 'src/enums/vote.enum';
+import { ModalService } from 'src/app/components/modal/modal.service';
 
 @Component({
   selector: 'app-mission-page',
@@ -26,15 +27,14 @@ export class MissionPageComponent implements OnInit {
     private _gameService: GameService,
     private _playerService: PlayerService,
     private _sessionService: SessionService,
-    private _tableService: PlayerTableService) { }
+    private _tableService: PlayerTableService,
+    private _modalService: ModalService) { }
 
     
   currentTeam: boolean[];
   playableCards: IMissionCard[];
   playedCards: MissionCard[];
-  playerName: string;
   missionSize: MissionSize;
-  players: Player[];
 
   revealMode: boolean = false;
 
@@ -42,67 +42,45 @@ export class MissionPageComponent implements OnInit {
   private forceLoadScreen = false;
 
   ngOnInit() {
-    this.playerName = this._sessionService.name;
-    this.players = this._sessionService.players;
-
-    this._gameService.get('team')
-      .pipe(
-        first())
-      .subscribe(bind(this,'currentTeam'));
-
-    this._gameService.get('gameType')
-      .pipe(
-        first(),
-        map((gameType) => cardsInPlay(gameType).map((card)=>missionCards[card])))
-      .subscribe(bind(this,'playableCards'));
-
-    this._gameService.get('playedCards')
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(bind(this,'playedCards'));
-
-    zip(
-      this._playerService.count$,
-      this._gameService.get('currentMission'))
-    .pipe(
-      first(),
-      map(([playerCount,missionNo]) => gameVariables.missionSizes[playerCount-5][missionNo]))
-    .subscribe(bind(this,'missionSize'))
+    this._load_missionSize();
+    this._load_playableCards();
+    this._load_team();
+    this._bind_playedCards();
+    this._bind_wait();
 
     this._tableService.setColumnVisibility('hasPlayed',true);
   }
 
-  selectCard(missionCard: MissionCard): void{
+  click_selectCard(missionCard: MissionCard): void{
     // TODO refactor card filtering logic
-    if(!this.areYouASpy && missionCard === MissionCard.fail){
-      alert('you cannot play that card');
+    const player = this._sessionService.player;
+    if(player.team !== Team.spy && missionCard === MissionCard.fail){
+      this._modalService.error('Illegal Action','you cannot play that card');
       return;
     }
-    this.playedCards[this.playerIndex] = missionCard;
-    this.updatePlayedCards(this.playedCards);
-  }
-
-  updatePlayedCards(missionCards: MissionCard[]) {
-    this._gameService.update('playedCards', missionCards);
+    this.playedCards[this._sessionService.playerIndex] = missionCard;
+    this._gameService.update('playedCards', this.playedCards);
     this._gameService.saveChanges();
   }
 
-  revealCards(): void{
-    this.revealMode = true;
+  click_revealCards(): void{
+    this._gameService.update('wait',true);
+    this._gameService.saveChanges();
   }
 
-  nextMission():void {
+  click_nextMission():void {
     this.forceLoadScreen = true;
-    zip(
-      this._playerService.count$,
-      this._gameService.game$)
+
+    this._gameService.game$
       .pipe(first())
-      .subscribe(([playerCount,game]) => {
+      .subscribe((game) => {
         // set new leader
+        const playerCount = this._playerService.count
         const newLeader = (game.leader + 1) % playerCount;
         this._gameService.update('leader', newLeader);
 
         // add mission outcome to the Game object
-        game.missionOutcomes[game.currentMission] = this.missionPassed
+        game.missionOutcomes[game.currentMission] = this.check_missionPassed
           ? MissionOutcome.pass
           : MissionOutcome.fail;
         this._gameService.update('missionOutcomes', game.missionOutcomes);
@@ -112,6 +90,7 @@ export class MissionPageComponent implements OnInit {
         this._gameService.update('playedCards', new Array(playerCount).fill(MissionCard.none));
         this._gameService.update('noOfDownvotedTeams', 0);
 
+        // move to the next stage
         if (this._gameService.check_isGameOver(game)){
           this._gameService.update('stage',Stage.GameOver);
         } else {
@@ -122,37 +101,25 @@ export class MissionPageComponent implements OnInit {
       })
   }
 
-  get revealedCardsAsString(): string {
-    return this.cardstoReveal.map((card) => missionCards[card].name).join(', ');
+  get pageMode(): string {
+    if (this.revealMode) {
+      return 'reveal';
+    }
+    if (this._check_allCardsPlayed){
+      return 'can-reveal';
+    }
+    if (this._check_youAreOnTheTeam && !this._check_alreadyPlayedCard) {
+      return 'play-card';
+    }
+    return 'wait';
   }
 
-  get cardstoReveal(): MissionCard[] {
-    return this.playedCards.filter((card) => card !== MissionCard.none).sort();
-  }
-
-  get missionPassed(): boolean {
-    const requiredFails = this.missionSize.twoFail ? 2 : 1;
-
-    return this.cardstoReveal.filter((card) => card === MissionCard.fail).length < requiredFails;
-  }
-
-  get allCardsPlayed(): boolean {
-    return this.playedCards.filter((card) => card !== MissionCard.none).length === this.missionSize.size;
-  }
-
-  get playerIndex(): number {
-    return this.players.map((player) => player.name).indexOf(this.playerName);
-  }
-
-  get alreadyPlayedCard(): boolean {
-    return this.playedCards[this.playerIndex] != MissionCard.none;
-  }
-
-  get areYouASpy(): boolean{
-    var you = this.players.filter((player) => player.name === this.playerName);
-    if (you.length === 0){ return false;}
-    if (you[0].team === Team.spy) {return true;}
-    return false;
+  get revealedCards(): string {
+    return this.playedCards
+      .filter((card) => card !== MissionCard.none)
+      .sort()
+      .map((card) => missionCards[card].name)
+      .join(', ');
   }
 
   get isLoading(): boolean {
@@ -160,20 +127,66 @@ export class MissionPageComponent implements OnInit {
       this.currentTeam,
       this.playableCards,
       this.playedCards,
-      this.missionSize,
-      this.playerName,
-      this.players
+      this.missionSize
     ].some((prop)=>prop === undefined) || this.forceLoadScreen;
-  }
-
-  get youAreOnTheTeam(): boolean {
-    return this.currentTeam[this.playerIndex] === true;
   }
 
   ngOnDestroy(): void {
     this._tableService.setColumnVisibility('hasPlayed',false);
     this.destroy$.next();
     this.destroy$.complete();
+  }
+  
+  get check_missionPassed(): boolean {
+    const requiredFails = this.missionSize.twoFail ? 2 : 1;
+
+    return this.playedCards.filter((card) => card === MissionCard.fail).length < requiredFails;
+  }
+  
+  private get _check_allCardsPlayed(): boolean {
+    return this.playedCards.filter((card) => card !== MissionCard.none).length === this.missionSize.size;
+  }
+
+  private get _check_alreadyPlayedCard(): boolean {
+    return this.playedCards[this._sessionService.playerIndex] != MissionCard.none;
+  }
+
+  private get _check_youAreOnTheTeam(): boolean {
+    return this.currentTeam[this._sessionService.playerIndex] === true;
+  }
+
+  private _load_missionSize(): void {
+    this._gameService.get('currentMission')
+      .pipe(first())
+      .subscribe((missionNo) => this.missionSize = gameVariables.missionSizes[this._playerService.count-5][missionNo])
+  }
+
+  private _load_playableCards(): void {
+    this._gameService.get('gameType')
+      .pipe(first())
+      .subscribe((gameType) => this.playableCards = cardsInPlay(gameType))
+  }
+
+  private _load_team(): void {
+    this._gameService.get('team')
+      .pipe(first())
+      .subscribe(bind(this,'currentTeam'));
+  }
+
+  private _bind_playedCards(): void {
+    this._gameService.get('playedCards')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((cards) => this.playedCards = cards);
+  }
+
+  private _bind_wait(): void {
+    this._gameService.get('wait')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((wait) => {
+        if (wait) {
+          this.revealMode = true;
+        }
+      });
   }
 
 }
