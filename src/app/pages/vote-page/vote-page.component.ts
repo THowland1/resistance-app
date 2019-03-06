@@ -59,7 +59,7 @@ export class VotePageComponent implements OnInit {
   onSubmitVoteClick(vote: boolean){
     const playerIndex = this._sessionService.playerIndex;
     if (playerIndex === -1){
-      this._modalService.error('Illegal Action',['You cannot vote!','You are not a player in this game!']);
+      this._modalService.error('Illegal Action','You cannot vote!','You are not a player in this game!');
       return;
     }
 
@@ -72,7 +72,7 @@ export class VotePageComponent implements OnInit {
 
   onSeeVotesClick(): void{
     if (!this.check_allPlayersHaveVoted){
-      this._modalService.error('Illegal Action',['You cannot see the votes!','Not all votes are in yet!']);
+      this._modalService.error('Illegal Action','You cannot see the votes!','Not all votes are in yet!');
       return;
     }
     this._gameService.update('wait',true);
@@ -81,7 +81,7 @@ export class VotePageComponent implements OnInit {
 
   onMoveOnClick(): void {
     if (!this.check_allPlayersHaveVoted){
-      this._modalService.error('Illegal Action',['You cannot move on!','Not all votes are in yet!']);
+      this._modalService.error('Illegal Action','You cannot move on!','Not all votes are in yet!');
       return;
     }
 

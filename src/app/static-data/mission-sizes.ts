@@ -1,7 +1,6 @@
 import { MissionSize } from "src/models/mission-size";
 
 export module MissionSizes {
-
     export function allMissionSizes(noOfPlayers: number): MissionSize[] {
         return this.Regular[noOfPlayers];
       }
@@ -14,5 +13,4 @@ export module MissionSizes {
         9: [{size: 3}, {size: 4}, {size: 4}, {size: 5, twoFail: true}, {size: 5}],
         10: [{size: 3}, {size: 4}, {size: 4}, {size: 5, twoFail: true}, {size: 5}]
     }
-
 }

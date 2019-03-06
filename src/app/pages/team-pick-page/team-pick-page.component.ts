@@ -8,6 +8,7 @@ import { SessionService } from 'src/services/session.service';
 import { GameService } from 'src/services/game.service';
 import { gameVariables } from 'src/game.variables';
 import { PlayerTableService } from 'src/app/components/player-table/player-table.service';
+import { MissionSizes } from 'src/app/static-data/mission-sizes';
 
 @Component({
   selector: 'app-team-pick-page',
@@ -102,7 +103,7 @@ export class TeamPickPageComponent implements OnInit {
   private _bind_currentMission(): void {
     this._gameService.get('currentMission')
       .pipe(takeUntil(this.destroy$))
-      .subscribe((missionNo) => this.teamSize = gameVariables.missionSizes[this.players.length-5][missionNo].size)
+      .subscribe((missionNo) => this.teamSize = MissionSizes.allMissionSizes(this.players.length)[missionNo].size)
   }
 
   private _bind_team(): void {

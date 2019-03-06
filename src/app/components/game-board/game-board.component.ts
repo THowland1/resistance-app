@@ -7,6 +7,7 @@ import { takeUntil, first } from 'rxjs/operators';
 import { MissionSize } from 'src/models/mission-size';
 import { gameVariables } from 'src/game.variables';
 import { PlayerService } from 'src/services/player.service';
+import { MissionSizes } from 'src/app/static-data/mission-sizes';
 
 @Component({
   selector: 'app-game-board',
@@ -38,7 +39,7 @@ export class GameBoardComponent implements OnInit {
 
     this._playerService.count$
       .pipe(first())
-      .subscribe((count) => this.missionSizes = gameVariables.missionSizes[count-5]);
+      .subscribe((count) => this.missionSizes = MissionSizes.allMissionSizes(count));
   }
 
   get voteCountArray(): number[] {

@@ -211,7 +211,7 @@ export class LobbyPageComponent implements OnInit {
   private _reportError(message: string): (result: boolean) => void {
     return (result: boolean) => {
       if(!result) {
-        this._modalService.error('Join Failed', [message])
+        this._modalService.error('Join Failed', message)
       }
     }
   }
