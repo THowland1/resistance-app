@@ -18,4 +18,24 @@ export module RoleCards {
         team:Team.spy,
         role:Role.regular
     };
+    export const ResistanceHunter: Player = {
+        name: null,
+        team:Team.resistance,
+        role:Role.hunter
+    };
+    export const ResistanceChief: Player = {
+        name: null,
+        team:Team.resistance,
+        role:Role.chief
+    };
+    export const SpyHunter: Player = {
+        name: null,
+        team:Team.spy,
+        role:Role.hunter
+    };
+    export const SpyChief: Player = {
+        name: null,
+        team:Team.spy,
+        role:Role.chief
+    };
 }

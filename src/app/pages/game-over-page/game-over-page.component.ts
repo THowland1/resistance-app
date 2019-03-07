@@ -26,6 +26,7 @@ export class GameOverPageComponent implements OnInit {
     this._gameService.game$.subscribe(bind(this,'game'));
   }
 
+  // [TODO-HUNTER] -14 - Add new lose condition
   get gameOutcome(): GameOutcome {
     if (!this.game){
       return;

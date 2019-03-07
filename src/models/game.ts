@@ -16,10 +16,9 @@ export interface Game {
     leader: number,
     gameType: GameType,
     playedCards: MissionCard[],
-    wait: boolean
+    wait: boolean,
+    investigator?: boolean[]
   }
-
-export type GameProperty = 'stage' | 'startTime' | 'team' | 'votes' | 'missionOutcomes' | 'currentMission' | 'noOfDownvotedTeams' | 'leader' | 'gameType' | 'playedCards' | 'wait';
 
 export function newGame() {
   const newGame: Game = {
@@ -31,9 +30,11 @@ export function newGame() {
     currentMission: 0,
     noOfDownvotedTeams: 0,
     leader: null,
-    gameType: GameType.regular, // TODO: make this customisable
+    gameType: GameType.regular, // [TODO-HUNTER] - 02 - make this customisable
     playedCards: [],
     wait: false
   }
   return newGame;
 }
+
+// [TODO] - add reset functions

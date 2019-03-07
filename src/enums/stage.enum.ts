@@ -5,7 +5,9 @@ export enum Stage {
     Vote = 3,
     Mission = 4,
     Reveal = 5,
-    GameOver = 6
+    GameOver = 6,
+    Investigation = 7,
+    Hunt = 8
 }
 
 export function stageUrlPipe(stage: Stage): string {
@@ -24,6 +26,10 @@ export function stageUrlPipe(stage: Stage): string {
             return 'reveal'
         case Stage.GameOver:
             return 'game-over'
+        case Stage.Investigation:
+            return 'investigation'
+        case Stage.Hunt:
+            return 'hunt'
         default:
             break;
     }

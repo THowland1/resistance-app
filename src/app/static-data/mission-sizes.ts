@@ -13,4 +13,6 @@ export module MissionSizes {
         9: [{size: 3}, {size: 4}, {size: 4}, {size: 5, twoFail: true}, {size: 5}],
         10: [{size: 3}, {size: 4}, {size: 4}, {size: 5, twoFail: true}, {size: 5}]
     }
+
+    export const Hunter = Regular;
 }

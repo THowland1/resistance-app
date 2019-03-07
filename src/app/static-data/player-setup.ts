@@ -7,7 +7,7 @@ export module RoleDistribution {
         amount: number
     }
 
-    type ModuleType = 'Regular';
+    type ModuleType = 'Regular' | 'Hunter';
 
     export function allRoles(moduleType: ModuleType, noOfPlayers: number): Player[] {
 
@@ -25,6 +25,7 @@ export module RoleDistribution {
         return allPlayers;
       }
 
+      // [TODO-HUNTER] - Add Hunter Role distributions
     export const Regular: {[numberOfPlayers: number]: IRoleDistribution[] } = {
         5: [
             {roleCard: RoleCards.ResistancePlain, amount: 3},

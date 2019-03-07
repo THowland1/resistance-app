@@ -21,8 +21,7 @@ export class PlayerService {
        this._players$ = this._base.getCollection<Player>('player', roomCode)
         .pipe(
           tap((players) => this._players = players),
-          shareReplay(1),
-          log());
+          shareReplay(1);
      })
   }
 

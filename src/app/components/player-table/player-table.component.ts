@@ -24,6 +24,8 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
     private _modalService: ModalService,
     private _tableService: PlayerTableService) { }
   
+
+  // [TODO-HUNTER] - 07 - Add new investigator column
   players: Player[];
   isTableVisible: boolean = false;
   isInitialised: boolean = false;

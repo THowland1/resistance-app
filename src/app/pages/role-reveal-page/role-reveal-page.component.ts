@@ -55,6 +55,7 @@ export class RoleRevealPageComponent implements OnInit {
       return;
     }
     
+    // [TODO-HUNTER] - 05 - Add thing to distinguish nregular from other
     const players = this._playerService.players;
     const allRoleCards = RoleDistribution
       .allRoles('Regular', players.length)
@@ -75,6 +76,7 @@ export class RoleRevealPageComponent implements OnInit {
       return;
     }
 
+    // [TODO] - Random leader
     this._gameService.update('leader',0);
     this._gameService.saveChanges();
     this._navService.goToStage(Stage.TeamPick);

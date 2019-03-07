@@ -31,6 +31,7 @@ export class TeamPickPageComponent implements OnInit {
 
   private destroy$ = new Subject();
 
+  // [TODO-HUNTER] - 06 - bind investigator
   ngOnInit() { 
     this.playerName = this._sessionService.name;
     this.players = this._sessionService.players;
@@ -39,6 +40,7 @@ export class TeamPickPageComponent implements OnInit {
     this._bind_currentMission();
     this._bind_team();
 
+    // [TODO-HUNTER] - 07 - set investigator column if hunter module
     this._tableService.initialiseTable();
     this._tableService.setVisibility(true);
     this._tableService.setColumnVisibility('team',true);
@@ -76,6 +78,7 @@ export class TeamPickPageComponent implements OnInit {
     return of(this.canEditTeam);
   }
   
+  // [TODO-HUNTER] - 08 - check if the investigator has been chosen
   get canSubmitTeam(): boolean {
     return this.selectedPlayersCount === this.teamSize && this.canEditTeam;
   }

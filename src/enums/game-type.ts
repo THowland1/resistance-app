@@ -1,3 +1,4 @@
 export enum GameType {
-    regular = 0
+    regular = 0,
+    hunter = 1
 }

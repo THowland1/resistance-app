@@ -2,18 +2,12 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { map, first } from 'rxjs/operators';
-import { Player, PlayerProperty } from 'src/models/player';
-import { Game, GameProperty } from 'src/models/game';
-import { Mission, MissionProperty } from 'src/models/mission';
+import { Player } from 'src/models/player';
+import { Game } from 'src/models/game';
+import { Mission } from 'src/models/mission';
 
-export enum CollectionEnum {
-  player = 0,
-  mission = 1
-}
 
-export function hello() {return 'hello';}
-
-export type DocProperty = MissionProperty | PlayerProperty;
+export type DocProperty = keyof Mission | keyof Player;
 export type CollectionType = '' | 'player' | 'mission';
 export type CollectionInterface = Player | Mission;
 
@@ -72,12 +66,6 @@ export class BaseService {
   getCollection<T>(collection: CollectionType, roomCode?: string): Observable<T[]> {
     return this.game(roomCode).collection<T>(collection)
       .valueChanges();
-  }
-  
-  getDocProperty<T>(collection: CollectionType, reference: string, property: DocProperty, roomCode?: string): Observable<T>{
-    return this.game(roomCode).collection(collection).doc(reference)
-      .valueChanges()
-      .pipe(map((o) => !!o ? o[property] : null));
   }
   
   update(roomCode:string, collection: CollectionType, reference: string, property: DocProperty, value: any): void {

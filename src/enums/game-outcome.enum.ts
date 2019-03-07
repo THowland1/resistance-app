@@ -3,12 +3,14 @@ import { Team } from "./team.enum";
 export enum GameOutcome {
     sufficientSuccesses = 0,
     sufficientFailures = 1,
-    tooManyDownvotes = 2
+    tooManyDownvotes = 2,
+    spyChiefKilled = 3,
+    resistanceChiefKilled = 4
 }
 
 export function GameOutcomeWinnerPipe(gameOutcome: GameOutcome): Team {
-    var resistanceWins = [GameOutcome.sufficientSuccesses];
-    var spyWins = [GameOutcome.sufficientFailures, GameOutcome.tooManyDownvotes];
+    var resistanceWins = [GameOutcome.sufficientSuccesses, GameOutcome.spyChiefKilled];
+    var spyWins = [GameOutcome.sufficientFailures, GameOutcome.tooManyDownvotes, GameOutcome.resistanceChiefKilled];
 
     if (resistanceWins.some((outcome) => outcome === gameOutcome)) {
         return Team.resistance;
@@ -27,7 +29,11 @@ export function GameOutcomeMessagePipe(gameOutcome: GameOutcome): string {
         case GameOutcome.sufficientFailures:
             return 'The missions have failed';    
         case GameOutcome.tooManyDownvotes:
-            return 'Too many teams were downvoted';    
+            return 'Too many teams were downvoted';
+        case GameOutcome.spyChiefKilled:
+            return 'The spy chief has been eliminated'; 
+        case GameOutcome.resistanceChiefKilled:
+            return 'The resistance chief has been eliminated'; 
         default:
             console.error('An error has occurred')
             return 'An error has occurred';

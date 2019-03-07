@@ -53,7 +53,7 @@ export class MissionPageComponent implements OnInit {
   }
 
   click_selectCard(missionCard: MissionCard): void{
-    // TODO refactor card filtering logic
+    // [TODO-HUNTER] - 15 - add more illegal option detection
     const player = this._sessionService.player;
     if(player.team !== Team.spy && missionCard === MissionCard.fail){
       this._modalService.error('Illegal Action','you cannot play that card');
@@ -72,6 +72,7 @@ export class MissionPageComponent implements OnInit {
   click_nextMission():void {
     this.forceLoadScreen = true;
 
+    // [TODO-HUNTER] - 12 - make the potential next stage a new investigation stage
     this._gameService.game$
       .pipe(first())
       .subscribe((game) => {
@@ -141,6 +142,7 @@ export class MissionPageComponent implements OnInit {
   get check_missionPassed(): boolean {
     const requiredFails = this.missionSize.twoFail ? 2 : 1;
 
+    // [TODO-HUNTER] - 13 - check for a new kind of fail
     return this.playedCards.filter((card) => card === MissionCard.fail).length < requiredFails;
   }
   

@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 import { GameService } from './game.service';
 import { PlayerService } from './player.service';
 
+
+// [TODO] - kill this service
 @Injectable({
   providedIn: 'root'
 })
@@ -49,7 +51,7 @@ export class NavService {
   startGame(): void {
     const countdownMilliseconds = 4000;
     const currentTime = new Date().getTime();
-
+    // [TODO-HUNTER] - 04 - reset the investigator 
     this._playerService.count$
       .pipe(first())
       .subscribe((playerCount) => {

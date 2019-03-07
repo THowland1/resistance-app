@@ -34,6 +34,7 @@ export class LobbyPageComponent implements OnInit {
   roomCode = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]);
   private destroy$ = new Subject();
 
+  // [TODO-HUNTER] - 01 - Add a new checkbox to select the new module
   ngOnInit() {
     this._navService.isConnectedToARoom$
       .pipe(takeUntil(this.destroy$))
@@ -117,6 +118,7 @@ export class LobbyPageComponent implements OnInit {
         tap((result) => console.log(`Creating room. Attempt: ${attemptNo}, RoomCode: ${roomCode}, Available: ${!result ? 'yes':'no'}`)),
         take(MAX_ATTEMPTS), // stop trying after 200 attempts // [TODO] - What happens if it runs out of attempts
         first((result) => !result), // break the loop once it finds a room thats not taken
+        // [TODO-HUNTER] - 02 - add module setting to newGame()
         tap(() => this._baseService.addGame(roomCode, newGame())), // once the loop stops, create the unclaimed room
         map(() => roomCode) // return the roomCode so subscribers know which room to join
       )

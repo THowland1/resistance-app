@@ -32,6 +32,7 @@ const routes: Routes = [
     canActivate: [StageGuard], 
     data:{stage: Stage.Vote} 
   },
+  // [TODO-HUNTER] - 10 - Add investigation and hunting component
   {
     path: 'mission', 
     component: MissionPageComponent, 
