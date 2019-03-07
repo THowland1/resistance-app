@@ -1,5 +1,3 @@
-import { MissionSize } from "./models/mission-size";
-
 export const gameVariables = {
     minPlayers: 5,
     maxPlayers: 10,

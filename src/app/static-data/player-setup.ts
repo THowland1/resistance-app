@@ -25,7 +25,7 @@ export module RoleDistribution {
         return allPlayers;
       }
 
-      // [TODO-HUNTER] - Add Hunter Role distributions
+      // [TODO-HUNTER] - 03 - Add Hunter Role distributions
     export const Regular: {[numberOfPlayers: number]: IRoleDistribution[] } = {
         5: [
             {roleCard: RoleCards.ResistancePlain, amount: 3},

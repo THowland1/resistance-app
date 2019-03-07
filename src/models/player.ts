@@ -7,8 +7,6 @@ export interface Player {
     role: Role
 }
 
-export type PlayerProperty = 'name' | 'team' | 'role';
-
 export function newPlayer(name: string): Player {
     const newPlayer: Player = {
         name,

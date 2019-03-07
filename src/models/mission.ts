@@ -4,8 +4,6 @@ export interface Mission {
     leader: number
 }
 
-export type MissionProperty = 'downvotedTeams' | 'downvotedVotes' | 'leader';
-
 export function newMission() {
     const newMission: Mission = {
         downvotedTeams: [],
