@@ -55,6 +55,10 @@ export class GameService {
    * @returns    The Property.
    */
   get<K extends keyof Game>(key: K): Game[K] {
+    if (!this._game) {
+      this._modalService.error('Internal Error', `${key} could not be retrieved as the game object has not loaded yet`);
+      return null;
+    }
     return this._game[key];
   }
 

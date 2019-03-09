@@ -12,9 +12,9 @@ export function rolePipe(role: Role): string {
       case Role.regular:
         return '(regular)';
       case Role.hunter:
-        return 'hunter';
-        case Role.regular:
-        return 'chief';
+        return 'Hunter';
+      case Role.chief:
+        return 'Chief';
       default:
         return '(ERROR)';
     }

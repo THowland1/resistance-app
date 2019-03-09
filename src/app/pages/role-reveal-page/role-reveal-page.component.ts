@@ -56,10 +56,10 @@ export class RoleRevealPageComponent implements OnInit {
       return;
     }
     
-    // [TODO-HUNTER] - 05 - Add thing to distinguish nregular from other
     const players = this._playerService.players;
+    const gameType = this._gameService.get('gameType');
     const allRoleCards = RoleDistribution
-      .allRoles(GameType.regular, players.length)
+      .allRoles(gameType, players.length)
       .shuffle();
 
     players.forEach((player,index) => {
