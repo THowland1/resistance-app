@@ -131,9 +131,9 @@ export class LobbyPageComponent implements OnInit {
   }
 
   private _load_gameType(): void {
-    this._gameService.get('gameType')
+    this._gameService.get$('gameType')
       .pipe(first())
-      .subscribe((gameType) => this.gameType.setValue(gameType))
+      .subscribe((gameType) => this.gameType.setValue(gameType));
   }
 
   private _bind_currentPlayers(): void {
@@ -215,7 +215,7 @@ export class LobbyPageComponent implements OnInit {
   }
 
   private _check_gameHasntStarted$(roomCode: string): Observable<boolean> {
-    return this._gameService.get('stage', roomCode)
+    return this._gameService.get$('stage', roomCode)
     .pipe(
       map((stage: Stage) => stage === Stage.NotBegun),
       tap(this._reportError(this.ERROR_GAMEHASBEGUN))

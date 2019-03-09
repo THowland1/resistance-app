@@ -134,13 +134,13 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
   }
 
   private _bind_team(): void {
-    this._gameService.get('team')
+    this._gameService.get$('team')
       .pipe(takeUntil(this.destroy$))
       .subscribe((team) => this.team.data = team);
   }
 
   private _bind_votes(): void {
-    this._gameService.get('votes')
+    this._gameService.get$('votes')
       .pipe(takeUntil(this.destroy$))
       .subscribe((votes) => {
         this.hasVoted.data = votes.map((vote) => vote !== Vote.notVoted);
@@ -149,7 +149,7 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
   }
 
   private _bind_playedCards(): void {
-    this._gameService.get('playedCards')
+    this._gameService.get$('playedCards')
       .pipe(takeUntil(this.destroy$))
       .subscribe((playedCards) => {
         this.hasPlayed.data = playedCards.map((vote) => vote !== MissionCard.none);

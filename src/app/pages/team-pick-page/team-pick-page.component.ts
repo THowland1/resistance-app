@@ -98,19 +98,19 @@ export class TeamPickPageComponent implements OnInit {
   }
 
   private _bind_currentLeader(): void {
-    this._gameService.get('leader')
+    this._gameService.get$('leader')
       .pipe(takeUntil(this.destroy$),map((leader) => this.players[leader].name))
       .subscribe((leader) => this.currentLeader = leader);
   }
 
   private _bind_currentMission(): void {
-    this._gameService.get('currentMission')
+    this._gameService.get$('currentMission')
       .pipe(takeUntil(this.destroy$))
       .subscribe((missionNo) => this.teamSize = MissionSizes.allMissionSizes(this.players.length)[missionNo].size)
   }
 
   private _bind_team(): void {
-    this._gameService.get('team')
+    this._gameService.get$('team')
     .pipe(takeUntil(this.destroy$))
     .subscribe((selectedPlayers) => this.team = selectedPlayers);
   }

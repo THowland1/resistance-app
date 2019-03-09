@@ -14,11 +14,15 @@ export class GameService {
 
   constructor(private _base: BaseService, private _sessionService: SessionService) {
     this._sessionService.roomCode$.subscribe((roomCode) => {
-      this._game = this._base.getGame(roomCode).pipe(shareReplay(1));
+      this._game$ = this._base.getGame(roomCode).pipe(shareReplay(1));
+
+      this._game$.subscribe((game) => this._game = game);
     })
+
   }
 
-  private _game: Observable<Game>;
+  private _game$: Observable<Game>;
+  private _game: Game;
   private _gameDelta: Partial<Game> = {};
   private _hasChanged: boolean = false;
 
@@ -28,10 +32,10 @@ export class GameService {
    * @param roomCode  Room code of the game, if undefined, the current game will be observed.
    * @returns    Observable of the game's property.
    */
-  get<K extends keyof Game>(key: K, roomCode?: string): Observable<Game[K]> {
+  get$<K extends keyof Game>(key: K, roomCode?: string): Observable<Game[K]> {
     const game = !!roomCode
       ? this._base.getGame(roomCode)
-      : this._game;
+      : this._game$;
 
       return game.pipe(
         map((game) => game[key]),
@@ -39,7 +43,16 @@ export class GameService {
   }
 
   get game$(): Observable<Game> {
-    return this._game;
+    return this._game$;
+  }
+
+  /**
+   * Get a property on the Game object at the current time. Will not update.
+   * @param key  Key of the property to be retrieved.
+   * @returns    The Property.
+   */
+  get<K extends keyof Game>(key: K): Game[K] {
+    return this._game[key];
   }
 
   check_doesGameExist(roomCode: string): Observable<boolean> {

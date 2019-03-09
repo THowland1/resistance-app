@@ -33,7 +33,7 @@ export class NavService {
   }
 
   get currentStage(): Observable<Stage> {
-    return this._gameService.get('stage');
+    return this._gameService.get$('stage');
   }
 
   get currentPlayers(): Observable<Player[]> {
@@ -41,7 +41,7 @@ export class NavService {
   }
 
   get startTime(): Observable<number> {
-    return this._gameService.get('startTime');
+    return this._gameService.get$('startTime');
   }
 
   goToStage(stage: Stage): void {

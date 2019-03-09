@@ -39,13 +39,13 @@ export class VotePageComponent implements OnInit {
     this._tableService.setColumnVisibility('hasVoted',true);
     this._tableService.setColumnVisibility('vote',false);
 
-    this._gameService.get('votes')
+    this._gameService.get$('votes')
       .pipe(takeUntil(this.destroy$))
       .subscribe((votes) => {
         this._currentVotes = votes;
       });
 
-    this._gameService.get('wait')
+    this._gameService.get$('wait')
       .pipe(takeUntil(this.destroy$))
       .subscribe((wait) => {
         this.wait = wait;

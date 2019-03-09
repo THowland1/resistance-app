@@ -160,31 +160,31 @@ export class MissionPageComponent implements OnInit {
   }
 
   private _load_missionSize(): void {
-    this._gameService.get('currentMission')
+    this._gameService.get$('currentMission')
       .pipe(first())
       .subscribe((missionNo) => this.missionSize = MissionSizes.allMissionSizes(this._playerService.count)[missionNo])
   }
 
   private _load_playableCards(): void {
-    this._gameService.get('gameType')
+    this._gameService.get$('gameType')
       .pipe(first())
       .subscribe((gameType) => this.playableCards = cardsInPlay(gameType))
   }
 
   private _load_team(): void {
-    this._gameService.get('team')
+    this._gameService.get$('team')
       .pipe(first())
       .subscribe(bind(this,'currentTeam'));
   }
 
   private _bind_playedCards(): void {
-    this._gameService.get('playedCards')
+    this._gameService.get$('playedCards')
       .pipe(takeUntil(this.destroy$))
       .subscribe((cards) => this.playedCards = cards);
   }
 
   private _bind_wait(): void {
-    this._gameService.get('wait')
+    this._gameService.get$('wait')
       .pipe(takeUntil(this.destroy$))
       .subscribe((wait) => {
         if (wait) {
