@@ -42,15 +42,16 @@ export class TeamPickPageComponent implements OnInit {
     this._bind_currentMission();
     this._bind_team();
 
-    if(this.gameType === GameType.hunter) {
+    if(this.check_isHunterModule) {
       this._bind_investigator();
     }
 
     this._tableService.initialiseTable();
     this._tableService.setVisibility(true);
+    this._tableService.setColumnVisibility('vote',false);
     this._tableService.setColumnVisibility('team',true);
 
-    if (this.gameType === GameType.hunter) {
+    if (this.check_isHunterModule) {
       this._tableService.setColumnVisibility('investigator',true);
     }
 
@@ -58,7 +59,7 @@ export class TeamPickPageComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe((canEditTeam) => {
         this._tableService.setColumnReadonly('team', !canEditTeam);
-        if (this.gameType === GameType.hunter) {
+        if (this.check_isHunterModule) {
           this._tableService.setColumnReadonly('investigator', !canEditTeam);
         }
     });
@@ -70,8 +71,8 @@ export class TeamPickPageComponent implements OnInit {
     }
 
     this._tableService.setColumnReadonly('team',true);
-    
-    if (this.gameType === GameType.hunter) {
+
+    if (this.check_isHunterModule) {
       this._tableService.setColumnReadonly('investigator', true);
     }
 
@@ -80,6 +81,14 @@ export class TeamPickPageComponent implements OnInit {
 
   get selectedPlayersCount(): number{
     return this.team.filter((selected) => selected).length;
+  }
+
+  get selectedInvestigatorsCount(): number {
+    if (this.check_isHunterModule) {
+      return this.investigator.filter((selected) => selected).length;
+    } else {
+      return null;
+    }
   }
 
   get whoseTurn(): string {
@@ -98,9 +107,33 @@ export class TeamPickPageComponent implements OnInit {
     return of(this.canEditTeam);
   }
   
-  // [TODO-HUNTER] - 08 - check if the investigator has been chosen
   get canSubmitTeam(): boolean {
-    return this.selectedPlayersCount === this.teamSize && this.canEditTeam;
+    if (!this.canEditTeam) {
+      return false;
+    }
+
+    if (this.selectedPlayersCount !== this.teamSize) {
+      return false;
+    }
+
+    if (this.check_isHunterModule) {
+      const countInvestigators = this.selectedInvestigatorsCount;
+      const allowedInvestigators = 1;
+
+      // There may only be one investigator
+      if (countInvestigators !== allowedInvestigators) {
+        return false;
+      }
+
+      // Investigator cannot be on the mission
+      for (let index = 0; index < this.players.length; index++) {
+        if (this.team[index] && this.investigator[index]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   ngOnDestroy(): void {
@@ -116,11 +149,15 @@ export class TeamPickPageComponent implements OnInit {
       this.players,
       this.team
     ];
-    if (this.gameType === GameType.hunter) {
+    if (this.check_isHunterModule) {
       propertiesToLoad.push(this.investigator);
     }
 
     return propertiesToLoad.some((prop) => prop === undefined);
+  }
+
+  get check_isHunterModule(): boolean {
+    return this.gameType === GameType.hunter;
   }
 
   private _bind_currentLeader(): void {

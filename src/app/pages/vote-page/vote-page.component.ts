@@ -126,8 +126,6 @@ export class VotePageComponent implements OnInit {
   }
 
   private _do_resetTeamPick(): void {
-    this._tableService.setColumnVisibility('vote',false);
-
     this._gameService.game$
       .pipe(first())
       .subscribe((game) => {

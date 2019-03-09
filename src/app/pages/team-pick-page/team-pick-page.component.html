@@ -6,6 +6,7 @@
 
   <p class="whos-turn" *ngIf="!!currentLeader">It is <i>{{whoseTurn}}</i> turn to pick a team</p>
   <p>{{selectedPlayersCount}}/{{teamSize}} players selected</p>
+  <p *ngIf="check_isHunterModule">{{selectedInvestigatorsCount}}/1 investigators selected</p>
 
   <div *ngIf="canEditTeam">
     <button [disabled]="!canSubmitTeam" (click)="onSubmitTeamClick()">Thats my team</button>

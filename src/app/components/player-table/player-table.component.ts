@@ -67,10 +67,10 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
   get columns(): IColumn[] {
     return [
       this.team,
+      this.investigator,
       this.hasVoted,
       this.vote,
-      this.hasPlayed,
-      this.investigator
+      this.hasPlayed
     ].filter((column) => column.display === true);
   }
 
