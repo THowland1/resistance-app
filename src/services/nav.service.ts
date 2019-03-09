@@ -8,6 +8,7 @@ import { Vote } from 'src/enums/vote.enum';
 import { Router } from '@angular/router';
 import { GameService } from './game.service';
 import { PlayerService } from './player.service';
+import { GameType } from 'src/enums/game-type';
 
 
 // [TODO] - kill this service
@@ -48,16 +49,20 @@ export class NavService {
     this._gameService.saveChanges();
   }
 
-  startGame(): void {
+  startGame(gameType: GameType): void {
     const countdownMilliseconds = 4000;
     const currentTime = new Date().getTime();
-    // [TODO-HUNTER] - 04 - reset the investigator 
     this._playerService.count$
       .pipe(first())
       .subscribe((playerCount) => {
         this._gameService.update('startTime', currentTime + countdownMilliseconds);
         this._gameService.update('votes', new Array(playerCount).fill(Vote.notVoted));
         this._gameService.update('team', new Array(playerCount).fill(false));
+
+        if (gameType === GameType.hunter) {
+          this._gameService.update('investigator', new Array(playerCount).fill(false))
+        }
+
         this._gameService.saveChanges();
       })
   }

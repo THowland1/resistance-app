@@ -45,6 +45,7 @@ export class LobbyPageComponent implements OnInit {
       .subscribe((isConnected) => {
         this.isConnectedToARoom = isConnected;
         if (isConnected) {
+          this._load_gameType();
           this._bind_currentPlayers();
           this._bind_countdownTimer();
         }
@@ -67,7 +68,8 @@ export class LobbyPageComponent implements OnInit {
   }
 
   onStartGameClick(): void {
-    this._navService.startGame();
+    const gameType = this.gameType.value as GameType;
+    this._navService.startGame(gameType);
   }
 
   onCancelGameClick(): void {
@@ -126,6 +128,12 @@ export class LobbyPageComponent implements OnInit {
         tap(() => this._baseService.addGame(roomCode, newGame(gameType))), // once the loop stops, create the unclaimed room
         map(() => roomCode) // return the roomCode so subscribers know which room to join
       )
+  }
+
+  private _load_gameType(): void {
+    this._gameService.get('gameType')
+      .pipe(first())
+      .subscribe((gameType) => this.gameType.setValue(gameType))
   }
 
   private _bind_currentPlayers(): void {
