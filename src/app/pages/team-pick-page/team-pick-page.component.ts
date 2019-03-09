@@ -46,21 +46,35 @@ export class TeamPickPageComponent implements OnInit {
       this._bind_investigator();
     }
 
-    // [TODO-HUNTER] - 07 - set investigator column if hunter module
     this._tableService.initialiseTable();
     this._tableService.setVisibility(true);
     this._tableService.setColumnVisibility('team',true);
 
+    if (this.gameType === GameType.hunter) {
+      this._tableService.setColumnVisibility('investigator',true);
+    }
+
     this.canEditTeam$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((canEditTeam) => this._tableService.setColumnReadonly('team', !canEditTeam));
+      .subscribe((canEditTeam) => {
+        this._tableService.setColumnReadonly('team', !canEditTeam);
+        if (this.gameType === GameType.hunter) {
+          this._tableService.setColumnReadonly('investigator', !canEditTeam);
+        }
+    });
   }
 
   onSubmitTeamClick(): void {
     if (!this.canSubmitTeam){
       return;
     }
+
     this._tableService.setColumnReadonly('team',true);
+    
+    if (this.gameType === GameType.hunter) {
+      this._tableService.setColumnReadonly('investigator', true);
+    }
+
     this._navService.goToStage(Stage.Vote);
   }
 
@@ -105,7 +119,6 @@ export class TeamPickPageComponent implements OnInit {
     if (this.gameType === GameType.hunter) {
       propertiesToLoad.push(this.investigator);
     }
-    console.log(propertiesToLoad);
 
     return propertiesToLoad.some((prop) => prop === undefined);
   }

@@ -10,6 +10,7 @@ import { MissionCard } from 'src/enums/mission-card';
 import { Stage } from 'src/enums/stage.enum';
 import { ModalService } from 'src/app/components/modal/modal.service';
 import { PlayerTableService } from 'src/app/components/player-table/player-table.service';
+import { GameType } from 'src/enums/game-type';
 
 @Component({
   selector: 'app-vote-page',
@@ -25,6 +26,7 @@ export class VotePageComponent implements OnInit {
     private _tableService: PlayerTableService) { }
   
   private _currentVotes: Vote[];
+  gameType = this._gameService.get('gameType');
   wait: boolean;
   playerName: string;
   players: Player[];
@@ -38,6 +40,10 @@ export class VotePageComponent implements OnInit {
     this._tableService.setColumnVisibility('team',true);
     this._tableService.setColumnVisibility('hasVoted',true);
     this._tableService.setColumnVisibility('vote',false);
+
+    if (this.gameType === GameType.hunter) {
+      this._tableService.setColumnVisibility('investigator', true);
+    }
 
     this._gameService.get$('votes')
       .pipe(takeUntil(this.destroy$))

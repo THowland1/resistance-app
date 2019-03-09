@@ -10,6 +10,7 @@ import { PlayerTableService } from './player-table.service';
 import { GameService } from 'src/services/game.service';
 import { Vote } from 'src/enums/vote.enum';
 import { MissionCard } from 'src/enums/mission-card';
+import { GameType } from 'src/enums/game-type';
 
 @Component({
   selector: 'app-player-table',
@@ -25,8 +26,8 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
     private _tableService: PlayerTableService) { }
   
 
-  // [TODO-HUNTER] - 07 - Add new investigator column
   players: Player[];
+  gameType: GameType;
   isTableVisible: boolean = false;
   isInitialised: boolean = false;
   private destroy$ = new Subject();
@@ -56,18 +57,30 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
     readonly: true,
     display: false
   };
+  investigator: IColumn = {
+    heading: 'Investigator',
+    data: [],
+    readonly: true,
+    display: false
+  };  
 
   get columns(): IColumn[] {
     return [
       this.team,
       this.hasVoted,
       this.vote,
-      this.hasPlayed
+      this.hasPlayed,
+      this.investigator
     ].filter((column) => column.display === true);
   }
 
   onColChange(): void {
     this._gameService.update('team',this.team.data);
+
+    if (this.gameType === GameType.hunter) {
+      this._gameService.update('investigator',this.investigator.data);
+    }
+
     this._gameService.saveChanges();
   }
 
@@ -83,10 +96,16 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
     if(this.isInitialised) {
       return;
     }
+    this.gameType = this._gameService.get('gameType');
     this._bind_players();
     this._bind_team();
     this._bind_votes();
     this._bind_playedCards();
+
+    if (this.gameType === GameType.hunter) {
+      this._bind_investigator();
+    }
+
     this.isInitialised = true;
   }
 
@@ -155,6 +174,14 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
         this.hasPlayed.data = playedCards.map((vote) => vote !== MissionCard.none);
       });
   }
+
+  private _bind_investigator(): void {
+    this._gameService.get$('investigator')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((investigator) => {
+        this.investigator.data = investigator;
+      });
+  }
 }
 
 export interface TableMethods {
@@ -172,6 +199,7 @@ export interface ITable {
   hasVoted?: IColumn;
   vote?: IColumn;
   hasPlayed?: IColumn;
+  investigator?: IColumn;
 }
 
 export interface IColumn {
