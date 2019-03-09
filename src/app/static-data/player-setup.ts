@@ -1,5 +1,6 @@
 import { Player } from "src/models/player";
 import { RoleCards } from "./role-cards";
+import { GameType } from "src/enums/game-type";
 
 export module RoleDistribution {
     interface IRoleDistribution {
@@ -7,12 +8,9 @@ export module RoleDistribution {
         amount: number
     }
 
-    type ModuleType = 'Regular' | 'Hunter';
-
-    export function allRoles(moduleType: ModuleType, noOfPlayers: number): Player[] {
-
+    export function allRoles(gameType: GameType, noOfPlayers: number): Player[] {
         let allPlayers: Player[] = [];
-        const roleDistributions = this[moduleType][noOfPlayers]
+        const roleDistributions = AllRoleDistributions[gameType][noOfPlayers];
         roleDistributions.forEach((roleDistribution) => {
           const players = Array<Player>(roleDistribution.amount).fill(roleDistribution.roleCard);
           allPlayers = allPlayers.concat(players);
@@ -25,8 +23,7 @@ export module RoleDistribution {
         return allPlayers;
       }
 
-      // [TODO-HUNTER] - 03 - Add Hunter Role distributions
-    export const Regular: {[numberOfPlayers: number]: IRoleDistribution[] } = {
+    const Regular: {[numberOfPlayers: number]: IRoleDistribution[] } = {
         5: [
             {roleCard: RoleCards.ResistancePlain, amount: 3},
             {roleCard: RoleCards.SpyPlain, amount: 2}
@@ -52,5 +49,58 @@ export module RoleDistribution {
             {roleCard: RoleCards.SpyPlain, amount: 4}
         ],
     }
+
+    const Hunter: {[numberOfPlayers: number]: IRoleDistribution[] } = {
+        5: [
+            {roleCard: RoleCards.ResistancePlain, amount: 1},
+            {roleCard: RoleCards.ResistanceHunter, amount: 1},
+            {roleCard: RoleCards.ResistanceChief, amount: 1},
+            {roleCard: RoleCards.SpyHunter, amount: 1},
+            {roleCard: RoleCards.SpyChief, amount: 1}
+        ],
+        6: [
+            {roleCard: RoleCards.ResistancePlain, amount: 2},
+            {roleCard: RoleCards.ResistanceHunter, amount: 1},
+            {roleCard: RoleCards.ResistanceChief, amount: 1},
+            {roleCard: RoleCards.SpyHunter, amount: 1},
+            {roleCard: RoleCards.SpyChief, amount: 1}
+        ],
+        7: [
+            {roleCard: RoleCards.ResistancePlain, amount: 2},
+            {roleCard: RoleCards.ResistanceHunter, amount: 1},
+            {roleCard: RoleCards.ResistanceChief, amount: 1},
+            {roleCard: RoleCards.SpyPlain, amount: 1},
+            {roleCard: RoleCards.SpyHunter, amount: 1},
+            {roleCard: RoleCards.SpyChief, amount: 1}
+        ],
+        8: [
+            {roleCard: RoleCards.ResistancePlain, amount: 2},
+            {roleCard: RoleCards.ResistanceHunter, amount: 1},
+            {roleCard: RoleCards.ResistanceChief, amount: 2},
+            {roleCard: RoleCards.SpyPlain, amount: 1},
+            {roleCard: RoleCards.SpyHunter, amount: 1},
+            {roleCard: RoleCards.SpyChief, amount: 1}
+        ],
+        9: [
+            {roleCard: RoleCards.ResistancePlain, amount: 3},
+            {roleCard: RoleCards.ResistanceHunter, amount: 1},
+            {roleCard: RoleCards.ResistanceChief, amount: 2},
+            {roleCard: RoleCards.SpyPlain, amount: 1},
+            {roleCard: RoleCards.SpyHunter, amount: 1},
+            {roleCard: RoleCards.SpyChief, amount: 1}
+        ],
+        10: [
+            {roleCard: RoleCards.ResistancePlain, amount: 3},
+            {roleCard: RoleCards.ResistanceHunter, amount: 1},
+            {roleCard: RoleCards.ResistanceChief, amount: 2},
+            {roleCard: RoleCards.SpyPlain, amount: 1},
+            {roleCard: RoleCards.SpyHunter, amount: 1},
+            {roleCard: RoleCards.SpyChief, amount: 2}
+        ],
+    }
+
+    const AllRoleDistributions = {};
+    AllRoleDistributions[GameType.regular] = Regular;
+    AllRoleDistributions[GameType.hunter] = Hunter;
 
 }

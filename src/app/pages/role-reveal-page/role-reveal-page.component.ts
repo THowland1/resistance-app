@@ -11,6 +11,7 @@ import { PlayerService } from 'src/services/player.service';
 import { RoleDistribution } from 'src/app/static-data/player-setup';
 import { ModalService } from 'src/app/components/modal/modal.service';
 import { GameService } from 'src/services/game.service';
+import { GameType } from 'src/enums/game-type';
 
 @Component({
   selector: 'app-role-reveal-page',
@@ -58,7 +59,7 @@ export class RoleRevealPageComponent implements OnInit {
     // [TODO-HUNTER] - 05 - Add thing to distinguish nregular from other
     const players = this._playerService.players;
     const allRoleCards = RoleDistribution
-      .allRoles('Regular', players.length)
+      .allRoles(GameType.regular, players.length)
       .shuffle();
 
     players.forEach((player,index) => {
