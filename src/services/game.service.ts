@@ -6,17 +6,20 @@ import { SessionService } from './session.service';
 import { shareReplay, pluck, map, distinctUntilChanged } from 'rxjs/operators';
 import { gameVariables } from 'src/game.variables';
 import { MissionOutcome } from 'src/enums/mission-outcome';
+import { ModalService } from 'src/app/components/modal/modal.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
 
-  constructor(private _base: BaseService, private _sessionService: SessionService) {
+  constructor(private _base: BaseService, private _sessionService: SessionService, private _modalService: ModalService) {
     this._sessionService.roomCode$.subscribe((roomCode) => {
       this._game$ = this._base.getGame(roomCode).pipe(shareReplay(1));
 
       this._game$.subscribe((game) => this._game = game);
+
+      this._watch_illegalPropertyChanges();
     })
 
   }
@@ -87,6 +90,25 @@ export class GameService {
     } else {
       return false;
     }
+  }
+
+  private _watch_illegalPropertyChanges() {
+    const unchangablePropertyKeys: (keyof Game)[] = [
+      'gameType'
+    ];
+
+    // Initially, every property has been read zero times
+    var readCounts = unchangablePropertyKeys.map((_) => 0)
+
+    // For each property: observe it, and if it is read twice (an initial read + a property change) it has changed (and it shouldn't)
+    unchangablePropertyKeys.forEach((key,index) => {
+      this.get$(key).subscribe((_) => {
+        readCounts[index]++;
+        if (readCounts[index] > 1 ) {
+          this._modalService.error('Internal Error',`${key} has changed, when it should remain constant`);
+        }
+      })
+    });
   }
 
 }
