@@ -71,6 +71,7 @@ export class MissionPageComponent implements OnInit {
 
   click_nextMission():void {
     this.forceLoadScreen = true;
+    this._gameService.update('wait', false);
 
     // [TODO-HUNTER] - 12 - make the potential next stage a new investigation stage
     this._gameService.game$
