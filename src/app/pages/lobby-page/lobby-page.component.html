@@ -1,19 +1,29 @@
 <div class="lobby-form" *ngIf="!isConnectedToARoom">
   <form class="d-block">
+    <mat-slide-toggle class="d-block" [(ngModel)]="isNew" name="isNew">New Lobby?</mat-slide-toggle>
+
     <mat-form-field class="d-block">
       <input matInput [formControl]="name" placeholder="Name">
       <mat-error *ngIf="name.invalid">Please pick a longer name</mat-error>
     </mat-form-field>
+
     <mat-form-field *ngIf="!isNew" class="d-block">
       <input matInput [formControl]="roomCode" placeholder="Room code" style="text-transform: uppercase;" maxlength="4">
       <mat-error *ngIf="roomCode.invalid">Room codes have 4 characters</mat-error>
     </mat-form-field>
-    <mat-checkbox class="d-block" [(ngModel)]="isNew" name="isNew">New Lobby?</mat-checkbox>
+
+    <mat-form-field *ngIf="isNew" class="d-block">
+        <mat-select [formControl]="gameType" placeholder="Module">
+          <mat-option *ngFor="let gameType of gameTypes" [value]="gameType">{{gameType | gameType}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
     <button class="d-block" *ngIf="!isConnectedToARoom" [disabled]="!canCreateOrJoinLobby" (click)="onCreateOrJoinLobbyClick()">
       {{isNew ? 'Create' : 'Join'}} lobby
     </button>
   </form>
 </div>
+
 <div class="start-game-buttons" *ngIf="isConnectedToARoom">
   <button *ngIf="countDownTimer == null" [disabled]="!canStartGame" (click)="onStartGameClick()">Start game</button>
   <button *ngIf="countDownTimer != null" (click)="onCancelGameClick()">Cancel</button>

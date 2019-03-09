@@ -56,4 +56,10 @@ export function randomInt(max: number){
       return max;
     }
     return randomInt;
-  }
+}
+
+export function allEnumValues(enumObject: Object): number[] {
+    const keys = Object.keys(enumObject).filter(key => !isNaN(Number(enumObject[key])));
+    const values = keys.map((key) => enumObject[key]);
+    return values;
+}

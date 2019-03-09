@@ -20,7 +20,7 @@ export interface Game {
     investigator?: boolean[]
   }
 
-export function newGame() {
+export function newGame(gameType: GameType) {
   const newGame: Game = {
     stage: Stage.NotBegun,
     startTime: null,
@@ -30,10 +30,15 @@ export function newGame() {
     currentMission: 0,
     noOfDownvotedTeams: 0,
     leader: null,
-    gameType: GameType.regular, // [TODO-HUNTER] - 02 - make this customisable
+    gameType: gameType,
     playedCards: [],
     wait: false
   }
+
+  if (gameType === GameType.hunter) {
+    newGame.investigator = [];
+  }
+
   return newGame;
 }
 

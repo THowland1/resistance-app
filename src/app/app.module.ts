@@ -10,7 +10,7 @@ import { RoleRevealPageComponent } from './pages/role-reveal-page/role-reveal-pa
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { MatFormFieldModule, MatDialogModule, MatInputModule, MatCheckboxModule } from '@angular/material';
+import { MatFormFieldModule, MatDialogModule, MatInputModule, MatCheckboxModule, MatSlideToggleModule, MatSelectModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DevComponent } from './components/dev/dev.component';
 import { TeamPickPageComponent } from './pages/team-pick-page/team-pick-page.component';
@@ -24,6 +24,8 @@ import { ModalShellComponent } from './components/modal/modal-shell.component';
 import { AlertModalComponent } from './components/modal/alert/alert-modal.component';
 import { RoleCardModalComponent } from './components/modal/role-card/role-card-modal.component';
 import { PlayerTableComponent } from './components/player-table/player-table.component';
+import { GameTypePipe } from './pipes/game-type.pipe';
+import 'hammerjs';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,8 @@ import { PlayerTableComponent } from './components/player-table/player-table.com
     ModalShellComponent,
     AlertModalComponent,
     RoleCardModalComponent,
-    PlayerTableComponent
+    PlayerTableComponent,
+    GameTypePipe
   ],
   imports: [
     BrowserModule,
@@ -52,6 +55,8 @@ import { PlayerTableComponent } from './components/player-table/player-table.com
     MatFormFieldModule,
     MatDialogModule,
     MatCheckboxModule,
+    MatSlideToggleModule,
+    MatSelectModule,
     BrowserAnimationsModule,
     MatInputModule,
     FontAwesomeModule

@@ -11,6 +11,8 @@ import { BaseService } from 'src/services/base.service';
 import { Player, newPlayer } from 'src/models/player';
 import { newGame } from 'src/models/game';
 import { ModalService } from 'src/app/components/modal/modal.service';
+import { allEnumValues } from 'src/functions';
+import { GameType } from 'src/enums/game-type';
 
 @Component({
   selector: 'app-lobby-page',
@@ -32,9 +34,11 @@ export class LobbyPageComponent implements OnInit {
   isNew = false;
   name = new FormControl('', [Validators.required, Validators.minLength(3)]);
   roomCode = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]);
+  gameType = new FormControl(GameType.regular, [Validators.required]);
   private destroy$ = new Subject();
 
-  // [TODO-HUNTER] - 01 - Add a new checkbox to select the new module
+  gameTypes = allEnumValues(GameType);
+
   ngOnInit() {
     this._navService.isConnectedToARoom$
       .pipe(takeUntil(this.destroy$))
@@ -105,6 +109,7 @@ export class LobbyPageComponent implements OnInit {
   private createLobby(): Observable<string> {
     const MAX_ATTEMPTS = 200;
     let attemptNo = 1;
+    let gameType = this.gameType.value as GameType;
 
     // Run a loop of random roomCode generation and checking if the room already exists
     let roomCode = this._baseService.idGenerator(); // initial roomCode
@@ -118,8 +123,7 @@ export class LobbyPageComponent implements OnInit {
         tap((result) => console.log(`Creating room. Attempt: ${attemptNo}, RoomCode: ${roomCode}, Available: ${!result ? 'yes':'no'}`)),
         take(MAX_ATTEMPTS), // stop trying after 200 attempts // [TODO] - What happens if it runs out of attempts
         first((result) => !result), // break the loop once it finds a room thats not taken
-        // [TODO-HUNTER] - 02 - add module setting to newGame()
-        tap(() => this._baseService.addGame(roomCode, newGame())), // once the loop stops, create the unclaimed room
+        tap(() => this._baseService.addGame(roomCode, newGame(gameType))), // once the loop stops, create the unclaimed room
         map(() => roomCode) // return the roomCode so subscribers know which room to join
       )
   }
