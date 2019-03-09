@@ -9,6 +9,7 @@ import { GameService } from 'src/services/game.service';
 import { gameVariables } from 'src/game.variables';
 import { PlayerTableService } from 'src/app/components/player-table/player-table.service';
 import { MissionSizes } from 'src/app/static-data/mission-sizes';
+import { GameType } from 'src/enums/game-type';
 
 @Component({
   selector: 'app-team-pick-page',
@@ -27,11 +28,12 @@ export class TeamPickPageComponent implements OnInit {
   players: Player[];
   currentLeader: string;
   teamSize: number;
+  gameType: GameType = this._gameService.get('gameType');
   team: boolean[];
+  investigator: boolean[];
 
   private destroy$ = new Subject();
 
-  // [TODO-HUNTER] - 06 - bind investigator
   ngOnInit() { 
     this.playerName = this._sessionService.name;
     this.players = this._sessionService.players;
@@ -39,6 +41,10 @@ export class TeamPickPageComponent implements OnInit {
     this._bind_currentLeader();
     this._bind_currentMission();
     this._bind_team();
+
+    if(this.gameType === GameType.hunter) {
+      this._bind_investigator();
+    }
 
     // [TODO-HUNTER] - 07 - set investigator column if hunter module
     this._tableService.initialiseTable();
@@ -89,12 +95,19 @@ export class TeamPickPageComponent implements OnInit {
   }
   
   get isLoading(): boolean {
-    return [
+    const propertiesToLoad: any[] = [
       this.currentLeader,
       this.teamSize,
       this.playerName,
-      this.players
-    ].some((prop) => prop === undefined);
+      this.players,
+      this.team
+    ];
+    if (this.gameType === GameType.hunter) {
+      propertiesToLoad.push(this.investigator);
+    }
+    console.log(propertiesToLoad);
+
+    return propertiesToLoad.some((prop) => prop === undefined);
   }
 
   private _bind_currentLeader(): void {
@@ -113,5 +126,11 @@ export class TeamPickPageComponent implements OnInit {
     this._gameService.get$('team')
     .pipe(takeUntil(this.destroy$))
     .subscribe((selectedPlayers) => this.team = selectedPlayers);
+  }
+
+  private _bind_investigator(): void {
+    this._gameService.get$('investigator')
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((investigator) => this.investigator = investigator);
   }
 }
