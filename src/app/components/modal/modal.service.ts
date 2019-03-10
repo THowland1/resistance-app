@@ -17,7 +17,7 @@ export class ModalService {
   constructor(private matDialog: MatDialog) { }
 
   // Alert
-  info(title: string, messages: string[]): MatDialogRef<AlertModalComponent> {
+  info(title: string, ...messages: string[]): MatDialogRef<AlertModalComponent> {
     return this._alert(ModalType.info,title,messages);
   }
 

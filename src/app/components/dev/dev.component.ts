@@ -13,6 +13,7 @@ import { GameService } from 'src/services/game.service';
 import { PlayerService } from 'src/services/player.service';
 import { PlayerTableService } from '../player-table/player-table.service';
 import { ITable } from '../player-table/player-table.component';
+import { GameType } from 'src/enums/game-type';
 
 @Component({
   selector: 'app-dev',
@@ -69,7 +70,7 @@ export class DevComponent implements OnInit {
 
     const playerNames: string[] = ['aaa','bbb','ccc','ddd','eee','fff','ggg','hhh','iii','jjj']
     console.log(`Creating room ${roomCode} with ${noOfPlayers} players`)
-    this.base.addGame(roomCode,newGame())
+    this.base.addGame(roomCode,newGame(GameType.regular))
 
     for (let index = 0; index < noOfPlayers; index++) {
       const name = playerNames[index];
@@ -83,7 +84,7 @@ export class DevComponent implements OnInit {
   resetClick(): void {
     const roomCode = this.resetRoomCode;
 
-    this.base.addGame(roomCode,newGame());
+    this.base.addGame(roomCode,newGame(GameType.regular));
   }
 
   // Vote entire team up

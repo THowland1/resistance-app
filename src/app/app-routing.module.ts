@@ -8,6 +8,8 @@ import { TeamPickPageComponent } from './pages/team-pick-page/team-pick-page.com
 import { GameOverPageComponent } from './pages/game-over-page/game-over-page.component';
 import { StageGuard } from '../guards/stage.guard';
 import { Stage, stageUrlPipe } from 'src/enums/stage.enum';
+import { InvestigatePageComponent } from './pages/investigate-page/investigate-page.component';
+import { HuntPageComponent } from './pages/hunt-page/hunt-page.component';
 
 const routes: Routes = [
   { 
@@ -32,7 +34,18 @@ const routes: Routes = [
     canActivate: [StageGuard], 
     data:{stage: Stage.Vote} 
   },
-  // [TODO-HUNTER] - 10 - Add investigation and hunting component
+  {
+    path: 'investigate',
+    component: InvestigatePageComponent, 
+    canActivate: [StageGuard], 
+    data:{stage: Stage.Investigate} 
+  },
+  {
+    path: 'hunt',
+    component: HuntPageComponent, 
+    canActivate: [StageGuard], 
+    data:{stage: Stage.Hunt} 
+  },
   {
     path: 'mission', 
     component: MissionPageComponent, 

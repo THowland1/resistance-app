@@ -1,4 +1,7 @@
 import { GameType } from "./game-type";
+import { Player } from "src/models/player";
+import { Team } from "./team.enum";
+import { Role } from "./role.enum";
 
 export enum MissionCard {
     none = 0,
@@ -27,7 +30,7 @@ export function cardsInPlay(gameType: GameType): IMissionCard[] {
             playableCards = [MissionCard.pass, MissionCard.fail];
             break;   
         case GameType.hunter:
-            playableCards = [MissionCard.pass, MissionCard.fail,MissionCard.chiefFail];
+            playableCards = [MissionCard.pass, MissionCard.fail, MissionCard.chiefFail];
             break;   
         default:
             console.error('Game must have a game type');
@@ -37,4 +40,22 @@ export function cardsInPlay(gameType: GameType): IMissionCard[] {
     return playableCards.map((enumValue) => missionCards[enumValue])
 }
 
-// [TODO-HUNTER] - 11 - Add canPlay function to use in mission component
+export function canPlayCard(missionCard: MissionCard, player: Player): boolean {
+    const resistanceCards = [MissionCard.pass];
+    const spyRegularCards = [MissionCard.pass, MissionCard.fail];
+    const spyChiefCards = [MissionCard.pass, MissionCard.chiefFail];
+
+    var playableCards: MissionCard[] = [];
+
+    if (player.team === Team.resistance) {
+        playableCards = resistanceCards;
+    } else if (player.team === Team.spy) {
+        if (player.role === Role.chief) {
+            playableCards = spyChiefCards;
+        } else {
+            playableCards = spyRegularCards;
+        }
+    }
+
+    return playableCards.includes(missionCard);
+}

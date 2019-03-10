@@ -7,6 +7,9 @@ import { shareReplay, pluck, map, distinctUntilChanged } from 'rxjs/operators';
 import { gameVariables } from 'src/game.variables';
 import { MissionOutcome } from 'src/enums/mission-outcome';
 import { ModalService } from 'src/app/components/modal/modal.service';
+import { GameType } from 'src/enums/game-type';
+import { Vote } from 'src/enums/vote.enum';
+import { MissionCard } from 'src/enums/mission-card';
 
 @Injectable({
   providedIn: 'root'
@@ -94,6 +97,34 @@ export class GameService {
     } else {
       return false;
     }
+  }
+
+  check_shouldHunterComeOut(game: Game): boolean {
+    if (game.gameType !== GameType.hunter) {
+      this._modalService.error('Internal Error', 'There is no hunter in this game');
+      return false;
+    }
+
+    var noOfMissionsToWin = gameVariables.noOfMissionsToWin;
+    var noOfFails = game.missionOutcomes.filter((outcome) => outcome === MissionOutcome.fail).length;
+    var noOfPasses = game.missionOutcomes.filter((outcome) => outcome === MissionOutcome.pass).length;
+
+    if (noOfFails >= noOfMissionsToWin || noOfPasses >= noOfMissionsToWin) {
+      return true;
+    }
+
+    return false;
+  }
+
+  next_mission(): void {
+    const game = this._game;
+    const playerCount = game.team.length;
+
+    this.update('votes', new Array(playerCount).fill(Vote.notVoted));
+    this.update('playedCards', new Array(playerCount).fill(MissionCard.none));
+    this.update('currentMission', game.currentMission + 1);
+    this.update('leader', (game.leader + 1) % playerCount);
+    this.update('noOfDownvotedTeams', 0);
   }
 
   private _watch_illegalPropertyChanges() {

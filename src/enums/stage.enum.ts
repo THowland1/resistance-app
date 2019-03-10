@@ -6,7 +6,7 @@ export enum Stage {
     Mission = 4,
     Reveal = 5,
     GameOver = 6,
-    Investigation = 7,
+    Investigate = 7,
     Hunt = 8
 }
 
@@ -26,8 +26,8 @@ export function stageUrlPipe(stage: Stage): string {
             return 'reveal'
         case Stage.GameOver:
             return 'game-over'
-        case Stage.Investigation:
-            return 'investigation'
+        case Stage.Investigate:
+            return 'investigate'
         case Stage.Hunt:
             return 'hunt'
         default:

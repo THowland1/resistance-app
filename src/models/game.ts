@@ -17,7 +17,9 @@ export interface Game {
     gameType: GameType,
     playedCards: MissionCard[],
     wait: boolean,
-    investigator?: boolean[]
+    investigator?: boolean[],
+    investigated?: number,
+    hunted?: number
   }
 
 export function newGame(gameType: GameType) {
@@ -37,6 +39,8 @@ export function newGame(gameType: GameType) {
 
   if (gameType === GameType.hunter) {
     newGame.investigator = [];
+    newGame.investigated = -1;
+    newGame.hunted = -1;
   }
 
   return newGame;

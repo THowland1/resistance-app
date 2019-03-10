@@ -26,6 +26,8 @@ import { RoleCardModalComponent } from './components/modal/role-card/role-card-m
 import { PlayerTableComponent } from './components/player-table/player-table.component';
 import { GameTypePipe } from './pipes/game-type.pipe';
 import 'hammerjs';
+import { InvestigatePageComponent } from './pages/investigate-page/investigate-page.component';
+import { HuntPageComponent } from './pages/hunt-page/hunt-page.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,9 @@ import 'hammerjs';
     AlertModalComponent,
     RoleCardModalComponent,
     PlayerTableComponent,
-    GameTypePipe
+    GameTypePipe,
+    InvestigatePageComponent,
+    HuntPageComponent
   ],
   imports: [
     BrowserModule,

@@ -131,6 +131,11 @@ export class TeamPickPageComponent implements OnInit {
           return false;
         }
       }
+
+      // Investigator cannot be the leader
+      if (this.investigator.indexOf(true) === this._sessionService.playerIndex) {
+        return false;
+      }
     }
 
     return true;

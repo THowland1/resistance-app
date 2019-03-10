@@ -3,7 +3,7 @@ import { Subject, zip } from 'rxjs';
 import { takeUntil, first, map } from 'rxjs/operators';
 import { bind} from 'src/functions';
 import { Player } from 'src/models/player';
-import { IMissionCard, MissionCard, missionCards, cardsInPlay } from 'src/enums/mission-card';
+import { IMissionCard, MissionCard, missionCards, cardsInPlay, canPlayCard } from 'src/enums/mission-card';
 import { MissionSize } from 'src/models/mission-size';
 import { Team } from 'src/enums/team.enum';
 import { SessionService } from 'src/services/session.service';
@@ -16,6 +16,7 @@ import { Stage } from 'src/enums/stage.enum';
 import { Vote } from 'src/enums/vote.enum';
 import { ModalService } from 'src/app/components/modal/modal.service';
 import { MissionSizes } from 'src/app/static-data/mission-sizes';
+import { GameType } from 'src/enums/game-type';
 
 @Component({
   selector: 'app-mission-page',
@@ -55,7 +56,9 @@ export class MissionPageComponent implements OnInit {
   click_selectCard(missionCard: MissionCard): void{
     // [TODO-HUNTER] - 15 - add more illegal option detection
     const player = this._sessionService.player;
-    if(player.team !== Team.spy && missionCard === MissionCard.fail){
+    const check_canPlayCard = canPlayCard(missionCard, player);
+
+    if(!check_canPlayCard){
       this._modalService.error('Illegal Action','you cannot play that card');
       return;
     }
@@ -73,33 +76,40 @@ export class MissionPageComponent implements OnInit {
     this.forceLoadScreen = true;
     this._gameService.update('wait', false);
 
-    // [TODO-HUNTER] - 12 - make the potential next stage a new investigation stage
     this._gameService.game$
       .pipe(first())
       .subscribe((game) => {
-        // set new leader
-        const playerCount = this._playerService.count
-        const newLeader = (game.leader + 1) % playerCount;
-        this._gameService.update('leader', newLeader);
+        const playerCount = this._playerService.count;
 
         // add mission outcome to the Game object
         game.missionOutcomes[game.currentMission] = this.check_missionPassed
-          ? MissionOutcome.pass
-          : MissionOutcome.fail;
+        ? MissionOutcome.pass
+        : MissionOutcome.fail;
         this._gameService.update('missionOutcomes', game.missionOutcomes);
 
-        // wipe current Mission info (keep the team the same)
-        this._gameService.update('votes', new Array(playerCount).fill(Vote.notVoted));
-        this._gameService.update('playedCards', new Array(playerCount).fill(MissionCard.none));
-        this._gameService.update('noOfDownvotedTeams', 0);
-
         // move to the next stage
-        if (this._gameService.check_isGameOver(game)){
-          this._gameService.update('stage',Stage.GameOver);
-        } else {
-          this._gameService.update('currentMission', game.currentMission + 1);
-          this._gameService.update('stage',Stage.TeamPick);
+        switch (game.gameType) {
+          case GameType.regular:
+            if (this._gameService.check_isGameOver(game)){
+              this._gameService.update('stage', Stage.GameOver);
+            } else {
+              this._gameService.next_mission();
+              this._gameService.update('stage', Stage.TeamPick);
+            }
+            break;
+          case GameType.hunter:
+            const didItChiefFail = this.playedCards.filter((card) => card === MissionCard.chiefFail).length > 0;
+            if (this._gameService.check_shouldHunterComeOut(game) || didItChiefFail) {
+              this._gameService.update('stage', Stage.Hunt);
+            } else {
+            this._gameService.update('stage', Stage.Investigate);
+            }
+            break;
+          default:
+            this._modalService.error('Internal Error','Game must have a module (regular, hunter, etc.)');
+            break;
         }
+
         this._gameService.saveChanges();
       })
   }
@@ -143,8 +153,9 @@ export class MissionPageComponent implements OnInit {
   get check_missionPassed(): boolean {
     const requiredFails = this.missionSize.twoFail ? 2 : 1;
 
-    // [TODO-HUNTER] - 13 - check for a new kind of fail
-    return this.playedCards.filter((card) => card === MissionCard.fail).length < requiredFails;
+    const failingCards = [MissionCard.fail, MissionCard.chiefFail];
+
+    return this.playedCards.filter((card) => failingCards.includes(card)).length < requiredFails;
   }
   
   private get _check_allCardsPlayed(): boolean {
