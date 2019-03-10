@@ -1,3 +1,31 @@
-<p>
-  hunt-page works!
-</p>
+<div [ngSwitch]="pageMode">
+
+    <!-- wait-for-hunt mode -->
+    <ng-template [ngSwitchCase]="'wait-for-hunt'">
+      <p>{{string_waitingMessage}}</p>
+    </ng-template>
+
+    <!-- choose-hunt mode -->
+    <ng-template [ngSwitchCase]="'choose-hunt'">
+      <p>Pick a player to hunt</p>
+      <div class="row">
+        <button 
+          class="col-6" 
+          *ngFor="let player of allPlayers; let i = index;"
+          [disabled]="!check_canHuntPlayer(i)"
+          (click)="click_hunt(i)">{{player.name}}</button>
+      </div>
+    </ng-template>
+
+    <!-- post-hunt mode -->
+    <ng-template [ngSwitchCase]="'post-hunt'">
+      <p>{{string_postHuntMessage_choice}}</p>
+      <p>{{string_postHuntMessage_outcome}}</p>
+      <button (click)="click_moveOn()">Move on</button>
+    </ng-template>
+
+    <!-- no mode (an error)-->
+    <ng-template ngSwitchDefault>
+        <p>An error has occurred</p>
+    </ng-template>
+  </div>
