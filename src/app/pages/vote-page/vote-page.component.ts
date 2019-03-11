@@ -11,6 +11,7 @@ import { Stage } from 'src/enums/stage.enum';
 import { ModalService } from 'src/app/components/modal/modal.service';
 import { PlayerTableService } from 'src/app/components/player-table/player-table.service';
 import { GameType } from 'src/enums/game-type';
+import { GameOver } from 'src/functions';
 
 @Component({
   selector: 'app-vote-page',
@@ -137,7 +138,7 @@ export class VotePageComponent implements OnInit {
         this._gameService.update('votes', new Array(this._playerService.count).fill(Vote.notVoted));
         this._gameService.update('noOfDownvotedTeams', game.noOfDownvotedTeams);
         
-        if (this._gameService.check_isGameOver(game)) {
+        if (GameOver.isGameOver(game, this.players)) {
           this._gameService.update('stage', Stage.GameOver);
         } else {
           this._gameService.update('stage', Stage.TeamPick);

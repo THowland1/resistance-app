@@ -10,6 +10,9 @@ import { ModalService } from 'src/app/components/modal/modal.service';
 import { GameType } from 'src/enums/game-type';
 import { Vote } from 'src/enums/vote.enum';
 import { MissionCard } from 'src/enums/mission-card';
+import { Team } from 'src/enums/team.enum';
+import { Hunt } from 'src/functions';
+import { Player } from 'src/models/player';
 
 @Injectable({
   providedIn: 'root'
@@ -82,22 +85,6 @@ export class GameService {
     }
   }
 
-  check_isGameOver(game: Game): boolean {
-    var missionOutcomes = game.missionOutcomes;
-    var noOfDownvotedTeams = game.noOfDownvotedTeams;
-
-    var noOfMissionsToWin = gameVariables.noOfMissionsToWin;
-    var maxNoOfVotesPerMission = gameVariables.maxNoOfVotesPerMission;
-
-    var noOfFails = missionOutcomes.filter((outcome) => outcome === MissionOutcome.fail).length;
-    var noOfPasses = missionOutcomes.filter((outcome) => outcome === MissionOutcome.pass).length;
-    
-    if (noOfFails >= noOfMissionsToWin || noOfPasses >= noOfMissionsToWin || noOfDownvotedTeams >= maxNoOfVotesPerMission){
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   check_shouldHunterComeOut(game: Game): boolean {
     if (game.gameType !== GameType.hunter) {
@@ -115,6 +102,8 @@ export class GameService {
 
     return false;
   }
+
+
 
   next_mission(): void {
     const game = this._game;

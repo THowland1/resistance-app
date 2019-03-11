@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Subject, zip } from 'rxjs';
 import { takeUntil, first, map } from 'rxjs/operators';
-import { bind} from 'src/functions';
+import { bind, GameOver} from 'src/functions';
 import { Player } from 'src/models/player';
 import { IMissionCard, MissionCard, missionCards, cardsInPlay, canPlayCard } from 'src/enums/mission-card';
 import { MissionSize } from 'src/models/mission-size';
@@ -75,6 +75,7 @@ export class MissionPageComponent implements OnInit {
   click_nextMission():void {
     this.forceLoadScreen = true;
     this._gameService.update('wait', false);
+    const players = this._playerService.players;
 
     this._gameService.game$
       .pipe(first())
@@ -90,7 +91,7 @@ export class MissionPageComponent implements OnInit {
         // move to the next stage
         switch (game.gameType) {
           case GameType.regular:
-            if (this._gameService.check_isGameOver(game)){
+            if (GameOver.isGameOver(game, players)){
               this._gameService.update('stage', Stage.GameOver);
             } else {
               this._gameService.next_mission();

@@ -8,20 +8,6 @@ export enum GameOutcome {
     resistanceChiefKilled = 4
 }
 
-export function GameOutcomeWinnerPipe(gameOutcome: GameOutcome): Team {
-    var resistanceWins = [GameOutcome.sufficientSuccesses, GameOutcome.spyChiefKilled];
-    var spyWins = [GameOutcome.sufficientFailures, GameOutcome.tooManyDownvotes, GameOutcome.resistanceChiefKilled];
-
-    if (resistanceWins.some((outcome) => outcome === gameOutcome)) {
-        return Team.resistance;
-    } else if (spyWins.some((outcome) => outcome === gameOutcome)) {
-        return Team.spy;
-    } else {
-        console.error('An error has occurred');
-        return Team.unassigned;
-    }
-}
-
 export function GameOutcomeMessagePipe(gameOutcome: GameOutcome): string {
     switch (gameOutcome) {
         case GameOutcome.sufficientSuccesses:
