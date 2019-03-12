@@ -55,6 +55,10 @@ export class GameService {
     return this._game$;
   }
 
+  get game(): Game {
+    return this._game;
+  }
+
   /**
    * Get a property on the Game object at the current time. Will not update.
    * @param key  Key of the property to be retrieved.

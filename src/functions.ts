@@ -100,6 +100,27 @@ export module Hunt {
       }
 }
 
+export module MissionHelper {
+    export function passCount(game: Game): number {
+        return game.missionOutcomes.filter((outcome) => outcome === MissionOutcome.pass).length;
+    }
+
+    export function failCount(game: Game): number {
+        return game.missionOutcomes.filter((outcome) => outcome === MissionOutcome.fail).length;
+    }
+
+    export function invertLatestResult(game: Game): void {
+        const currentMission = game.currentMission;
+        const latestOutcome = game.missionOutcomes[currentMission];
+        let newOutcome: MissionOutcome;
+        if (latestOutcome === MissionOutcome.pass) {newOutcome = MissionOutcome.fail}
+        else if (latestOutcome === MissionOutcome.fail) {newOutcome = MissionOutcome.pass}
+        else {newOutcome = MissionOutcome.notStarted}
+
+        game.missionOutcomes[currentMission] = newOutcome;
+    }
+}
+
 export module GameOver {
     // Universal functions
     export function isGameOver(game: Game, players: Player[]) {

@@ -11,6 +11,8 @@ import { Team } from 'src/enums/team.enum';
 import { InvestigationCards } from 'src/app/static-data/investigation-cards';
 import { InvestigationCard } from 'src/enums/investigation-card.enum';
 import { Stage } from 'src/enums/stage.enum';
+import { MissionHelper } from 'src/functions';
+import { gameVariables } from 'src/game.variables';
 
 @Component({
   selector: 'app-investigate-page',
@@ -32,6 +34,16 @@ export class InvestigatePageComponent implements OnInit {
   private destroy$ = new Subject();
 
   ngOnInit(): void {
+    const game = this._gameService.game;
+    
+    // If page has been reached by a failing final-stage hunt, make the other team hunt
+    if (game.currentMission === gameVariables.noOfMissionsPerGame) {
+      MissionHelper.invertLatestResult(game);
+      this._gameService.update('stage', Stage.Hunt);
+      this._gameService.saveChanges();
+      return;
+    }
+
     this._bind_wait();
     this._bind_investigated();
   }
@@ -73,6 +85,14 @@ export class InvestigatePageComponent implements OnInit {
   }
 
   click_moveOn(): void {
+    const game = this._gameService.game;
+    const tooManySuccesses = MissionHelper.passCount(game) >= gameVariables.noOfMissionsToWin;
+    const tooManyFailures = MissionHelper.failCount(game) >= gameVariables.noOfMissionsToWin;
+    if (tooManySuccesses || tooManyFailures) {
+      MissionHelper.invertLatestResult(game);
+      this._gameService.update('missionOutcomes',game.missionOutcomes);
+    }
+
     this._gameService.next_mission();
     this._gameService.update('investigated', -1);
     this._gameService.update('wait', false);

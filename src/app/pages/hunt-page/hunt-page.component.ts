@@ -79,9 +79,8 @@ export class HuntPageComponent implements OnInit {
   }
 
   click_moveOn(): void {
-    const missionOutcomes = this._gameService.get('missionOutcomes');
     const index_currentMission = this._gameService.get('currentMission');
-
+    console.log('cxdfx');
     // If the hunt was successful, the game is over
     if (this.check_huntSuccessful) {
       this._gameService.update('stage', Stage.GameOver);
@@ -89,35 +88,7 @@ export class HuntPageComponent implements OnInit {
       return;
     }
 
-    // If the mission was caused by three successes/failures, invert the last success/failure
-    if (!this._check_didItChiefFail) {
-      const missionOutcome = missionOutcomes[index_currentMission];
-      var newMissionOutcome: MissionOutcome;
-      switch (missionOutcome) {
-        case MissionOutcome.pass:
-          newMissionOutcome = MissionOutcome.fail;          
-          break;
-        case MissionOutcome.fail:
-          newMissionOutcome = MissionOutcome.pass;          
-          break;
-        default:
-        this._modalService.error('Internal Error', 'Mission did not pass or fail!');
-          newMissionOutcome = MissionOutcome.notStarted;        
-          break;
-      }
-      missionOutcomes[index_currentMission] = newMissionOutcome;
-      this._gameService.update('missionOutcomes', missionOutcomes);
-    }
-
-    // If this is the last mission (inverting will result in 3 wins for the other team), refresh
-    if (index_currentMission === gameVariables.noOfMissionsPerGame) {
-      // [TODO-HUNTER] - Create new refresh component
-      this._gameService.update('stage',Stage.Hunt);
-      this._gameService.saveChanges();
-      return;
-    }
-
-    // If the hunt was unsuccessful and there are other missions to play, go to the investigation
+    // If the hunt was unsuccessful, go to the investigation
     this._gameService.update('hunted', -1);
     this._gameService.update('wait', false);
     this._gameService.update('stage', Stage.Investigate);
@@ -180,7 +151,7 @@ export class HuntPageComponent implements OnInit {
     return this._sessionService.playerIndex !== playerIndex;
   }
 
-  private _check_didItChiefFail(): boolean {
+  private get _check_didItChiefFail(): boolean {
     const playedCards = this._gameService.get('playedCards');
     return playedCards.includes(MissionCard.chiefFail);
   }
