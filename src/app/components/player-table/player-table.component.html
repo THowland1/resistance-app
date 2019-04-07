@@ -12,7 +12,7 @@
         </tr>
       </thead>
       <tbody>
-          <tr *ngFor="let player of players; let i = index">
+          <tr *ngFor="let player of players; let i = index" [class.leader]="i === leader">
             <td>{{player.name}}</td>
             <td *ngFor="let column of columns">
                 <input [disabled]="column.readonly" type="checkbox" [(ngModel)]="column.data[i]" (ngModelChange)="onColChange()">

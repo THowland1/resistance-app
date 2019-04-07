@@ -30,6 +30,7 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
   gameType: GameType;
   isTableVisible: boolean = false;
   isInitialised: boolean = false;
+  leader: number;
   private destroy$ = new Subject();
 
   // Table data
@@ -101,6 +102,7 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
     this._bind_team();
     this._bind_votes();
     this._bind_playedCards();
+    this._bind_leader();
 
     if (this.gameType === GameType.hunter) {
       this._bind_investigator();
@@ -180,6 +182,14 @@ export class PlayerTableComponent implements OnInit, TableMethods, ColumnMethods
       .pipe(takeUntil(this.destroy$))
       .subscribe((investigator) => {
         this.investigator.data = investigator;
+      });
+  }
+
+  private _bind_leader(): void {
+    this._gameService.get$('leader')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((leader) => {
+        this.leader = leader;
       });
   }
 }

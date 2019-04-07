@@ -1,11 +1,31 @@
+
+$leader-arrow-size: 5px;
+$leader-arrow-colour: #777;
+$table-border-width: 1px;
+
 .player-table {
     text-align: center;
 
     th, td{
-        border: 1px solid black;
+        border: $table-border-width solid black;
+        position: relative;
     }
 
     label {
         all: unset;
+    }
+
+    tr.leader {
+        td:first-child {
+            &::before {
+                content: ' ';
+                border-top: $leader-arrow-size solid transparent;
+                border-bottom: $leader-arrow-size solid transparent;
+                border-left: $leader-arrow-size solid $leader-arrow-colour;
+                position: absolute;
+                top: 7px;
+                left: calc(-#{$leader-arrow-size} - #{$table-border-width});
+            }
+        }
     }
 }

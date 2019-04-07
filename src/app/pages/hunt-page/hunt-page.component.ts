@@ -41,14 +41,15 @@ export class HuntPageComponent implements OnInit {
   // [TODO-HUNTER] Add prompt for coming out prematurely
 
   ngOnInit(): void {
-    if (this._gameService.get('spyHunterOut') === false) {
-      this._startCountdown();
-    }
     this._revealHunter();
     this._load_huntingTeam();
     this._bind_wait();
     this._bind_hunted();
     this._bind_spyHunterOut();
+
+    if (this._gameService.get('spyHunterOut') === false && this.huntingTeam === Team.spy) {
+      this._startCountdown();
+    }
   }
 
   ngOnDestroy(): void {
