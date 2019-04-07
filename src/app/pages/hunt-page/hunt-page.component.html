@@ -1,5 +1,23 @@
 <div [ngSwitch]="pageMode">
 
+    <!-- wait-for-hunter-to-come-out mode -->
+    <ng-template [ngSwitchCase]="'wait-for-hunter-to-come-out'">
+      <p>The hunter has {{countdown}} seconds to come out</p>
+    </ng-template>
+    
+    <!-- choose-to-come-out mode -->
+    <ng-template [ngSwitchCase]="'choose-to-come-out'">
+      <p>If you want to come out, you have {{countdown}} seconds</p>
+      <button (click)="comeOut(false)">No thanks</button>
+      <button (click)="comeOut(true)">Come out</button>
+    </ng-template>
+
+    <!-- hunter-didnt-come-out mode -->
+    <ng-template [ngSwitchCase]="'hunter-didnt-come-out'">
+      <p>The spy hunter has chosen to not come out</p>
+      <button (click)="click_moveOn()">Move on</button>
+    </ng-template>
+
     <!-- wait-for-hunt mode -->
     <ng-template [ngSwitchCase]="'wait-for-hunt'">
       <p>{{string_waitingMessage}}</p>

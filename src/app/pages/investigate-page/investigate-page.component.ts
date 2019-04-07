@@ -37,9 +37,11 @@ export class InvestigatePageComponent implements OnInit {
     const game = this._gameService.game;
     
     // If page has been reached by a failing final-stage hunt, make the other team hunt
-    if (game.currentMission === gameVariables.noOfMissionsPerGame) {
+    if (game.currentMission === gameVariables.noOfMissionsPerGame - 1) {
+      if (this._sessionService.playerIndex !== 0 ) { return; } // Only 1 player runs this logic
       MissionHelper.invertLatestResult(game);
       this._gameService.update('stage', Stage.Hunt);
+      this._gameService.update('missionOutcomes', game.missionOutcomes);
       this._gameService.saveChanges();
       return;
     }

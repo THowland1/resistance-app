@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { PlayerService } from 'src/services/player.service';
 import { ModalService } from 'src/app/components/modal/modal.service';
 import { GameService } from 'src/services/game.service';
-import { zip, Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { zip, Subject, interval } from 'rxjs';
+import { first, takeUntil, map } from 'rxjs/operators';
 import { MissionOutcome } from 'src/enums/mission-outcome';
 import { SessionService } from 'src/services/session.service';
 import { Role } from 'src/enums/role.enum';
@@ -13,6 +13,7 @@ import { InvestigationCard } from 'src/enums/investigation-card.enum';
 import { Stage } from 'src/enums/stage.enum';
 import { MissionCard } from 'src/enums/mission-card';
 import { gameVariables } from 'src/game.variables';
+import { MissionHelper } from 'src/functions';
 
 @Component({
   selector: 'app-hunt-page',
@@ -32,35 +33,68 @@ export class HuntPageComponent implements OnInit {
   index_leader: number = this._gameService.get('leader');
   index_hunted: number;
   huntingTeam: Team;
+  spyHunterOut: boolean;
+  countdown: number = 10;
   private destroy$ = new Subject();
+  private stopCountDown$ = new Subject();
 
   // [TODO-HUNTER] Add prompt for coming out prematurely
 
   ngOnInit(): void {
+    if (this._gameService.get('spyHunterOut') === false) {
+      this._startCountdown();
+    }
+    this._revealHunter();
     this._load_huntingTeam();
     this._bind_wait();
     this._bind_hunted();
+    this._bind_spyHunterOut();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.stopCountDown$.next();
+    this.stopCountDown$.complete();
   }
 
   get pageMode(): string {
-    if (this.wait) {
-      return 'post-hunt';
-    } else {
-      if (this.check_canHunt) {
-        return 'choose-hunt';
+    if (this.spyHunterOut || this.huntingTeam === Team.resistance) {
+      if (this.wait) {
+        return 'post-hunt';
       } else {
-        return 'wait-for-hunt';
+          if (this.check_canHunt) {
+            return 'choose-hunt';
+          } else {
+            return 'wait-for-hunt';
+          }
+        }
+    } else {
+      if (this.wait) {
+        return 'hunter-didnt-come-out';
+      } else {
+        if (this.check_canHunt) {
+          return 'choose-to-come-out';
+        } else {
+          return 'wait-for-hunter-to-come-out';
+        }
       }
     }
   }
 
+  comeOut(comeOut: boolean): void {
+    if (comeOut) {
+      this._gameService.update('spyHunterOut', true);
+    } else {
+      this._gameService.update('wait', true);
+    }
+    this._gameService.saveChanges();
+    this.stopCountDown$.next();
+    this.stopCountDown$.complete();
+  }
+  
   get isLoading(): boolean {
-    const properties = [this.huntingTeam, this.wait];
+    const properties = [this.huntingTeam, this.wait, this.spyHunterOut];
     return properties.some((prop) => prop === undefined);
   }
 
@@ -75,12 +109,9 @@ export class HuntPageComponent implements OnInit {
     } else {
       return;
     }
-
   }
 
   click_moveOn(): void {
-    const index_currentMission = this._gameService.get('currentMission');
-    console.log('cxdfx');
     // If the hunt was successful, the game is over
     if (this.check_huntSuccessful) {
       this._gameService.update('stage', Stage.GameOver);
@@ -163,16 +194,15 @@ export class HuntPageComponent implements OnInit {
   };
 
   private _load_huntingTeam(): void {
-    const missionOutcomes = this._gameService.get('missionOutcomes');
-
-    const noOfPassingMissions = missionOutcomes.filter((outcome) => outcome === MissionOutcome.pass).length;
-    const noOfFailingMissions = missionOutcomes.filter((outcome) => outcome === MissionOutcome.fail).length;
+    const game = this._gameService.game;
+    const sufficientSuccesses = MissionHelper.passCount(game) >= gameVariables.noOfMissionsToWin;
+    const sufficientFailures = MissionHelper.failCount(game) >= gameVariables.noOfMissionsToWin;
     const didTheMissionChiefFail = this._check_didItChiefFail;
 
     var huntingTeam: Team;
-    if (noOfPassingMissions === gameVariables.noOfMissionsToWin) {
+    if (sufficientSuccesses) {
       huntingTeam = Team.resistance;
-    } else if (noOfFailingMissions === gameVariables.noOfMissionsToWin || didTheMissionChiefFail) {
+    } else if (sufficientFailures || didTheMissionChiefFail) {
       huntingTeam = Team.spy;
     } else {
       this._modalService.error(
@@ -180,6 +210,7 @@ export class HuntPageComponent implements OnInit {
         'This page should not have been accessed',
         'No chief fails and insufficient successes/failures')
     }
+
     this.huntingTeam = huntingTeam;
   }
 
@@ -193,5 +224,45 @@ export class HuntPageComponent implements OnInit {
     this._gameService.get$('hunted')
     .pipe(takeUntil(this.destroy$))
     .subscribe((huntedIndex) => this.index_hunted = huntedIndex);
+  }
+
+  private _bind_spyHunterOut(): void {
+    this._gameService.get$('spyHunterOut')
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((spyHunterOut) => {
+      this.spyHunterOut = spyHunterOut;
+      if (spyHunterOut) {
+        this.stopCountDown$.next()
+        this.stopCountDown$.complete()
+      }
+    });
+  }
+
+  private _revealHunter(): void {
+    if (this._sessionService.playerIndex !== 0) { return; } // Only 1 player needs to do this
+    const game = this._gameService.game;
+    const sufficientSuccesses = MissionHelper.passCount(game) >= gameVariables.noOfMissionsToWin;
+    const sufficientFailures = MissionHelper.failCount(game) >= gameVariables.noOfMissionsToWin;
+    
+    if (sufficientSuccesses) {
+      this._gameService.update('resistanceHunterOut', true);
+      this._gameService.saveChanges();
+    }
+    if (sufficientFailures) {
+      this._gameService.update('spyHunterOut', true);
+      this._gameService.saveChanges();
+    }
+  }
+
+  private _startCountdown(): void {
+    interval(1000)
+      .pipe(takeUntil(this.stopCountDown$))
+      .subscribe(no => {
+        console.log('Im counting');
+        this.countdown = 10 - no;
+        if (no === 10) {
+          this.comeOut(false);
+        }
+      })
   }
 }

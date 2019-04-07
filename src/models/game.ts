@@ -19,7 +19,9 @@ export interface Game {
     wait: boolean,
     investigator?: boolean[],
     investigated?: number,
-    hunted?: number
+    hunted?: number,
+    spyHunterOut?: boolean,
+    resistanceHunterOut?: boolean
   }
 
 export function newGame(gameType: GameType) {
@@ -41,6 +43,8 @@ export function newGame(gameType: GameType) {
     newGame.investigator = [];
     newGame.investigated = -1;
     newGame.hunted = -1;
+    newGame.spyHunterOut = false,
+    newGame.resistanceHunterOut = false
   }
 
   return newGame;
